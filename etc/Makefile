@@ -72,10 +72,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_AUTOFS} != "no"
-BIN1+=	auto_master
-.endif
-
 .if ${MK_BLACKLIST} != "no"
 BIN1+= blacklistd.conf
 .endif
