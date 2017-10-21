@@ -102,4 +102,6 @@ LIBADD+=	crypt
 LIBADD+=	pam
 .endif
 
+SUBDIR+=	syslog.d
+
 .include <bsd.prog.mk>

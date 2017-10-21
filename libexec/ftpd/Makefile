@@ -39,4 +39,6 @@ CFLAGS+=-DUSE_PAM
 LIBADD+=	pam
 .endif
 
+SUBDIR+=	syslog.d
+
 .include <bsd.prog.mk>
