@@ -13,6 +13,8 @@ SRCS+=	log.c
 SRCS+=	popen.c
 SRCS+=	token.l
 
+SUBDIR+=	autofs
+
 CFLAGS+=-I${.CURDIR}
 CFLAGS+=-I${SRCTOP}/sys/fs/autofs
 

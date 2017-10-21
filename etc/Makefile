@@ -210,9 +210,6 @@ distribution:
 		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
 	) | ${METALOG.add}
 .endif
-.if ${MK_AUTOFS} != "no"
-	${_+_}cd ${.CURDIR}/autofs; ${MAKE} install
-.endif
 .if ${MK_BLUETOOTH} != "no"
 	${_+_}cd ${.CURDIR}/bluetooth; ${MAKE} install
 .endif
