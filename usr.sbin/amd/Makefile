@@ -5,6 +5,7 @@
 #
 # $FreeBSD$
 
+CONFS=	amd.map
 SUBDIR= include libamu .WAIT \
 	amd amq fixmount fsinfo hlfsd mk-amd-map pawd \
 	scripts wire-test

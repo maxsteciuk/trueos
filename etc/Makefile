@@ -72,10 +72,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_AMD} != "no"
-BIN1+= amd.map
-.endif
-
 .if ${MK_APM} != "no"
 BIN1+= apmd.conf
 .endif
