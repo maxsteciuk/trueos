@@ -46,8 +46,7 @@ BIN1=	devd.conf \
 	remote \
 	rpc \
 	services \
-	shells \
-	sysctl.conf
+	shells
 
 .if exists(${.CURDIR}/etc.${MACHINE}/ttys)
 BIN1+=	etc.${MACHINE}/ttys
