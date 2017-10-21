@@ -48,8 +48,7 @@ BIN1=	crontab \
 	rpc \
 	services \
 	shells \
-	sysctl.conf \
-	syslog.conf
+	sysctl.conf
 
 .if exists(${.CURDIR}/etc.${MACHINE}/ttys)
 BIN1+=	etc.${MACHINE}/ttys
