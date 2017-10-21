@@ -188,9 +188,11 @@ maninstall: ${MAN}
 .if ${MK_MANCOMPRESS} == "no"
 .if defined(MANFILTER)
 .for __page in ${MAN}
+	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${MANDIR}${__page:E}${MANSUBDIR}
 	${MINSTALL} ${__page:T:S/$/${FILTEXTENSION}/g} \
 		${DESTDIR}${MANDIR}${__page:E}${MANSUBDIR}/${__page}
 .if defined(MANBUILDCAT) && !empty(MANBUILDCAT)
+	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}
 	${MINSTALL} ${__page:T:S/$/${CATEXT}${FILTEXTENSION}/g} \
 		${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}/${__page}
 .endif
@@ -209,6 +211,7 @@ maninstall: ${MAN}
 	done
 .if defined(MANBUILDCAT) && !empty(MANBUILDCAT)
 .for __page in ${MAN}
+	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}
 	${MINSTALL} ${__page:T:S/$/${CATEXT}/} \
 		${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}/${__page:T}
 .endfor
@@ -216,9 +219,11 @@ maninstall: ${MAN}
 .endif	# defined(MANFILTER)
 .else	# ${MK_MANCOMPRESS} == "yes"
 .for __page in ${MAN}
+	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${MANDIR}${__page:E}${MANSUBDIR}
 	${MINSTALL} ${__page:T:S/$/${MCOMPRESS_EXT}/g} \
 		${DESTDIR}${MANDIR}${__page:E}${MANSUBDIR}/
 .if defined(MANBUILDCAT) && !empty(MANBUILDCAT)
+	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}
 	${MINSTALL} ${__page:T:S/$/${CATEXT}${MCOMPRESS_EXT}/g} \
 		${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}/${__page:T:S/$/${MCOMPRESS_EXT}/}
 .endif

@@ -61,6 +61,7 @@ stage_as.${cnf:T}: ${cnf}
 
 installconfig: _${group}INS_${cnf:T}
 _${group}INS_${cnf:T}: ${cnf}
+	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${${group}DIR_${.ALLSRC:T}}
 	${INSTALL} ${${group}TAG_ARGS} -C -o ${${group}OWN_${.ALLSRC:T}} \
 	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
 	    ${.ALLSRC} \
@@ -74,6 +75,7 @@ stage_files.${group}: ${_${group}CONFS}
 
 installconfig: _${group}INS
 _${group}INS: ${_${group}CONFS}
+	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${${group}DIR}
 .if defined(${group}NAME)
 	${INSTALL} ${${group}TAG_ARGS} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
 	    ${.ALLSRC} ${DESTDIR}${${group}DIR}/${${group}NAME}
