@@ -4,6 +4,7 @@ SHLIBDIR?=	/lib/casper
 
 .include <src.opts.mk>
 
+CONFS=	system.dns
 PACKAGE=libcasper
 LIB=	cap_dns
 

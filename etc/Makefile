@@ -202,9 +202,6 @@ distribution:
 		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
 	) | ${METALOG.add}
 .endif
-.if ${MK_CASPER} != "no"
-	${_+_}cd ${.CURDIR}/casper; ${MAKE} install
-.endif
 	${_+_}cd ${.CURDIR}/cron.d; ${MAKE} install
 	${_+_}cd ${.CURDIR}/defaults; ${MAKE} install
 	${_+_}cd ${.CURDIR}/devd; ${MAKE} install

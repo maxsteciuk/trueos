@@ -1,5 +1,6 @@
 # $FreeBSD$
 
+CONFS=	system.random
 PACKAGE=libcasper
 LIB=	cap_random
 

@@ -4,6 +4,7 @@ SHLIBDIR?=	/lib/casper
 
 .include <src.opts.mk>
 
+CONFS=	system.grp
 PACKAGE=libcasper
 LIB=	cap_grp
 

@@ -4,6 +4,7 @@ SHLIBDIR?=	/lib/casper
 
 .include <src.opts.mk>
 
+CONFS=	system.sysctl
 PACKAGE=libcasper
 LIB=	cap_sysctl
 
