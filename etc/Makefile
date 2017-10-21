@@ -49,8 +49,7 @@ BIN1=	crontab \
 	services \
 	shells \
 	sysctl.conf \
-	syslog.conf \
-	termcap.small
+	syslog.conf
 
 .if exists(${.CURDIR}/etc.${MACHINE}/ttys)
 BIN1+=	etc.${MACHINE}/ttys

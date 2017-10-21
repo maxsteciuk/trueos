@@ -5,6 +5,7 @@
 # (in reverse order from n'th to 1'st most commonly used)
 # to move them to the front of termcap
 #
+CONFS=	termcap.small
 MAN=	termcap.5
 
 FILES=		termcap termcap.db
