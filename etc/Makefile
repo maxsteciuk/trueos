@@ -12,8 +12,7 @@ UPDATE_DEPENDFILE=	no
 SUBDIR+=sendmail
 .endif
 
-BIN1=	crontab \
-	devd.conf \
+BIN1=	devd.conf \
 	devfs.conf \
 	ddb.conf \
 	dhclient.conf \
