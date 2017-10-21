@@ -27,6 +27,18 @@ ${group}DIR?=	${CONFDIR}
 STAGE_SETS+=	${group:C,[/*],_,g}
 STAGE_DIR.${group:C,[/*],_,g}= ${STAGE_OBJTOP}${${group}DIR}
 
+.if defined(NO_ROOT)
+.if !defined(${group}TAGS) || ! ${${group}TAGS:Mpackage=*}
+.if defined(${${group}PACKAGE})
+${group}TAGS+=		package=${${group}PACKAGE:Uruntime}
+.else
+${group}TAGS+=		package=${PACKAGE:Uruntime}
+.endif
+.endif
+${group}TAGS+=		config
+${group}TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
+.endif
+
 _${group}CONFS=
 .for cnf in ${${group}}
 .if defined(${group}OWN_${cnf:T}) || defined(${group}GRP_${cnf:T}) || \
@@ -49,24 +61,24 @@ stage_as.${cnf:T}: ${cnf}
 
 installconfig: _${group}INS_${cnf:T}
 _${group}INS_${cnf:T}: ${cnf}
-	${INSTALL} -C -o ${${group}OWN_${.ALLSRC:T}} \
+	${INSTALL} ${${group}TAG_ARGS} -C -o ${${group}OWN_${.ALLSRC:T}} \
 	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
 	    ${.ALLSRC} \
 	    ${DESTDIR}${${group}DIR_${.ALLSRC:T}}/${${group}NAME_${.ALLSRC:T}}
 .else
 _${group}CONFS+= ${cnf}
 .endif
-.endfor
+.endfor # for cnf in ${${group}}
 .if !empty(_${group}CONFS)
 stage_files.${group}: ${_${group}CONFS}
 
 installconfig: _${group}INS
 _${group}INS: ${_${group}CONFS}
 .if defined(${group}NAME)
-	${INSTALL} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
+	${INSTALL} ${${group}TAG_ARGS} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
 	    ${.ALLSRC} ${DESTDIR}${${group}DIR}/${${group}NAME}
 .else
-	${INSTALL} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
+	${INSTALL} ${${group}TAG_ARGS} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
 	    ${.ALLSRC} ${DESTDIR}${${group}DIR}/
 .endif
 .endif
