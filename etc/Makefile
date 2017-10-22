@@ -122,10 +122,6 @@ BIN1+= pf.os
 BIN1+=	rc.sendmail
 .endif
 
-.if ${MK_TCSH} != "no"
-BIN1+= csh.cshrc csh.login csh.logout
-.endif
-
 .if ${MK_WIRELESS} != "no"
 BIN1+= regdomain.xml
 .endif
