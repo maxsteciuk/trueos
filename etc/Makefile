@@ -43,8 +43,7 @@ BIN1=	devd.conf \
 	rc.shutdown \
 	rc.subr \
 	remote \
-	rpc \
-	services
+	rpc
 
 .if exists(${.CURDIR}/etc.${MACHINE}/ttys)
 BIN1+=	etc.${MACHINE}/ttys
