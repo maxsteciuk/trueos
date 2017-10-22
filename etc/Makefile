@@ -241,15 +241,6 @@ distribution:
 		dot.profile ${DESTDIR}/root/.profile; \
 	    rm -f ${DESTDIR}/.profile; \
 	    ln ${DESTDIR}/root/.profile ${DESTDIR}/.profile
-.if ${MK_TCSH} != "no"
-	cd ${.CURDIR}/root; \
-	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
-		dot.cshrc ${DESTDIR}/root/.cshrc; \
-	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
-		dot.login ${DESTDIR}/root/.login; \
-	    rm -f ${DESTDIR}/.cshrc; \
-	    ln ${DESTDIR}/root/.cshrc ${DESTDIR}/.cshrc
-.endif
 .if ${MK_MAIL} != "no"
 	cd ${.CURDIR}/mail; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
 	    ${ETCMAIL} ${DESTDIR}/etc/mail

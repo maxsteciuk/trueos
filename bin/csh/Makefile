@@ -9,6 +9,8 @@
 .include <src.opts.mk>
 
 PACKAGE=runtime
+CONFS=	.cshrc .login
+CONFDIR=	/root
 TCSHDIR= ${SRCTOP}/contrib/tcsh
 .PATH: ${TCSHDIR}
 
