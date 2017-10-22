@@ -14,7 +14,6 @@ SUBDIR+=sendmail
 
 BIN1=	devd.conf \
 	devfs.conf \
-	ddb.conf \
 	dhclient.conf \
 	disktab \
 	fbtab \
