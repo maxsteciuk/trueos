@@ -195,7 +195,6 @@ distribution:
 	) | ${METALOG.add}
 .endif
 	${_+_}cd ${.CURDIR}/cron.d; ${MAKE} install
-	${_+_}cd ${.CURDIR}/defaults; ${MAKE} install
 	${_+_}cd ${.CURDIR}/devd; ${MAKE} install
 	${_+_}cd ${.CURDIR}/gss; ${MAKE} install
 	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
