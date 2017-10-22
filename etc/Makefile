@@ -359,27 +359,4 @@ distrib-dirs: ${MTREES:N/*} distrib-cleanup .PHONY
 	done
 .endif
 
-etc-examples-install: ${META_DEPS}
-	cd ${.CURDIR}; ${INSTALL} ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 \
-	    ${BIN1} ${BIN2} nsmb.conf opieaccess \
-	    ${DESTDIR}${SHAREDIR}/examples/etc
-
-etc-examples: etc-examples-install
-	${_+_}cd ${.CURDIR}/defaults; \
-	    ${MAKE} ${${MK_STAGING} == "yes":?all:install} \
-	    DESTDIR=${DESTDIR}${SHAREDIR}/examples
-
 .include <bsd.prog.mk>
-
-.if ${MK_INSTALL_AS_USER} == "yes" && ${_uid} != 0
-MTREE_FILTER= sed -e 's,\([gu]\)name=,\1id=,g' \
-	-e 's,\(uid=\)[^ ]* ,\1${_uid} ,' \
-	-e 's,\(gid=\)[^ ]* ,\1${_gid} ,' \
-	-e 's,\(uid=\)[^ ]*$$,\1${_uid},' \
-	-e 's,\(gid=\)[^ ]*$$,\1${_gid},'
-.else
-MTREE_FILTER= cat
-.if !defined(NO_FSCHG)
-MTREE_FSCHG=	-i
-.endif
-.endif
