@@ -32,6 +32,7 @@ ${group}GRP=	${SHAREGRP}
 .endif
 ${group}MODE?=	${SHAREMODE}
 ${group}DIR?=	${BINDIR}
+${group}DIRS?=	${${group}DIR}
 STAGE_SETS+=	${group:C,[/*],_,g}
 STAGE_DIR.${group:C,[/*],_,g}= ${STAGE_OBJTOP}${${group}DIR}
 
@@ -41,6 +42,13 @@ ${group}TAGS+=		package=${${group}PACKAGE:Uruntime}
 .endif
 ${group}TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
 .endif
+
+
+installdirs-${group}:
+	@echo installing dirs ${group}DIRS ${${group}DIRS}
+.for dir in ${${group}DIRS}
+	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
+.endfor
 
 
 _${group}FILES=
@@ -67,9 +75,9 @@ STAGE_AS_${file:T}= ${${group}NAME_${file:T}}
 STAGE_DIR.${file:T}= ${STAGE_OBJTOP}${${group}DIR_${file:T}}
 stage_as.${file:T}: ${file}
 
-installfiles-${group}: _${group}INS_${file:T}
+installfiles-${group}: installdirs-${group} _${group}INS_${file:T}
 _${group}INS_${file:T}: ${file}
-	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${${group}DIR_${.ALLSRC:T}}
+	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${${group}DIR_${file:T}}
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN_${.ALLSRC:T}} \
 	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
 	    ${.ALLSRC} \
@@ -81,9 +89,8 @@ _${group}FILES+= ${file}
 .if !empty(_${group}FILES)
 stage_files.${group}: ${_${group}FILES}
 
-installfiles-${group}: _${group}INS
+installfiles-${group}: installdirs-${group} _${group}INS
 _${group}INS: ${_${group}FILES}
-	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${${group}DIR}
 .if defined(${group}NAME)
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \
 	    -m ${${group}MODE} ${.ALLSRC} \
