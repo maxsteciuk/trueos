@@ -12,8 +12,7 @@ UPDATE_DEPENDFILE=	no
 SUBDIR+=sendmail
 .endif
 
-BIN1=	gettytab \
-	group \
+BIN1=	group \
 	hosts \
 	hosts.allow \
 	hosts.equiv \
@@ -37,16 +36,6 @@ BIN1=	gettytab \
 	rc.shutdown \
 	rc.subr \
 	rpc
-
-.if exists(${.CURDIR}/etc.${MACHINE}/ttys)
-BIN1+=	etc.${MACHINE}/ttys
-.elif exists(${.CURDIR}/etc.${MACHINE_ARCH}/ttys)
-BIN1+=	etc.${MACHINE_ARCH}/ttys
-.elif exists(${.CURDIR}/etc.${MACHINE_CPUARCH}/ttys)
-BIN1+=	etc.${MACHINE_CPUARCH}/ttys
-.else
-.error etc.MACHINE/ttys missing
-.endif
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
 BSM_ETC_OPEN_FILES=		${OPENBSMDIR}/etc/audit_class \
