@@ -42,7 +42,6 @@ BIN1=	devd.conf \
 	rc.initdiskless \
 	rc.shutdown \
 	rc.subr \
-	remote \
 	rpc
 
 .if exists(${.CURDIR}/etc.${MACHINE}/ttys)
