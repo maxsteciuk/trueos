@@ -100,10 +100,6 @@ SSL=	${SRCTOP}/crypto/openssl/apps/openssl.cnf
 BIN1+= nscd.conf
 .endif
 
-.if ${MK_PF} != "no"
-BIN1+= pf.os
-.endif
-
 .if ${MK_SENDMAIL} != "no"
 BIN1+=	rc.sendmail
 .endif
