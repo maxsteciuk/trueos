@@ -2,6 +2,7 @@
 
 .include <src.opts.mk>
 
+CONFS=	devd.conf
 PACKAGE=runtime
 PROG_CXX=devd
 SRCS=	devd.cc token.l parse.y y.tab.h
@@ -20,5 +21,7 @@ CLEANFILES= y.output
 
 HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
+
+SUBDIR+=	etc
 
 .include <bsd.prog.mk>
