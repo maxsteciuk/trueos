@@ -3,6 +3,7 @@
 
 .include <src.opts.mk>
 
+CONFS=	fbtab
 PROG=	login
 SRCS=	login.c login_fbtab.c
 CFLAGS+=-DLOGALL
