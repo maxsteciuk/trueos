@@ -31,7 +31,6 @@ BIN1=	group \
 	profile \
 	protocols \
 	rc \
-	rc.bsdextended \
 	rc.initdiskless \
 	rc.shutdown \
 	rc.subr \
