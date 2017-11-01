@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 CONFDIR=/etc/defaults
-CONFS=	devfs.rules
+CONFS=	devfs.conf devfs.rules
 PACKAGE=runtime
 PROG=	devfs
 SRCS=	devfs.c rule.c
