@@ -30,7 +30,6 @@ BIN1=	group \
 	phones \
 	profile \
 	protocols \
-	rc \
 	rc.initdiskless \
 	rpc
 
