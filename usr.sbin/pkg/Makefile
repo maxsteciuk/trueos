@@ -1,5 +1,8 @@
 # $FreeBSD$
 
+FILES=	FreeBSD.conf
+FILESDIR=	/etc/pkg
+FILESMODE=	644
 PROG=	pkg
 SRCS=	pkg.c dns_utils.c config.c
 MAN=	pkg.7
