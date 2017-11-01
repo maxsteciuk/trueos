@@ -32,7 +32,6 @@ BIN1=	group \
 	protocols \
 	rc \
 	rc.initdiskless \
-	rc.shutdown \
 	rpc
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
