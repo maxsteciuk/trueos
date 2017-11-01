@@ -64,10 +64,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_FREEBSD_UPDATE} != "no"
-BIN1+= freebsd-update.conf
-.endif
-
 .if ${MK_FTP} != "no"
 BIN1+= ftpusers
 .endif
