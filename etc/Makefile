@@ -82,7 +82,7 @@ BIN1+=	rc.sendmail
 .endif
 
 # -rwxr-xr-x root:wheel, for the new cron root:wheel
-BIN2=	netstart pccard_ether rc.suspend rc.resume
+BIN2=	netstart pccard_ether
 
 PPPCNF=	ppp.conf
 
