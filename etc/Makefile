@@ -103,10 +103,6 @@ BIN1+= nscd.conf
 BIN1+=	rc.sendmail
 .endif
 
-.if ${MK_WIRELESS} != "no"
-BIN1+= regdomain.xml
-.endif
-
 # -rwxr-xr-x root:wheel, for the new cron root:wheel
 BIN2=	netstart pccard_ether rc.suspend rc.resume
 
