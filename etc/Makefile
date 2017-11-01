@@ -12,8 +12,7 @@ UPDATE_DEPENDFILE=	no
 SUBDIR+=sendmail
 .endif
 
-BIN1=	disktab \
-	fbtab \
+BIN1=	fbtab \
 	gettytab \
 	group \
 	hosts \
