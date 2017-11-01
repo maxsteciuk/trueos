@@ -1,8 +1,11 @@
 #	@(#)Makefile	8.1 (Berkeley) 7/19/93
 # $FreeBSD$
 
-CONFDIR=/etc/defaults
-CONFS=	rc.conf
+FILESGROUPS=	FILESETC FILESETCDEFAULTS
+FILESETCDIR=	/etc
+FILESETC=	rc.suspend
+FILESETCDEFAULTSDIR=	/etc/defaults
+FILESETCDEFAULTS=	rc.conf
 PACKAGE=runtime
 PROG=	init
 SRCS=	init.c getmntopts.c
