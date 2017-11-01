@@ -12,8 +12,7 @@ UPDATE_DEPENDFILE=	no
 SUBDIR+=sendmail
 .endif
 
-BIN1=	devd.conf \
-	devfs.conf \
+BIN1=	devfs.conf \
 	dhclient.conf \
 	disktab \
 	fbtab \
@@ -179,8 +178,6 @@ distribution:
 		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
 	) | ${METALOG.add}
 .endif
-	${_+_}cd ${.CURDIR}/cron.d; ${MAKE} install
-	${_+_}cd ${.CURDIR}/devd; ${MAKE} install
 	${_+_}cd ${.CURDIR}/gss; ${MAKE} install
 	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
 	${_+_}cd ${.CURDIR}/newsyslog.conf.d; ${MAKE} install
