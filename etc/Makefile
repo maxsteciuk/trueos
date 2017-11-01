@@ -12,8 +12,7 @@ UPDATE_DEPENDFILE=	no
 SUBDIR+=sendmail
 .endif
 
-BIN1=	dhclient.conf \
-	disktab \
+BIN1=	disktab \
 	fbtab \
 	gettytab \
 	group \
