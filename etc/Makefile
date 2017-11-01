@@ -33,7 +33,6 @@ BIN1=	group \
 	rc \
 	rc.initdiskless \
 	rc.shutdown \
-	rc.subr \
 	rpc
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
