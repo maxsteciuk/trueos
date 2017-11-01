@@ -38,7 +38,6 @@ BIN1=	devd.conf \
 	protocols \
 	rc \
 	rc.bsdextended \
-	rc.firewall \
 	rc.initdiskless \
 	rc.shutdown \
 	rc.subr \
