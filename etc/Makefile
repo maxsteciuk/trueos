@@ -58,10 +58,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_FTP} != "no"
-BIN1+= ftpusers
-.endif
-
 .if ${MK_INETD} != "no"
 BIN1+= inetd.conf
 .endif
