@@ -25,7 +25,6 @@ BIN1=	group \
 	netconfig \
 	network.subr \
 	networks \
-	newsyslog.conf \
 	nsswitch.conf \
 	phones \
 	profile \
@@ -153,7 +152,6 @@ distribution:
 .endif
 	${_+_}cd ${.CURDIR}/gss; ${MAKE} install
 	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
-	${_+_}cd ${.CURDIR}/newsyslog.conf.d; ${MAKE} install
 .if ${MK_NTP} != "no"
 	${_+_}cd ${.CURDIR}/ntp; ${MAKE} install
 .endif
