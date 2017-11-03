@@ -145,7 +145,6 @@ distribution:
 	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
 	${_+_}cd ${SRCTOP}/share/termcap; ${MAKE} etc-termcap
 	${_+_}cd ${SRCTOP}/usr.sbin/rmt; ${MAKE} etc-rmt
-	${_+_}cd ${.CURDIR}/pam.d; ${MAKE} install
 	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0444 \
 	    ${BSM_ETC_OPEN_FILES} ${BSM_ETC_DIR}
 	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0600 \
