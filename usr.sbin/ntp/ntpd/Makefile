@@ -8,6 +8,10 @@ MAN=
 	${.OBJDIR}
 
 PROG=	ntpd
+CONFS=	ntp.conf
+FILES=	leap-seconds
+FILESDIR=	/etc/ntp
+FILESMODE=	644
 
 SRCS=	cmd_args.c ntp_config.c ntp_control.c ntp_crypto.c ntp_filegen.c \
 	ntp_io.c ntp_leapsec.c ntp_loopfilter.c ntp_monitor.c ntp_parser.c \

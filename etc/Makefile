@@ -58,10 +58,6 @@ BIN1+=	hosts.lpd printcap
 BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
 .endif
 
-.if ${MK_NTP} != "no"
-BIN1+=	ntp.conf
-.endif
-
 .if ${MK_OPENSSH} != "no"
 SSH=	${SRCTOP}/crypto/openssh/ssh_config \
 	${SRCTOP}/crypto/openssh/sshd_config \
@@ -152,9 +148,6 @@ distribution:
 .endif
 	${_+_}cd ${.CURDIR}/gss; ${MAKE} install
 	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
-.if ${MK_NTP} != "no"
-	${_+_}cd ${.CURDIR}/ntp; ${MAKE} install
-.endif
 	${_+_}cd ${.CURDIR}/periodic; ${MAKE} install
 	${_+_}cd ${.CURDIR}/rc.d; ${MAKE} install
 	${_+_}cd ${SRCTOP}/share/termcap; ${MAKE} etc-termcap
