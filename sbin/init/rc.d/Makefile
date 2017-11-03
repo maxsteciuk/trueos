@@ -73,7 +73,6 @@ FILES=	DAEMON \
 	netif \
 	netoptions \
 	netwait \
-	newsyslog \
 	nfsclient \
 	nfscbd \
 	nfsd \
@@ -111,7 +110,6 @@ FILES=	DAEMON \
 	stf \
 	swap \
 	swaplate \
-	sysctl \
 	tmp \
 	${_ubthidhci} \
 	ugidfw \

@@ -3,7 +3,7 @@
 
 FILESGROUPS=	FILESETC FILESETCDEFAULTS
 FILESETCDIR=	/etc
-FILESETC=	rc rc.resume rc.subr rc.shutdown rc.suspend
+FILESETC=	network.subr rc rc.resume rc.subr rc.shutdown rc.suspend
 FILESETCDEFAULTSDIR=	/etc/defaults
 FILESETCDEFAULTS=	rc.conf
 PACKAGE=runtime
@@ -21,5 +21,7 @@ CFLAGS+=-I${MOUNT}
 .PATH:	${MOUNT}
 
 NO_SHARED?=	YES
+
+SUBDIR+=	rc.d
 
 .include <bsd.prog.mk>
