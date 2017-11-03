@@ -112,7 +112,6 @@ FILES=	DAEMON \
 	swap \
 	swaplate \
 	sysctl \
-	syslogd \
 	tmp \
 	${_ubthidhci} \
 	ugidfw \
