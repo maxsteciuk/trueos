@@ -3,7 +3,7 @@
 
 FILESGROUPS=	FILESETC FILESETCDEFAULTS
 FILESETCDIR=	/etc
-FILESETC=	network.subr rc rc.resume rc.subr rc.shutdown rc.suspend
+FILESETC=	network.subr rc rc.initdiskless rc.resume rc.subr rc.shutdown rc.suspend
 FILESETCDEFAULTSDIR=	/etc/defaults
 FILESETCDEFAULTS=	rc.conf
 PACKAGE=runtime

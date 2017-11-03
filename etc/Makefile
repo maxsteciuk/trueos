@@ -28,7 +28,6 @@ BIN1=	group \
 	phones \
 	profile \
 	protocols \
-	rc.initdiskless \
 	rpc
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
