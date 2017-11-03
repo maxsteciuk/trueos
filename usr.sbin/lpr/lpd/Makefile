@@ -2,6 +2,7 @@
 # $FreeBSD$
 
 PROG=	lpd
+CONFS=	hosts.lpd printcap
 MAN=	lpd.8
 SRCS=	lpd.c printjob.c recvjob.c lpdchar.c modes.c
 

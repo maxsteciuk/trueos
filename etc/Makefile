@@ -49,10 +49,6 @@ BIN1+= inetd.conf
 BIN1+=	${SRCTOP}/usr.bin/locate/locate/locate.rc
 .endif
 
-.if ${MK_LPR} != "no"
-BIN1+=	hosts.lpd printcap
-.endif
-
 .if ${MK_MAIL} != "no"
 BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
 .endif
