@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	hosts \
 	hosts.allow \
 	hosts.equiv \
 	login.access \

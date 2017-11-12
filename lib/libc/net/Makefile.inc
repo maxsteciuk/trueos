@@ -123,3 +123,4 @@ SRCS+=	hesiod.c
 MAN+=	hesiod.3
 .endif
 
+CONFS+=	net/hosts
