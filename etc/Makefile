@@ -14,7 +14,6 @@ SUBDIR+=sendmail
 
 BIN1=	group \
 	hosts.allow \
-	hosts.equiv \
 	login.access \
 	login.conf \
 	mac.conf \
