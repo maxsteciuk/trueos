@@ -16,7 +16,6 @@ BIN1=	group \
 	hosts \
 	hosts.allow \
 	hosts.equiv \
-	libalias.conf \
 	login.access \
 	login.conf \
 	mac.conf \
