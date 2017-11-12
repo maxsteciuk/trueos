@@ -17,7 +17,6 @@ BIN1=	group \
 	login.conf \
 	mac.conf \
 	motd \
-	networks \
 	nsswitch.conf \
 	phones \
 	profile \
