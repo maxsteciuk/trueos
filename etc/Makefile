@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	login.access \
 	login.conf \
 	mac.conf \
 	motd \
