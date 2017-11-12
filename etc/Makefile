@@ -22,13 +22,11 @@ BIN1=	group \
 	login.conf \
 	mac.conf \
 	motd \
-	netconfig \
 	networks \
 	nsswitch.conf \
 	phones \
 	profile \
-	protocols \
-	rpc
+	protocols
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
 BSM_ETC_OPEN_FILES=		${OPENBSMDIR}/etc/audit_class \
