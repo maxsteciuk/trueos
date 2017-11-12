@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	hosts.allow \
 	login.access \
 	login.conf \
 	mac.conf \
