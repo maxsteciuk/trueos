@@ -5,6 +5,8 @@ LIB=		gssapi
 SHLIB_MAJOR=	10
 VERSION_DEF=	${SRCTOP}/lib/libc/Versions.def
 SYMBOL_MAPS=	${.CURDIR}/Symbol.map
+FILES=		mech qop
+FILESDIR=	/etc/gss
 
 SRCS=
 SRCS+=		gss_accept_sec_context.c
