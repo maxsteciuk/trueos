@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	profile \
 	protocols
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
