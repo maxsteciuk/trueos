@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	login.conf \
 	mac.conf \
 	motd \
 	nsswitch.conf \
