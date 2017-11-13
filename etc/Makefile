@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	nsswitch.conf \
 	phones \
 	profile \
 	protocols
