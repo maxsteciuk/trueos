@@ -45,9 +45,6 @@ SSL=	${SRCTOP}/crypto/openssl/apps/openssl.cnf
 BIN1+=	rc.sendmail
 .endif
 
-# -rwxr-xr-x root:wheel, for the new cron root:wheel
-BIN2=	pccard_ether
-
 PPPCNF=	ppp.conf
 
 .if ${MK_SENDMAIL} == "no"

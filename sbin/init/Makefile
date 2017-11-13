@@ -4,7 +4,7 @@
 FILESGROUPS=	FILESETC FILESETCEXEC FILESETCDEFAULTS
 FILESETCDIR=	/etc
 FILESETC=	network.subr rc rc.initdiskless rc.resume rc.subr rc.shutdown rc.suspend
-FILESETCEXEC=	netstart
+FILESETCEXEC=	netstart pccard_ether
 FILESETCEXECDIR=	/etc
 FILESETCEXECMODE=	755
 FILESETCDEFAULTSDIR=	/etc/defaults
