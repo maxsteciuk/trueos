@@ -14,7 +14,6 @@ SUBDIR+=sendmail
 
 BIN1=	group \
 	mac.conf \
-	motd \
 	nsswitch.conf \
 	phones \
 	profile \
