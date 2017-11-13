@@ -55,7 +55,7 @@ BIN1+=	rc.sendmail
 .endif
 
 # -rwxr-xr-x root:wheel, for the new cron root:wheel
-BIN2=	netstart pccard_ether
+BIN2=	pccard_ether
 
 PPPCNF=	ppp.conf
 

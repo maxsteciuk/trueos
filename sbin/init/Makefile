@@ -1,9 +1,12 @@
 #	@(#)Makefile	8.1 (Berkeley) 7/19/93
 # $FreeBSD$
 
-FILESGROUPS=	FILESETC FILESETCDEFAULTS
+FILESGROUPS=	FILESETC FILESETCEXEC FILESETCDEFAULTS
 FILESETCDIR=	/etc
 FILESETC=	network.subr rc rc.initdiskless rc.resume rc.subr rc.shutdown rc.suspend
+FILESETCEXEC=	netstart
+FILESETCEXECDIR=	/etc
+FILESETCEXECMODE=	755
 FILESETCDEFAULTSDIR=	/etc/defaults
 FILESETCDEFAULTS=	rc.conf
 PACKAGE=runtime
