@@ -123,4 +123,4 @@ SRCS+=	hesiod.c
 MAN+=	hesiod.3
 .endif
 
-CONFS+=	net/hosts net/hosts.equiv net/networks nsswitch.conf
+CONFS+=	net/hosts net/hosts.equiv net/networks nsswitch.conf protocols
