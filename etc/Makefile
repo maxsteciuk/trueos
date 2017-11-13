@@ -102,7 +102,7 @@ distribution:
 	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 755 \
 		${BIN2} ${DESTDIR}/etc; \
 	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 600 \
-		master.passwd opieaccess ${DESTDIR}/etc;
+		master.passwd ${DESTDIR}/etc;
 .endif
 .if ${MK_TCSH} == "no"
 	sed -i "" -e 's;/bin/csh;/bin/sh;' ${DESTDIR}/etc/master.passwd
