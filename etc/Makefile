@@ -13,7 +13,6 @@ SUBDIR+=sendmail
 .endif
 
 BIN1=	group \
-	mac.conf \
 	nsswitch.conf \
 	phones \
 	profile \
