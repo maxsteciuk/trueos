@@ -2,6 +2,7 @@
 
 PROG=	nscd
 MAN=	nscd.conf.5 nscd.8
+CONFS=	nscd.conf
 
 WARNS?=	3
 SRCS=	agent.c nscd.c nscdcli.c cachelib.c cacheplcs.c debug.c log.c \

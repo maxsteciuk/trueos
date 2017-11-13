@@ -41,10 +41,6 @@ SSH=	${SRCTOP}/crypto/openssh/ssh_config \
 SSL=	${SRCTOP}/crypto/openssl/apps/openssl.cnf
 .endif
 
-.if ${MK_NS_CACHING} != "no"
-BIN1+= nscd.conf
-.endif
-
 .if ${MK_SENDMAIL} != "no"
 BIN1+=	rc.sendmail
 .endif
