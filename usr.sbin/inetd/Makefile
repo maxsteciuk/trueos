@@ -7,6 +7,7 @@ PROG=	inetd
 MAN=	inetd.8
 MLINKS=	inetd.8 inetd.conf.5
 SRCS=	inetd.c builtins.c
+CONFS=	inetd.conf
 
 WARNS?=	3
 CFLAGS+= -DLOGIN_CAP

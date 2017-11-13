@@ -24,10 +24,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_INETD} != "no"
-BIN1+= inetd.conf
-.endif
-
 .if ${MK_LOCATE} != "no"
 BIN1+=	${SRCTOP}/usr.bin/locate/locate/locate.rc
 .endif
