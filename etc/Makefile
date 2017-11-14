@@ -24,10 +24,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_LOCATE} != "no"
-BIN1+=	${SRCTOP}/usr.bin/locate/locate/locate.rc
-.endif
-
 .if ${MK_MAIL} != "no"
 BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
 .endif
