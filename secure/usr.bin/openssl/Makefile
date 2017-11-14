@@ -1,6 +1,8 @@
 # $FreeBSD$
 
 PROG=	openssl
+CONFS=	openssl.cnf
+CONFSDIR=	/etc/ssl
 
 LIBADD=	ssl crypto
 

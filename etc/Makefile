@@ -28,10 +28,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
 .endif
 
-.if ${MK_OPENSSL} != "no"
-SSL=	${SRCTOP}/crypto/openssl/apps/openssl.cnf
-.endif
-
 .if ${MK_SENDMAIL} != "no"
 BIN1+=	rc.sendmail
 .endif
@@ -120,10 +116,6 @@ distribution:
 .endif
 .if ${MK_SENDMAIL} != "no"
 	${_+_}cd ${.CURDIR}/sendmail; ${MAKE} distribution
-.endif
-.if ${MK_OPENSSL} != "no"
-	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
-	    ${SSL} ${DESTDIR}/etc/ssl
 .endif
 .if ${MK_KERBEROS} != "no"
 	cd ${.CURDIR}/root; \
