@@ -22,8 +22,4 @@ MAN=	dump.8
 MLINKS=	dump.8 rdump.8
 WARNS?=	2
 
-distribution:
-	${INSTALL} -o ${BINOWN} -g operator -m 664 /dev/null \
-		${DESTDIR}/etc/dumpdates
-
 .include <bsd.prog.mk>
