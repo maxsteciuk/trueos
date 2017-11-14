@@ -4,6 +4,7 @@
 # machine-independent gen sources
 .PATH: ${LIBC_SRCTOP}/${LIBC_ARCH}/gen ${LIBC_SRCTOP}/gen
 
+CONFS=	group master.passwd
 SRCS+=	__getosreldate.c \
 	__pthread_mutex_init_calloc_cb_stub.c \
 	__xuname.c \
@@ -158,6 +159,18 @@ SRCS+=	devname-compat11.c \
 	readdir-compat11.c \
 	scandir-compat11.c \
 	unvis-compat.c
+.endif
+
+.if defined(NO_ROOT)
+METALOG.add?=	cat -l >> ${METALOG}
+.endif
+
+afterinstallconfig: afterinstallconfig-passwd
+afterinstallconfig-passwd:
+.if defined(NO_ROOT)
+	( \
+		echo "./etc/passwd type=file mode=0644 uname=root gname=wheel"; \
+	) | ${METALOG.add}
 .endif
 
 .PATH: ${SRCTOP}/contrib/libc-pwcache

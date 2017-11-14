@@ -12,7 +12,7 @@ UPDATE_DEPENDFILE=	no
 SUBDIR+=sendmail
 .endif
 
-BIN1=	group
+BIN1=
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
 BSM_ETC_OPEN_FILES=		${OPENBSMDIR}/etc/audit_class \
@@ -82,24 +82,7 @@ distribution:
 		${BIN1} ${DESTDIR}/etc; \
 	    cap_mkdb ${CAP_MKDB_ENDIAN} ${DESTDIR}/etc/login.conf; \
 	    services_mkdb ${CAP_MKDB_ENDIAN} -q -o ${DESTDIR}/var/db/services.db \
-		${DESTDIR}/etc/services; \
-	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 755 \
-		${BIN2} ${DESTDIR}/etc; \
-	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 600 \
-		master.passwd ${DESTDIR}/etc;
-.endif
-.if ${MK_TCSH} == "no"
-	sed -i "" -e 's;/bin/csh;/bin/sh;' ${DESTDIR}/etc/master.passwd
-.endif
-	pwd_mkdb -i -p -d ${DESTDIR}/etc ${DESTDIR}/etc/master.passwd
-.if defined(NO_ROOT)
-	( \
-		echo "./etc/login.conf.db type=file mode=0644 uname=root gname=wheel"; \
-		echo "./etc/passwd type=file mode=0644 uname=root gname=wheel"; \
-		echo "./etc/pwd.db type=file mode=0644 uname=root gname=wheel"; \
-		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
-	) | ${METALOG.add}
-.endif
+		${DESTDIR}/etc/services
 	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
 	${_+_}cd ${SRCTOP}/share/termcap; ${MAKE} etc-termcap
 	${_+_}cd ${SRCTOP}/usr.sbin/rmt; ${MAKE} etc-rmt
