@@ -6,12 +6,15 @@ SHLIBDIR?=	/lib/casper
 
 CONFS=	system.dns
 PACKAGE=libcasper
-LIB=	cap_dns
 
 SHLIB_MAJOR=	0
 INCSDIR?=	${INCLUDEDIR}/casper
 
+.if ${MK_CASPER} != "no"
+SHLIB=	cap_dns
+
 SRCS=	cap_dns.c
+.endif
 
 INCS=	cap_dns.h
 

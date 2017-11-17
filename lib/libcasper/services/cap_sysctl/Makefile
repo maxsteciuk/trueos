@@ -6,12 +6,15 @@ SHLIBDIR?=	/lib/casper
 
 CONFS=	system.sysctl
 PACKAGE=libcasper
-LIB=	cap_sysctl
 
 SHLIB_MAJOR=	0
 INCSDIR?=	${INCLUDEDIR}/casper
 
+.if ${MK_CASPER} != "no"
+SHLIB=	cap_sysctl
+
 SRCS=	cap_sysctl.c
+.endif
 
 INCS=	cap_sysctl.h
 

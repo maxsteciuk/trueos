@@ -6,12 +6,15 @@ SHLIBDIR?=	/lib/casper
 
 CONFS=	system.pwd
 PACKAGE=libcasper
-LIB=	cap_pwd
 
 SHLIB_MAJOR=	0
 INCSDIR?=	${INCLUDEDIR}/casper
 
+.if ${MK_CASPER} != "no"
+SHLIB=	cap_pwd
+
 SRCS=	cap_pwd.c
+.endif
 
 INCS=	cap_pwd.h
 

@@ -32,8 +32,6 @@ BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
 BIN1+=	rc.sendmail
 .endif
 
-PPPCNF=	ppp.conf
-
 .if ${MK_SENDMAIL} == "no"
 ETCMAIL=mailer.conf aliases
 .else
