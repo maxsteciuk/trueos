@@ -91,7 +91,7 @@ _${group}INS: ${_${group}INCS}
 .if defined(INCSLINKS) && !empty(INCSLINKS)
 installincludes:
 .for s t in ${INCSLINKS}
-	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${t}
+	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${t:H}
 	${INSTALL_SYMLINK} ${TAG_ARGS:D${TAG_ARGS},development} ${s} ${DESTDIR}${t}
 .endfor
 .endif
