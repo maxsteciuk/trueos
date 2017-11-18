@@ -229,9 +229,9 @@ PACKAGE_bhyve/vmrun.sh=	bhyve
 # in environments where it's not possible to keep /sys publicly readable)
 SHARED?=	copies
 
-beforeinstall: ${SHARED} etc-examples
+beforeinstall: ${SHARED}
 META_TARGETS+=	copies symlinks
-.ORDER: ${SHARED} etc-examples
+.ORDER: ${SHARED}
 
 copies:
 .for i in ${LDIRS}
@@ -249,11 +249,6 @@ symlinks:
 	rm -rf ${DESTDIR}${BINDIR}/$i
 	${INSTALL} ${TAG_ARGS} -l s ${.CURDIR}/$i ${DESTDIR}${BINDIR}/$i
 .endfor
-
-etc-examples:
-.if ${SHARED} != "symlinks"
-	${_+_}(cd ${SRCTOP}/etc; ${MAKE} etc-examples)
-.endif
 
 .if ${SHARED} != "symlinks"
 SUBDIR=	smbfs
