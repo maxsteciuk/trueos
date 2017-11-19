@@ -50,7 +50,7 @@
 .Op Fl T Ar tags
 .Ar file1 file2
 .Nm
-.Op Fl bCcpSsUv
+.Op Fl bCcpPSsUv
 .Op Fl B Ar suffix
 .Op Fl D Ar destdir
 .Op Fl f Ar flags
@@ -231,6 +231,8 @@ Copy the file, as if the
 (compare and copy) option is specified,
 except if the target file does not already exist or is different,
 then preserve the access and modification times of the source file.
+.It Fl P
+Create target directory as needed.
 .It Fl S
 Safe copy.
 Normally,
