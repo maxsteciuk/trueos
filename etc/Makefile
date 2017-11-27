@@ -24,6 +24,9 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
 .endif
 
+ETCMAIL=Makefile README mailer.conf access.sample virtusertable.sample \
+	mailertable.sample aliases
+
 # Special top level files for FreeBSD
 FREEBSD=COPYRIGHT
 
@@ -83,10 +86,10 @@ distribution:
 	fi
 .endif
 .if ${MK_MAIL} != "no"
+	${INSTALL} -d ${DESTDIR}/etc/mail
 	cd ${.CURDIR}/mail; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
 	    ${ETCMAIL} ${DESTDIR}/etc/mail
-	if [ -d ${DESTDIR}/etc/mail -a -f ${DESTDIR}/etc/mail/aliases -a \
-	      ! -f ${DESTDIR}/etc/aliases ]; then \
+	if [ -f ${DESTDIR}/etc/mail/aliases -a ! -f ${DESTDIR}/etc/aliases ]; then \
 		ln -s mail/aliases ${DESTDIR}/etc/aliases; \
 	fi
 .endif
