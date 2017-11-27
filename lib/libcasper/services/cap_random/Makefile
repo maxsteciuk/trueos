@@ -1,6 +1,5 @@
 # $FreeBSD$
 
-CONFS=	system.random
 SHLIBDIR?=	/lib/casper
 
 .include <src.opts.mk>

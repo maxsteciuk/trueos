@@ -4,7 +4,6 @@ SHLIBDIR?=	/lib/casper
 
 .include <src.opts.mk>
 
-CONFS=	system.sysctl
 PACKAGE=libcasper
 
 SHLIB_MAJOR=	0
