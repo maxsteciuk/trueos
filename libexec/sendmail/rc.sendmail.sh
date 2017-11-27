@@ -38,7 +38,7 @@
 # The script is also used by /etc/mail/Makefile to enable the
 # start/stop/restart targets.
 
-# The source for the script can be found in src/etc/sendmail/rc.sendmail.
+# The source for the script can be found in src/libexec/sendmail/rc.sendmail.sh.
 
 if [ -r /etc/defaults/rc.conf ]; then
 	. /etc/defaults/rc.conf

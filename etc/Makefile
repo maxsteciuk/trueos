@@ -8,10 +8,6 @@ FILESGROUPS=	FILES
 # No need as it is empty and just causes rebuilds since this file does so much.
 UPDATE_DEPENDFILE=	no
 
-.if ${MK_SENDMAIL} != "no"
-SUBDIR+=sendmail
-.endif
-
 BIN1=
 
 OPENBSMDIR=			${SRCTOP}/contrib/openbsm
@@ -26,17 +22,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 .if ${MK_MAIL} != "no"
 BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
-.endif
-
-.if ${MK_SENDMAIL} != "no"
-BIN1+=	rc.sendmail
-.endif
-
-.if ${MK_SENDMAIL} == "no"
-ETCMAIL=mailer.conf aliases
-.else
-ETCMAIL=Makefile README mailer.conf access.sample virtusertable.sample \
-	mailertable.sample aliases
 .endif
 
 # Special top level files for FreeBSD
@@ -97,19 +82,6 @@ distribution:
 		${INSTALL_SYMLINK} ../var/unbound ${DESTDIR}/etc/unbound; \
 	fi
 .endif
-.if ${MK_SENDMAIL} != "no"
-	${_+_}cd ${.CURDIR}/sendmail; ${MAKE} distribution
-.endif
-.if ${MK_KERBEROS} != "no"
-	cd ${.CURDIR}/root; \
-	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
-		dot.k5login ${DESTDIR}/root/.k5login;
-.endif
-	cd ${.CURDIR}/root; \
-	    ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
-		dot.profile ${DESTDIR}/root/.profile; \
-	    rm -f ${DESTDIR}/.profile; \
-	    ln ${DESTDIR}/root/.profile ${DESTDIR}/.profile
 .if ${MK_MAIL} != "no"
 	cd ${.CURDIR}/mail; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
 	    ${ETCMAIL} ${DESTDIR}/etc/mail
