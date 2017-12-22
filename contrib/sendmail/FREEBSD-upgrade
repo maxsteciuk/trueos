@@ -54,10 +54,10 @@ infrastructure in FreeBSD:
 	etc/mail/mailer.conf
 	etc/mail/mailertable.sample
 	etc/mail/virtusertable.sample
-	etc/mtree/BSD.include.dist
-	etc/mtree/BSD.sendmail.dist
-	etc/mtree/BSD.usr.dist
-	etc/mtree/BSD.var.dist
+	usr.sbin/nmtree/etc/BSD.include.dist
+	usr.sbin/nmtree/etc/BSD.sendmail.dist
+	usr.sbin/nmtree/etc/BSD.usr.dist
+	usr.sbin/nmtree/etc/BSD.var.dist
 	etc/periodic/daily/440.status-mailq
 	etc/periodic/daily/500.queuerun
 	etc/rc
