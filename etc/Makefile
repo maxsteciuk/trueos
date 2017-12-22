@@ -130,13 +130,6 @@ distrib-dirs: ${MTREES:N/*} distrib-cleanup .PHONY
 	done; true
 .endif
 	${INSTALL_SYMLINK} usr/src/sys ${DESTDIR}/sys
-.if ${MK_NLS} != "no"
-	set - `grep "^[a-zA-Z]" ${.CURDIR}/nls.alias`; \
-	while [ $$# -gt 0 ] ; do \
-		${INSTALL_SYMLINK} "$$2" "${DESTDIR}${SHAREDIR}/nls/$$1"; \
-		shift; shift; \
-	done
-.endif
 
 .include <bsd.prog.mk>
 
