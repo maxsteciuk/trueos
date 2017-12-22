@@ -22,4 +22,6 @@ MLINKS=		mtree.8 nmtree.8
 HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
 
+SUBDIR+=	etc
+
 .include <bsd.prog.mk>

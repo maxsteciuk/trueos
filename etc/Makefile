@@ -71,7 +71,6 @@ distribution:
 	    services_mkdb ${CAP_MKDB_ENDIAN} -q -o ${DESTDIR}/var/db/services.db \
 		${DESTDIR}/etc/services
 .endif
-	${_+_}cd ${.CURDIR}/mtree; ${MAKE} install
 	${_+_}cd ${SRCTOP}/share/termcap; ${MAKE} etc-termcap
 	${_+_}cd ${SRCTOP}/usr.sbin/rmt; ${MAKE} etc-rmt
 	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0444 \
@@ -110,32 +109,6 @@ distribution:
 	sed -i "" -e 's/.*_compat:/# &/' -e 's/compat$$/files/' \
 		${DESTDIR}/etc/nsswitch.conf
 .endif
-
-MTREE_CMD?=	mtree
-
-MTREES=		mtree/BSD.root.dist		/		\
-		mtree/BSD.var.dist		/var		\
-		mtree/BSD.usr.dist		/usr		\
-		mtree/BSD.include.dist		/usr/include	\
-		mtree/BSD.debug.dist		/usr/lib
-.if ${MK_LIB32} != "no"
-MTREES+=	mtree/BSD.lib32.dist		/usr
-MTREES+=	mtree/BSD.lib32.dist		/usr/lib/debug/usr
-.endif
-.if ${MK_LIBSOFT} != "no"
-MTREES+=	mtree/BSD.libsoft.dist		/usr
-MTREES+=	mtree/BSD.libsoft.dist		/usr/lib/debug/usr
-.endif
-.if ${MK_TESTS} != "no"
-MTREES+=	mtree/BSD.tests.dist		${TESTSBASE}
-MTREES+=	mtree/BSD.tests.dist		/usr/lib/debug/${TESTSBASE}
-.endif
-.if ${MK_SENDMAIL} != "no"
-MTREES+=	mtree/BSD.sendmail.dist		/
-.endif
-.for mtree in ${LOCAL_MTREE}
-MTREES+=	../${mtree}			/
-.endfor
 
 # Clean up some directories that where mistakenly created as files that
 # should not have been as part of the nvi update in r281994.
