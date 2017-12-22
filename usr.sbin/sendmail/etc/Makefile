@@ -26,7 +26,11 @@ DEST_CF=	${DESTDIR}/etc/mail/sendmail.cf
 DEST_SUBMIT_CF=	${DESTDIR}/etc/mail/submit.cf
 
 CONFSDIR=	/etc/sendmail
-CONFS=		freebsd.cf freebsd.submit.cf
+CONFS=		access.sample \
+		freebsd.cf \
+		freebsd.submit.cf \
+		mailertable.sample \
+		virtusertable.sample
 CLEANFILES=	freebsd.cf freebsd.submit.cf
 
 # Local SENDMAIL_MC or SENDMAIL_CF may be set in /etc/make.conf.

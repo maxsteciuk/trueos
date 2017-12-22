@@ -20,13 +20,6 @@ BSM_ETC_DIR=			${DESTDIR}/etc/security
 
 # NB: keep these sorted by MK_* knobs
 
-.if ${MK_MAIL} != "no"
-BIN1+=	${SRCTOP}/usr.bin/mail/misc/mail.rc
-.endif
-
-ETCMAIL=Makefile README mailer.conf access.sample virtusertable.sample \
-	mailertable.sample aliases
-
 # Special top level files for FreeBSD
 FREEBSD=COPYRIGHT
 
@@ -77,14 +70,6 @@ distribution:
 .if ${MK_UNBOUND} != "no"
 	if [ ! -e ${DESTDIR}/etc/unbound ]; then \
 		${INSTALL_SYMLINK} ../var/unbound ${DESTDIR}/etc/unbound; \
-	fi
-.endif
-.if ${MK_MAIL} != "no"
-	${INSTALL} -d ${DESTDIR}/etc/mail
-	cd ${.CURDIR}/mail; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 644 \
-	    ${ETCMAIL} ${DESTDIR}/etc/mail
-	if [ -f ${DESTDIR}/etc/mail/aliases -a ! -f ${DESTDIR}/etc/aliases ]; then \
-		ln -s mail/aliases ${DESTDIR}/etc/aliases; \
 	fi
 .endif
 .if ${MK_LOCATE} != "no"
