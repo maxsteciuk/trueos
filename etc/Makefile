@@ -10,14 +10,6 @@ UPDATE_DEPENDFILE=	no
 
 BIN1=
 
-OPENBSMDIR=			${SRCTOP}/contrib/openbsm
-BSM_ETC_OPEN_FILES=		${OPENBSMDIR}/etc/audit_class \
-				${OPENBSMDIR}/etc/audit_event
-BSM_ETC_RESTRICTED_FILES=	${OPENBSMDIR}/etc/audit_control \
-				${OPENBSMDIR}/etc/audit_user
-BSM_ETC_EXEC_FILES=		${OPENBSMDIR}/etc/audit_warn
-BSM_ETC_DIR=			${DESTDIR}/etc/security
-
 # NB: keep these sorted by MK_* knobs
 
 # Special top level files for FreeBSD
@@ -59,12 +51,6 @@ distribution:
 	    services_mkdb ${CAP_MKDB_ENDIAN} -q -o ${DESTDIR}/var/db/services.db \
 		${DESTDIR}/etc/services
 .endif
-	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0444 \
-	    ${BSM_ETC_OPEN_FILES} ${BSM_ETC_DIR}
-	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0600 \
-	    ${BSM_ETC_RESTRICTED_FILES} ${BSM_ETC_DIR}
-	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0500 \
-	    ${BSM_ETC_EXEC_FILES} ${BSM_ETC_DIR}
 .if ${MK_UNBOUND} != "no"
 	if [ ! -e ${DESTDIR}/etc/unbound ]; then \
 		${INSTALL_SYMLINK} ../var/unbound ${DESTDIR}/etc/unbound; \
