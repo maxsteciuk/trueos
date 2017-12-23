@@ -59,7 +59,6 @@ distribution:
 	    services_mkdb ${CAP_MKDB_ENDIAN} -q -o ${DESTDIR}/var/db/services.db \
 		${DESTDIR}/etc/services
 .endif
-	${_+_}cd ${SRCTOP}/share/termcap; ${MAKE} etc-termcap
 	${_+_}cd ${SRCTOP}/usr.sbin/rmt; ${MAKE} etc-rmt
 	cd ${.CURDIR}; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 0444 \
 	    ${BSM_ETC_OPEN_FILES} ${BSM_ETC_DIR}
