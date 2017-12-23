@@ -11,5 +11,6 @@ SRCS=	ub_event.c unbound-checkconf.c worker_cb.c
 CFLAGS+=	-I${UNBOUNDDIR} -I${LDNSDIR}
 LIBADD=	unbound pthread
 MAN=	unbound-checkconf.8
+SYMLINKS=	../var/unbound /etc/unbound
 
 .include <bsd.prog.mk>

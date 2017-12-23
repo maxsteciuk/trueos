@@ -51,11 +51,6 @@ distribution:
 	    services_mkdb ${CAP_MKDB_ENDIAN} -q -o ${DESTDIR}/var/db/services.db \
 		${DESTDIR}/etc/services
 .endif
-.if ${MK_UNBOUND} != "no"
-	if [ ! -e ${DESTDIR}/etc/unbound ]; then \
-		${INSTALL_SYMLINK} ../var/unbound ${DESTDIR}/etc/unbound; \
-	fi
-.endif
 	cd ${.CURDIR}/..; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 444 \
 		${FREEBSD} ${DESTDIR}/
 .if ${MK_BOOT} != "no"
