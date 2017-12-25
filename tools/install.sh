@@ -34,7 +34,7 @@ linkmode=""
 while [ $# -gt 0 ]; do
     case $1 in
     -d) dirmode="YES"; shift;;
-    -[bCcpSsUv]) shift;;
+    -[bCcFPpSsUv]) shift;;
     -[BDfghMmNoT]) shift; shift;;
     -[BDfghMmNoT]*) shift;;
     -l)
