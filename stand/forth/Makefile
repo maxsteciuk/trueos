@@ -46,4 +46,9 @@ FILES+= ${f}
 .endif
 .endfor
 
+.if exists(${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints)
+FILES+=	${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints
+FILESNAME_GENERIC.hints=	device.hints
+.endif
+
 .include <bsd.prog.mk>

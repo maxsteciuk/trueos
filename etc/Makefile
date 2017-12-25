@@ -53,13 +53,6 @@ distribution:
 .endif
 	cd ${.CURDIR}/..; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 444 \
 		${FREEBSD} ${DESTDIR}/
-.if ${MK_BOOT} != "no"
-.if exists(${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints)
-	${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 444 \
-	    ${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints \
-	    ${DESTDIR}/boot/device.hints
-.endif
-.endif
 .if ${MK_NIS} == "no"
 	sed -i "" -e 's/.*_compat:/# &/' -e 's/compat$$/files/' \
 		${DESTDIR}/etc/nsswitch.conf
