@@ -60,8 +60,7 @@ stage_includes: stage_as.${header:T}
 
 installincludes: _${group}INS_${header:T}
 _${group}INS_${header:T}: ${header}
-	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${${group}DIR_${.ALLSRC:T}}
-	${INSTALL} -C -o ${${group}OWN_${.ALLSRC:T}} \
+	${INSTALL} -F -C -o ${${group}OWN_${.ALLSRC:T}} \
 	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
 	    ${.ALLSRC} \
 	    ${DESTDIR}${${group}DIR_${.ALLSRC:T}}/${${group}NAME_${.ALLSRC:T}}
@@ -75,12 +74,11 @@ stage_includes: stage_files.${group}
 
 installincludes: _${group}INS
 _${group}INS: ${_${group}INCS}
-	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${${group}DIR}
 .if defined(${group}NAME)
-	${INSTALL} ${TAG_ARGS:D${TAG_ARGS},development} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
+	${INSTALL} -F ${TAG_ARGS:D${TAG_ARGS},development} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
 	    ${.ALLSRC} ${DESTDIR}${${group}DIR}/${${group}NAME}
 .else
-	${INSTALL} ${TAG_ARGS:D${TAG_ARGS},development} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
+	${INSTALL} -P ${TAG_ARGS:D${TAG_ARGS},development} -C -o ${${group}OWN} -g ${${group}GRP} -m ${${group}MODE} \
 	    ${.ALLSRC} ${DESTDIR}${${group}DIR}/
 .endif
 .endif
@@ -91,8 +89,7 @@ _${group}INS: ${_${group}INCS}
 .if defined(INCSLINKS) && !empty(INCSLINKS)
 installincludes:
 .for s t in ${INCSLINKS}
-	${INSTALL} ${TAG_ARGS} -d ${DESTDIR}${t:H}
-	${INSTALL_SYMLINK} ${TAG_ARGS:D${TAG_ARGS},development} ${s} ${DESTDIR}${t}
+	${INSTALL_SYMLINK} -F ${TAG_ARGS:D${TAG_ARGS},development} ${s} ${DESTDIR}${t}
 .endfor
 .endif
 .endif # !target(installincludes)
