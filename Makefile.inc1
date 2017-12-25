@@ -578,7 +578,6 @@ KTMAKE=		TOOLS_PREFIX=${WORLDTMP} \
 
 # world stage
 WMAKEENV=	${CROSSENV} \
-		INSTALL="sh ${.CURDIR}/tools/install.sh" \
 		PATH=${TMPPATH} \
 		SYSROOT=${WORLDTMP}
 
@@ -1964,8 +1963,8 @@ ${_bt}-${_tool}: .PHONY .MAKE
 	${_+_}@${ECHODIR} "===> ${_tool} (obj,all,install)"; \
 		cd ${.CURDIR}/${_tool}; \
 		if [ -z "${NO_OBJWALK}" ]; then ${MAKE} DIRPRFX=${_tool}/ obj; fi; \
-		${MAKE} DIRPRFX=${_tool}/ all; \
-		${MAKE} DIRPRFX=${_tool}/ DESTDIR=${WORLDTMP}/legacy install
+		${BMAKEENV} ${MAKE} DIRPRFX=${_tool}/ all; \
+		${BMAKEENV} ${MAKE} DIRPRFX=${_tool}/ DESTDIR=${WORLDTMP}/legacy install
 
 bootstrap-tools: ${_bt}-${_tool}
 .endfor
@@ -2856,8 +2855,7 @@ XDTP?=/usr/${XDDIR}
 
 CDBOBJROOT=	${OBJROOT}${MACHINE}.${MACHINE_ARCH}/xdev/
 CDBOBJTOP=	${CDBOBJROOT}${XDDIR}
-CDBENV= \
-	INSTALL="sh ${.CURDIR}/tools/install.sh"
+CDBENV=
 CDENV= ${CDBENV} \
 	TOOLS_PREFIX=${XDTP}
 CDMAKEARGS= \
