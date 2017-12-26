@@ -37,7 +37,7 @@
 			if (a[i] ~ /^package=/) {
 				pkgname=a[i]
 				gsub(/package=/, "", pkgname)
-			} else if (a[i] == "config") {
+			} else if (a[i] == "config" && type != "dir") {
 				type="config"
 			} else if (a[i] == "development" || a[i] == "profile" || a[i] == "debug" || a[i] == "docs") {
 				pkgend=a[i]
