@@ -1,7 +1,7 @@
 #!/usr/bin/awk
 /^[^#]/ {
 	gsub(/^\./,"", $1)
-	uname = gname = mode = flags = tags = type = ""
+	output = uname = gname = mode = flags = tags = type = ""
 	for (i=2; i<=NF; i++) {
 		if ($i ~ /^uname=/) {
 			uname=$i
@@ -42,10 +42,14 @@
 			} else if (a[i] == "development" || a[i] == "profile" || a[i] == "debug" || a[i] == "docs") {
 				pkgend=a[i]
 			} else {
-				if (ext != "")
+				if (ext != "") {
 					ext=ext"-"a[i]
-				else
-					ext=a[i]
+				}
+				else {
+					if (type != "dir") {
+						ext=a[i]
+					}
+				}
 			}
 		}
 		if (ext != "") {
