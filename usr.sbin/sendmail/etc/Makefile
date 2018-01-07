@@ -1,6 +1,8 @@
 #	@(#)Makefile	8.19 (Berkeley) 1/14/97
 # $FreeBSD$
 
+.PATH: ${.CURDIR}
+
 M4=		m4
 CHMOD=		chmod
 ROMODE=		444
@@ -25,7 +27,7 @@ M4FILES!=	find ${SENDMAIL_CF_DIR} -type f -name '*.m4' -print
 DEST_CF=	${DESTDIR}/etc/mail/sendmail.cf
 DEST_SUBMIT_CF=	${DESTDIR}/etc/mail/submit.cf
 
-CONFSDIR=	/etc/sendmail
+CONFSDIR=	/etc/mail
 CONFS=		access.sample \
 		freebsd.cf \
 		freebsd.submit.cf \
@@ -33,10 +35,20 @@ CONFS=		access.sample \
 		virtusertable.sample
 CLEANFILES=	freebsd.cf freebsd.submit.cf
 
-# Local SENDMAIL_MC or SENDMAIL_CF may be set in /etc/make.conf.
-# Warning!  If set, this causes 'make install' to always copy it
-# over /etc/mail/sendmail.cf!!!
-# Caveat emptor!  Be sure you want this before you enable it.
+.if !defined(SENDMAIL_MC) && !defined(SENDMAIL_CF)
+SENDMAIL_MC=		sendmail.mc
+
+${SENDMAIL_MC}: freebsd.mc
+	${CP} $> ${SENDMAIL_MC}
+.endif
+
+.ifndef SENDMAIL_SUBMIT_MC
+SENDMAIL_SUBMIT_MC=	submit.mc
+
+${SENDMAIL_SUBMIT_MC}: freebsd.submit.mc
+	${CP} $> ${SENDMAIL_SUBMIT_MC}
+.endif
+
 .if defined(SENDMAIL_MC) && defined(SENDMAIL_CF)
 .error Both SENDMAIL_MC and SENDMAIL_CF cannot be set.
 .elif defined(SENDMAIL_MC)
@@ -49,7 +61,7 @@ CONFS+=		${SENDMAIL_CF}
 INSTALL_CF=	${SENDMAIL_CF}
 .endif
 
-.if !defined(SENDMAIL_SET_USER_ID) && defined(SENDMAIL_SUBMIT_MC)
+.if !defined(SENDMAIL_SET_USER_ID)
 INSTALL_SUBMIT_CF= ${SENDMAIL_SUBMIT_MC:T:R}.cf
 CONFS+=		${INSTALL_SUBMIT_CF}
 CLEANFILES+=	${INSTALL_SUBMIT_CF}
