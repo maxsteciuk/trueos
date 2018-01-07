@@ -41,8 +41,11 @@ usage() {
 main() {
 	local arg
 	VMCONFIG="/dev/null"
-	while getopts "C:c:d:f:i:o:s:S:" arg; do
+	while getopts "b:C:c:d:f:i:o:s:S:" arg; do
 		case "${arg}" in
+			b)
+				VMBASETYPE="${OPTARG}"
+				;;
 			C)
 				VMBUILDCONF="${OPTARG}"
 				;;
