@@ -11,6 +11,7 @@ MAN=	syslog.conf.5 syslogd.8
 SRCS=	syslogd.c ttymsg.c
 FILES=	rc.d/syslogd
 FILESDIR=	/etc/rc.d
+FILESMODE=	${BINMODE}
 
 LIBADD=	util
 

@@ -8,6 +8,7 @@ MAN=	newsyslog.8 newsyslog.conf.5
 SRCS=	newsyslog.c ptimes.c
 FILES=	rc.d/newsyslog
 FILESDIR=	/etc/rc.d
+FILESMODE=	${BINMODE}
 
 HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
