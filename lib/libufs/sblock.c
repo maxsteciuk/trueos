@@ -96,8 +96,15 @@ int
 sbwrite(struct uufsd *disk, int all)
 {
 	struct fs *fs;
+	int rv;
 
 	ERROR(disk, NULL);
+
+	rv = ufs_disk_write(disk);
+	if (rv == -1) {
+		ERROR(disk, "failed to open disk for writing");
+		return (-1);
+	}
 
 	fs = &disk->d_fs;
 	if ((errno = sbput(disk->d_fd, fs, all ? fs->fs_ncg : 0)) != 0) {
@@ -143,6 +150,7 @@ use_pread(void *devfd, off_t loc, void **bufp, int size)
 	int fd;
 
 	fd = *(int *)devfd;
+	free(*bufp);
 	if ((*bufp = malloc(size)) == NULL)
 		return (ENOSPC);
 	if (pread(fd, *bufp, size, loc) != size)

@@ -18,7 +18,7 @@ CONFS+=	hyperv.conf
 .endif
 
 .if ${MK_USB} != "no"
-CONFS+=	ulpt.conf usb.conf
+CONFS+=	ulpt.conf
 .endif
 
 .if ${MACHINE} == "powerpc"
