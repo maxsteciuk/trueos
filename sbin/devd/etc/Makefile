@@ -12,6 +12,7 @@ CONFDIR=	/etc/devd
 .if ${MK_ACPI} != "no"
 CONFS+=	asus.conf
 .endif
+CONFS+=	devmatch.conf
 .if ${MK_HYPERV} != "no"
 CONFS+=	hyperv.conf
 .endif
