@@ -77,6 +77,7 @@ vm_create_base() {
 	mddev=$(mdconfig -f ${VMBASE})
 	newfs -L rootfs /dev/${mddev}
 	mount /dev/${mddev} ${DESTDIR}
+	chmod -R 755 ${DESTDIR}
 
 	return 0
 }
