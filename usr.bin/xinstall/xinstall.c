@@ -1466,7 +1466,7 @@ static void
 usage(void)
 {
 	(void)fprintf(stderr,
-"usage: install [-bCcFpSsUv] [-f flags] [-g group] [-m mode] [-o owner]\n"
+"usage: install [-bCcpSsUv] [-f flags] [-g group] [-m mode] [-o owner]\n"
 "               [-M log] [-D dest] [-h hash] [-T tags]\n"
 "               [-B suffix] [-l linkflags] [-N dbdir]\n"
 "               file1 file2\n"

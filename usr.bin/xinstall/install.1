@@ -36,7 +36,7 @@
 .Nd install binaries
 .Sh SYNOPSIS
 .Nm
-.Op Fl bCcFpSsUv
+.Op Fl bCcpSsUv
 .Op Fl B Ar suffix
 .Op Fl D Ar destdir
 .Op Fl f Ar flags
@@ -138,13 +138,6 @@ This option does not affect where the actual files are installed.
 .It Fl d
 Create directories.
 Missing parent directories are created as required.
-.It Fl F
-Create parent directories of
-.Ar file2
-as needed.
-This is the same as
-.Fl P
-except it only accepts two file arguments.
 .It Fl f
 Specify the target's file flags; see
 .Xr chflags 1
