@@ -217,7 +217,7 @@ maninstall: ${MAN}
 .else	# ${MK_MANCOMPRESS} == "yes"
 .for __page in ${MAN}
 	${MINSTALL} -F ${__page:T:S/$/${MCOMPRESS_EXT}/g} \
-		${DESTDIR}${MANDIR}${__page:E}${MANSUBDIR}/${__page:T:S/$/${MCOMPRESS_EXT}/}
+		${DESTDIR}${MANDIR}${__page:E}${MANSUBDIR}/${__page:T}
 .if defined(MANBUILDCAT) && !empty(MANBUILDCAT)
 	${MINSTALL} ${__page:T:S/$/${CATEXT}${MCOMPRESS_EXT}/g} \
 		${DESTDIR}${CATDIR}${__page:E}${MANSUBDIR}/${__page:T:S/$/${MCOMPRESS_EXT}/}

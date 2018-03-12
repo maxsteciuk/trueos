@@ -240,14 +240,14 @@ copies:
 	fi
 .endfor
 .for file in ${XFILES}
-	${INSTALL} -F -T package=${PACKAGE_${file}:Uexamples} -o ${SHAREOWN} -g ${SHAREGRP} -m ${SHAREMODE} \
+	${INSTALL} -T package=${PACKAGE_${file}:Uexamples} -o ${SHAREOWN} -g ${SHAREGRP} -m ${SHAREMODE} \
 		${.CURDIR}/${file} ${DESTDIR}${BINDIR}/${file}
 .endfor
 
 symlinks:
 .for i in ${LDIRS}
 	rm -rf ${DESTDIR}${BINDIR}/$i
-	${INSTALL} -F ${TAG_ARGS} -l s ${.CURDIR}/$i ${DESTDIR}${BINDIR}/$i
+	${INSTALL} ${TAG_ARGS} -l s ${.CURDIR}/$i ${DESTDIR}${BINDIR}/$i
 .endfor
 
 .if ${SHARED} != "symlinks"
