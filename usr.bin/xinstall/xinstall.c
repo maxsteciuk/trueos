@@ -110,7 +110,7 @@ extern char **environ;
 static gid_t gid;
 static uid_t uid;
 static int dobackup, docompare, dodir, dolink, dopreserve, dostrip, dounpriv,
-    files_only, mkdir_p, safecopy, verbose;
+    mkdir_p, safecopy, verbose;
 static int haveopt_f, haveopt_g, haveopt_m, haveopt_o;
 static mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 static FILE *metafp;
@@ -155,7 +155,7 @@ main(int argc, char *argv[])
 	fset = 0;
 	iflags = 0;
 	group = owner = NULL;
-	while ((ch = getopt(argc, argv, "B:bCcD:dFf:g:h:l:M:m:N:o:pPSsT:Uv")) !=
+	while ((ch = getopt(argc, argv, "B:bCcD:df:g:h:l:M:m:N:o:pPSsT:Uv")) !=
 	     -1)
 		switch((char)ch) {
 		case 'B':
@@ -175,10 +175,6 @@ main(int argc, char *argv[])
 			break;
 		case 'd':
 			dodir = 1;
-			break;
-		case 'F':
-			mkdir_p = 1;
-			files_only = 1;
 			break;
 		case 'f':
 			haveopt_f = 1;
@@ -352,7 +348,7 @@ main(int argc, char *argv[])
 			strncpy(buf, to_name, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
 			/* Handle file1 file2 case. */
-			if (argc == 2 && files_only) {
+			if (argc == 2) {
 				dirname(buf);
 				if (stat(buf, &to_sb))
 					install_dir(buf);
