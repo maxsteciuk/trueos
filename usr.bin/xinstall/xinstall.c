@@ -347,17 +347,8 @@ main(int argc, char *argv[])
 		if (no_target) {
 			strncpy(buf, to_name, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
-			/* Handle file1 file2 case. */
-			if (argc == 2) {
-				dirname(buf);
-				if (stat(buf, &to_sb))
-					install_dir(buf);
-				strncpy(buf, to_name, sizeof(buf) - 1);
-				buf[sizeof(buf) - 1] = '\0';
-			} else {
-				install_dir(buf);
-				no_target = stat(buf, &to_sb);
-			}
+			install_dir(buf);
+			no_target = stat(buf, &to_sb);
 		}
 	}
 	if (!no_target && S_ISDIR(to_sb.st_mode)) {
