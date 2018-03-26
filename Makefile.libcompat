@@ -118,12 +118,12 @@ LIBCOMPATCXXFLAGS+=	-isystem ${LIBCOMPATTMP}/usr/include/c++/v1 -std=c++11 \
 
 # Yes, the flags are redundant.
 LIBCOMPATWMAKEENV+= \
+		INSTALL="sh ${.CURDIR}/tools/install.sh" \
 		PATH=${TMPPATH} \
 		SYSROOT=${LIBCOMPATTMP} \
 		LIBDIR=/usr/lib${libcompat} \
 		SHLIBDIR=/usr/lib${libcompat} \
-		DTRACE="${LIB$COMPATDTRACE:U${DTRACE}}" \
-		WITH_INSTALL_AS_USER=yes
+		DTRACE="${LIB$COMPATDTRACE:U${DTRACE}}"
 .if ${MK_META_MODE} != "no"
 # Don't rebuild build-tools targets during normal build.
 LIBCOMPATWMAKEENV+=	BUILD_TOOLS_META=.NOMETA

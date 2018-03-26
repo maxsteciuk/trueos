@@ -158,101 +158,101 @@ copies: .PHONY .META
 .endfor
 .for i in ${LDIRS} ${LSUBDIRS:Ndev/agp:Ndev/acpica:Ndev/bktr:Ndev/evdev:Ndev/hyperv:Ndev/nand:Ndev/pci} ${LSUBSUBDIRS}
 	cd ${SRCTOP}/sys; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 $i/*.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 $i/*.h \
 	    ${SDESTDIR}${INCLUDEDIR}/$i
 .endfor
 	cd ${SRCTOP}/sys/dev/acpica; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 acpiio.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 acpiio.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/acpica; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 acpi_hpet.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 acpi_hpet.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/acpica
 	cd ${SRCTOP}/sys/dev/agp; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 agpreg.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 agpreg.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/agp
 	cd ${SRCTOP}/sys/dev/bktr; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 ioctl_*.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 ioctl_*.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/bktr
 .if ${MK_NAND} != "no"
 	cd ${SRCTOP}/sys/dev/nand; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 nandsim.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 nandsim.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/nand; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 nand_dev.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 nand_dev.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/nand
 .endif
 	cd ${SRCTOP}/sys/dev/evdev; \
-	${INSTALL} -P -C -o ${BINOWN} -g ${BINGRP} -m 444 input.h \
+	${INSTALL} -C -o ${BINOWN} -g ${BINGRP} -m 444 input.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/evdev; \
-	${INSTALL} -P -C -o ${BINOWN} -g ${BINGRP} -m 444 input-event-codes.h \
+	${INSTALL} -C -o ${BINOWN} -g ${BINGRP} -m 444 input-event-codes.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/evdev; \
-	${INSTALL} -P -C -o ${BINOWN} -g ${BINGRP} -m 444 uinput.h \
+	${INSTALL} -C -o ${BINOWN} -g ${BINGRP} -m 444 uinput.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/evdev
 	cd ${SRCTOP}/sys/dev/hyperv/include; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 hyperv.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 hyperv.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/hyperv
 	cd ${SRCTOP}/sys/dev/hyperv/utilities; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 hv_snapshot.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 hv_snapshot.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/hyperv
 	cd ${SRCTOP}/sys/dev/pci; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 pcireg.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 pcireg.h \
 	    ${SDESTDIR}${INCLUDEDIR}/dev/pci
 	cd ${SRCTOP}/sys/fs/cd9660/; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/isofs/cd9660
 .if ${MK_IPFILTER} != "no"
 	cd ${SRCTOP}/sys/contrib/ipfilter/netinet; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/netinet
 .endif
 .if ${MK_PF} != "no"
 	cd ${SRCTOP}/sys/netpfil/pf; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/netpfil/pf
 .endif
 	cd ${SRCTOP}/sys/crypto; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 rijndael/rijndael.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 rijndael/rijndael.h \
 	    ${SDESTDIR}${INCLUDEDIR}/crypto
 	cd ${SRCTOP}/sys/opencrypto; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/crypto
 	cd ${SRCTOP}/sys/${MACHINE}/include; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/machine
 .if exists(${SRCTOP}/sys/${MACHINE}/include/pc)
 	cd ${SRCTOP}/sys/${MACHINE}/include/pc; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/machine/pc
 .endif
 .for _MARCH in ${_MARCHS}
 .if exists(${SRCTOP}/sys/${_MARCH}/include)
-	${INSTALL} -P -d ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 755 \
+	${INSTALL} -d ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 755 \
 	    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}; \
 	cd ${SRCTOP}/sys/${_MARCH}/include; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}
 .if exists(${SRCTOP}/sys/${_MARCH}/include/pc)
 	${INSTALL} -d ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 755 \
 	    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}/pc; \
 	cd ${SRCTOP}/sys/${_MARCH}/include/pc; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 *.h \
 	    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}/pc
 .endif
 .endif
 .endfor
 	cd ${SRCTOP}/sys/rpc; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 types.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 types.h \
 	    ${SDESTDIR}${INCLUDEDIR}/rpc
 	cd ${SRCTOP}/sys/teken; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 teken.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 teken.h \
 	    ${SDESTDIR}${INCLUDEDIR}/teken
 .if ${MK_CDDL} != "no"
 	cd ${SRCTOP}/cddl/contrib/opensolaris/lib/libzfs_core/common; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 libzfs_core.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 libzfs_core.h \
 	    ${SDESTDIR}${INCLUDEDIR}
 	cd ${SRCTOP}/cddl/contrib/opensolaris/lib/libnvpair; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 libnvpair.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 libnvpair.h \
 	    ${SDESTDIR}${INCLUDEDIR}
 	cd ${SRCTOP}/sys/cddl/contrib/opensolaris/uts/common/sys; \
-	${INSTALL} -P -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 nvpair.h \
+	${INSTALL} -C ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m 444 nvpair.h \
 	    ${SDESTDIR}${INCLUDEDIR}/sys
 .endif
 
@@ -261,34 +261,34 @@ symlinks: .PHONY .META
 .for i in ${LDIRS}
 	cd ${SRCTOP}/sys/$i; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/$i/$$h ${SDESTDIR}${INCLUDEDIR}/$i; \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/$i/$$h ${SDESTDIR}${INCLUDEDIR}/$i; \
 	done
 .endfor
 .for i in ${LSUBDIRS:Ndev/agp:Ndev/acpica:Ndev/bktr:Ndev/evdev:Ndev/hyperv:Ndev/nand:Ndev/pci}
 	cd ${SRCTOP}/sys/$i; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/$i/$$h ${SDESTDIR}${INCLUDEDIR}/$i; \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/$i/$$h ${SDESTDIR}${INCLUDEDIR}/$i; \
 	done
 .endfor
 	cd ${SRCTOP}/sys/dev/acpica; \
 	for h in acpiio.h acpi_hpet.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/acpica/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/acpica/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/acpica; \
 	done
 	cd ${SRCTOP}/sys/dev/agp; \
 	for h in agpreg.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/agp/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/agp/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/agp; \
 	done
 	cd ${SRCTOP}/sys/dev/bktr; \
 	for h in ioctl_*.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/bktr/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/bktr/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/bktr; \
 	done
 .if ${MK_NAND} != "no"
 	cd ${SRCTOP}/sys/dev/nand; \
 	for h in nandsim.h nand_dev.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/nand/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/nand/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/nand; \
 	done
 .endif
@@ -299,58 +299,58 @@ symlinks: .PHONY .META
 	done
 	cd ${SRCTOP}/sys/dev/hyperv/include; \
 	for h in hyperv.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/hyperv/include/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/hyperv/include/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/hyperv; \
 	done
 	cd ${SRCTOP}/sys/dev/hyperv/utilities; \
 	for h in hv_snapshot.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/hyperv/utilities/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/hyperv/utilities/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/hyperv; \
 	done
 	cd ${SRCTOP}/sys/dev/pci; \
 	for h in pcireg.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/dev/pci/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/dev/pci/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/dev/pci; \
 	done
 .for i in ${LSUBSUBDIRS}
 	cd ${SRCTOP}/sys/$i; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../../sys/$i/$$h ${SDESTDIR}${INCLUDEDIR}/$i; \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../../sys/$i/$$h ${SDESTDIR}${INCLUDEDIR}/$i; \
 	done
 .endfor
 .if ${MK_IPFILTER} != "no"
 	cd ${SRCTOP}/sys/contrib/ipfilter/netinet; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/contrib/ipfilter/netinet/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/contrib/ipfilter/netinet/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/netinet; \
 	done
 .endif
 .if ${MK_PF} != "no"
 	cd ${SRCTOP}/sys/netpfil/pf; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/netpfil/pf/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/netpfil/pf/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/netpfil/pf; \
 	done
 .endif
 	cd ${SRCTOP}/sys/crypto; \
 	for h in rijndael/rijndael.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/crypto/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/crypto/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/crypto; \
 	done
 	cd ${SRCTOP}/sys/opencrypto; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/opencrypto/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/opencrypto/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/crypto; \
 	done
 	cd ${SRCTOP}/sys/${MACHINE}/include; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/${MACHINE}/include/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/${MACHINE}/include/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/machine; \
 	done
 .if exists(${SRCTOP}/sys/${MACHINE}/include/pc)
 	cd ${SRCTOP}/sys/${MACHINE}/include/pc; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/${MACHINE}/include/pc/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/${MACHINE}/include/pc/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/machine/pc; \
 	done
 .endif
@@ -360,7 +360,7 @@ symlinks: .PHONY .META
 	    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}; \
 	cd ${SRCTOP}/sys/${_MARCH}/include; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/${_MARCH}/include/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/${_MARCH}/include/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}; \
 	done
 .if exists(${SRCTOP}/sys/${_MARCH}/include/pc)
@@ -368,7 +368,7 @@ symlinks: .PHONY .META
 	    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}/pc; \
 	cd ${SRCTOP}/sys/${_MARCH}/include/pc; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/${_MARCH}/include/pc/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/${_MARCH}/include/pc/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/${_MARCH}/pc; \
 	done
 .endif
@@ -376,12 +376,12 @@ symlinks: .PHONY .META
 .endfor
 	cd ${SRCTOP}/sys/fs/cd9660; \
 	for h in *.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../../sys/fs/cd9660/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../../sys/fs/cd9660/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/isofs/cd9660; \
 	done
 	cd ${SRCTOP}/sys/rpc; \
 	for h in types.h; do \
-		${INSTALL_SYMLINK} -F ${TAG_ARGS} ../../../sys/rpc/$$h \
+		${INSTALL_SYMLINK} ${TAG_ARGS} ../../../sys/rpc/$$h \
 		    ${SDESTDIR}${INCLUDEDIR}/rpc; \
 	done
 
