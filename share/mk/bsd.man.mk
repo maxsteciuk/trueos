@@ -232,7 +232,7 @@ maninstall: ${MAN}
 .endif
 .for l t in ${_MANLINKS}
 	rm -f ${DESTDIR}${t} ${DESTDIR}${t}${MCOMPRESS_EXT}; \
-	    ${INSTALL_LINK} -F ${TAG_ARGS} ${DESTDIR}${l}${ZEXT} ${DESTDIR}${t}${ZEXT}
+	    ${INSTALL_LINK} ${TAG_ARGS} ${DESTDIR}${l}${ZEXT} ${DESTDIR}${t}${ZEXT}
 .endfor
 
 manlint:
