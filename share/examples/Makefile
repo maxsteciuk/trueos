@@ -35,7 +35,7 @@ LDIRS=	BSD_daemon \
 	ypldap
 
 
-DIRS+=	BSD_daemon
+SE_DIRS+=	BSD_daemon
 SE_BSD_DAEMON= \
 	FreeBSD.pfa \
 	README \
@@ -47,22 +47,22 @@ SE_BSD_DAEMON= \
 .if ${MACHINE_CPUARCH} == "amd64"
 .if ${MK_BHYVE} != "no"
 LDIRS+=		bhyve
-DIRS+=	bhyve
+SE_DIRS+=	bhyve
 SE_BHYVE=	vmrun.sh
 PACKAGE_bhyve/vmrun.sh=	bhyve
 .endif
 .endif
 
-DIRS+=	FreeBSD_version
+SE_DIRS+=	FreeBSD_version
 SE_FREEBSD_VERSION= \
 	FreeBSD_version.c \
 	Makefile \
 	README
 
-DIRS+=	IPv6
+SE_DIRS+=	IPv6
 SE_IPV6=	USAGE
 
-DIRS+=	bootforth
+SE_DIRS+=	bootforth
 SE_BOOTFORTH= \
 	README \
 	boot.4th \
@@ -72,44 +72,50 @@ SE_BOOTFORTH= \
 	menuconf.4th \
 	screen.4th
 
-DIRS+=	csh
+SE_DIRS+=	csh
 SE_CSH=	dot.cshrc
 
-DIRS+=	diskless
+SE_DIRS+=	diskless
 SE_DISKLESS= \
 	ME \
 	README.BOOTP \
 	README.TEMPLATING \
 	clone_root
 
-DIRS+=	etc
+SE_DIRS+=	drivers
+SE_DRIVERS= \
+	README \
+	make_device_driver.sh \
+	make_pseudo_driver.sh
+
+SE_DIRS+=	etc
 SE_ETC= \
 	README.examples \
 	bsd-style-copyright \
 	make.conf
 
-DIRS+=	find_interface
+SE_DIRS+=	find_interface
 SE_FIND_INTERFACE= \
 	Makefile \
 	README \
 	find_interface.c
 
-DIRS+=	ibcs2
+SE_DIRS+=	ibcs2
 SE_IBCS2=	\
 	README \
 	hello.uu
 
-DIRS+=	indent
+SE_DIRS+=	indent
 SE_INDENT=	indent.pro
 
 .if ${MK_IPFILTER} != "no"
 SUBDIR+=	ipfilter
 .endif
 
-DIRS+=	ipfw
+SE_DIRS+=	ipfw
 SE_IPFW=	change_rules.sh
 
-DIRS+=	jails
+SE_DIRS+=	jails
 SE_JAILS= \
 	README \
 	VIMAGE \
@@ -119,72 +125,72 @@ SE_JAILS= \
 	rc.conf.jails \
 	rcjail.xxx.conf
 
-DIRS+=	kld
+SE_DIRS+=	kld
 SE_KLD=	Makefile
 
-DIRS+=	kld/cdev
+SE_DIRS+=	kld/cdev
 SE_KLD_CDEV= \
 	Makefile \
 	README \
 
-DIRS+=	kld/cdev/module
+SE_DIRS+=	kld/cdev/module
 SE_KLD_CDEV_MODULE= \
 	Makefile \
 	cdev.c \
 	cdev.h \
 	cdevmod.c
 
-DIRS+=	kld/cdev/test
+SE_DIRS+=	kld/cdev/test
 SE_KLD_CDEV_TEST= \
 	Makefile \
 	testcdev.c
 
-DIRS+=	kld/dyn_sysctl
+SE_DIRS+=	kld/dyn_sysctl
 SE_KLD_DYN_SYSCTL= \
 	Makefile \
 	README \
 	dyn_sysctl.c
 
-DIRS+=	kld/firmware
+SE_DIRS+=	kld/firmware
 SE_KLD_FIRMWARE= \
 	Makefile \
 	README
 
-DIRS+=	kld/firmware/fwconsumer
+SE_DIRS+=	kld/firmware/fwconsumer
 SE_KLD_FIRMWARE_FWCONSUMER= \
 	Makefile \
 	fw_consumer.c
 
-DIRS+=	kld/firmware/fwimage
+SE_DIRS+=	kld/firmware/fwimage
 SE_KLD_FIRMWARE_FWIMAGE= \
 	Makefile \
 	firmware.img.uu
 
-DIRS+=	kld/khelp
+SE_DIRS+=	kld/khelp
 SE_KLD_KHELP= \
 	Makefile \
 	README \
 	h_example.c
 
-DIRS+=	kld/syscall
+SE_DIRS+=	kld/syscall
 SE_KLD_SYSCALL=	Makefile
 
-DIRS+=	kld/syscall/module
+SE_DIRS+=	kld/syscall/module
 SE_KLD_SYSCALL_MODULE= \
 	Makefile \
 	syscall.c
 
-DIRS+=	kld/syscall/test
+SE_DIRS+=	kld/syscall/test
 SE_KLD_SYSCALL_TEST= \
 	Makefile \
 	call.c
 
-DIRS+=	libvgl
+SE_DIRS+=	libvgl
 SE_LIBVGL=	\
 	Makefile \
 	demo.c
 
-DIRS+=	mdoc
+SE_DIRS+=	mdoc
 SE_MDOC= \
 	POSIX-copyright \
 	deshallify.sh \
@@ -193,7 +199,7 @@ SE_MDOC= \
 	example.4 \
 	example.9
 
-DIRS+=	netgraph
+SE_DIRS+=	netgraph
 SE_NETGRAPH= \
 	ether.bridge \
 	frame_relay \
@@ -203,7 +209,7 @@ SE_NETGRAPH= \
 	virtual.chain \
 	virtual.lan \
 
-DIRS+=	perfmon
+SE_DIRS+=	perfmon
 SE_PERFMON= \
 	Makefile \
 	README \
@@ -211,7 +217,7 @@ SE_PERFMON= \
 
 .if ${MK_PF} != "no"
 SE_DIRS+=	pf
-PF= \
+SE_PF= \
 	ackpri \
 	faq-example1 \
 	faq-example2 \
@@ -224,12 +230,12 @@ PF= \
 	spamd
 .endif
 
-DIRS+=	ppi
+SE_DIRS+=	ppi
 SE_PPI= \
 	Makefile \
 	ppilcd.c
 
-DIRS+=	ppp
+SE_DIRS+=	ppp
 SE_PPP= \
 	chap-auth \
 	login-auth \
@@ -246,7 +252,7 @@ SE_PPP= \
 	ppp.secret.span-isp \
 	ppp.secret.span-isp.working
 
-DIRS+=	printing
+SE_DIRS+=	printing
 SE_PRINTING= \
 	diablo-if-net \
 	hpdf \
@@ -265,32 +271,32 @@ SE_PRINTING= \
 	pstf \
 	pstfX
 
-DIRS+=	ses
+SE_DIRS+=	ses
 SE_SES= \
 	Makefile \
 	Makefile.inc
 
-DIRS+=	ses/getencstat
+SE_DIRS+=	ses/getencstat
 SE_SES_GETENCSTAT= \
 	Makefile \
 	getencstat.0
 
-DIRS+=	ses/sesd
+SE_DIRS+=	ses/sesd
 SE_SES_SESD= \
 	Makefile \
 	sesd.0
 
-DIRS+=	ses/setencstat
+SE_DIRS+=	ses/setencstat
 SE_SES_SETENCSTAT= \
 	Makefile \
 	setencstat.0
 
-DIRS+=	ses/setobjstat
+SE_DIRS+=	ses/setobjstat
 SE_SES_SETOBJSTAT= \
 	Makefile \
 	setobjstat.0
 
-DIRS+=	ses/srcs
+SE_DIRS+=	ses/srcs
 SE_SES_SRCS= \
 	chpmon.c \
 	eltsub.c \
@@ -304,7 +310,7 @@ SE_SES_SRCS= \
 	setencstat.c \
 	setobjstat.c
 
-DIRS+=	scsi_target
+SE_DIRS+=	scsi_target
 SE_SCSI_TARGET= \
 	Makefile \
 	scsi_target.c \
@@ -312,17 +318,17 @@ SE_SCSI_TARGET= \
 	scsi_target.8 \
 	scsi_cmds.c
 
-DIRS+=	sunrpc
+SE_DIRS+=	sunrpc
 SE_SUNRPC=	Makefile
 
-DIRS+=	sunrpc/dir
+SE_DIRS+=	sunrpc/dir
 SE_SUNRPC_DIR= \
 	Makefile \
 	dir.x \
 	dir_proc.c \
 	rls.c
 
-DIRS+=	sunrpc/msg
+SE_DIRS+=	sunrpc/msg
 SE_SUNRPC_MSG= \
 	Makefile \
 	msg.x \
@@ -330,22 +336,22 @@ SE_SUNRPC_MSG= \
 	printmsg.c \
 	rprintmsg.c
 
-DIRS+=	sunrpc/sort
+SE_DIRS+=	sunrpc/sort
 SE_SUNRPC_SORT= \
 	Makefile \
 	rsort.c \
 	sort.x \
 	sort_proc.c
 
-DIRS+=	uefisign
+SE_DIRS+=	uefisign
 SE_UEFISIGN=	uefikeys
 
-DIRS+=	ypldap
+SE_DIRS+=	ypldap
 SE_YPLDAP=	ypldap.conf
 
 .if ${MK_HAST} != "no"
 LDIRS+=		hast
-DIRS+=	hast
+SE_DIRS+=	hast
 SE_HAST=	ucarp.sh \
 	ucarp_down.sh \
 	ucarp_up.sh \
@@ -355,7 +361,7 @@ SE_HAST=	ucarp.sh \
 
 .if ${MK_USB} != "no"
 LDIRS+=		libusb20
-DIRS+=	libusb20
+SE_DIRS+=	libusb20
 SE_LIBUSB20= \
 	Makefile \
 	README \
@@ -369,10 +375,12 @@ SE_LIBUSB20= \
 # Setup the .PATH and FILES_GROUPS for all DIRS variables above
 # The variables are prefixed by 'SE_' to prevent variable collision in
 # other parts of the system
-.for d in ${DIRS}
-.PATH: ${.CURDIR}/${d}
-FILESGROUPS+=	SE_${d:tu:C/\//_/g}
-SE_${d:tu:C/\//_/g}DIR+=	${SHAREDIR}/examples/${d}
+.for d in ${SE_DIRS}
+.for f in ${SE_${d:tu:C/\//_/g}}
+SER_${d:tu:C/\//_/g}+=	${d}/${f}
+.endfor
+FILESGROUPS+=	SER_${d:tu:C/\//_/g}
+SER_${d:tu:C/\//_/g}DIR+=	${SHAREDIR}/examples/${d}
 .endfor
 
 BINDIR= ${SHAREDIR}/examples
