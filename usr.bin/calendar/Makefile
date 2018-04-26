@@ -12,25 +12,22 @@ INTER=          de_AT.ISO_8859-15 de_DE.ISO8859-1 fr_FR.ISO8859-1 \
 		pt_BR.UTF-8 ru_RU.KOI8-R ru_RU.UTF-8 uk_UA.KOI8-U
 DE_LINKS=       de_DE.ISO8859-15
 FR_LINKS=       fr_FR.ISO8859-15
-TEXTMODE?=	444
 
-beforeinstall:
-	${INSTALL} ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m ${TEXTMODE} \
-	    ${.CURDIR}/calendars/calendar.* ${DESTDIR}${SHAREDIR}/calendar
+FILESGROUPS+=	CALS
+CALS!=	ls ${.CURDIR}/calendars/calendar.*
+CALSDIR=	${SHAREDIR}/calendar
+
 .for lang in ${INTER}
-	${INSTALL} ${TAG_ARGS} -o ${BINOWN} -g ${BINGRP} -m ${TEXTMODE} \
-		${.CURDIR}/calendars/${lang}/calendar.* \
-		${DESTDIR}${SHAREDIR}/calendar/${lang} 
+FILESGROUPS+=	CAL_${lang}
+CAL_${lang}!=	ls ${.CURDIR}/calendars/${lang}/calendar.*
+CAL_${lang}DIR=	${SHAREDIR}/calendar/${lang}
 .endfor
+
 .for link in ${DE_LINKS}
-	rm -rf ${DESTDIR}${SHAREDIR}/calendar/${link}
-	${INSTALL} ${TAG_ARGS} -l s de_DE.ISO8859-1 \
-	    ${DESTDIR}${SHAREDIR}/calendar/${link}
+SYMLINKS+=	de_DE.ISO8859-1 ${SHAREDIR}/calendar/${link}
 .endfor
 .for link in ${FR_LINKS}
-	rm -rf ${DESTDIR}${SHAREDIR}/calendar/${link}
-	${INSTALL} ${TAG_ARGS} -l s fr_FR.ISO8859-1 \
-	    ${DESTDIR}${SHAREDIR}/calendar/${link}
+SYMLINKS+=	fr_FR.ISO8859=1 ${SHAREDIR}/calendar/${link}
 .endfor
 
 HAS_TESTS=
