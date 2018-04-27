@@ -71,6 +71,7 @@ HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
 
 FILES=	regdomain.xml
+FILESMODE=	444
 FILESDIR=	/etc
 
 .include <bsd.prog.mk>
