@@ -22,6 +22,7 @@ SYMLINKS+=	../libexec/sendmail/sendmail ${BINDIR}/mailwrapper
 
 CONFSDIR=	/etc/mail
 CONFS=		aliases
+SYMLINKS+=	mail/aliases /etc/aliases
 .endif
 
 .if ${MK_MAILWRAPPER} != "no" && ${MK_SENDMAIL} == "no"
