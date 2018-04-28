@@ -65,7 +65,19 @@ distribution:
 .endif
 
 distrib-dirs: .PHONY
-	${INSTALL} -d -m 1777 -o ${BINOWN} -g ${BINGRP} ${DESTDIR}/tmp
 	${INSTALL_SYMLINK} usr/src/sys ${DESTDIR}/sys
 
 .include <bsd.prog.mk>
+
+.if ${MK_INSTALL_AS_USER} == "yes" && ${_uid} != 0
+MTREE_FILTER= sed -e 's,\([gu]\)name=,\1id=,g' \
+	-e 's,\(uid=\)[^ ]* ,\1${_uid} ,' \
+	-e 's,\(gid=\)[^ ]* ,\1${_gid} ,' \
+	-e 's,\(uid=\)[^ ]*$$,\1${_uid},' \
+	-e 's,\(gid=\)[^ ]*$$,\1${_gid},'
+.else
+MTREE_FILTER= cat
+.if !defined(NO_FSCHG)
+MTREE_FSCHG=	-i
+.endif
+.endif
