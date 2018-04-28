@@ -3,7 +3,7 @@
 SUBDIR=	mail.local \
 	smrsh
 
-SCRIPTS=	rc.sendmail.sh
-SCRIPTSDIR?=	${BINDIR}/sendmail
+FILES=	rc.sendmail
+FILESDIR=	/etc
 
 .include <bsd.prog.mk>
