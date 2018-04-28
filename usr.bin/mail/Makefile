@@ -11,7 +11,6 @@ EFILES=	mail.rc
 LINKS=	${BINDIR}/mail ${BINDIR}/Mail ${BINDIR}/mail ${BINDIR}/mailx
 MLINKS=	mail.1 Mail.1 mail.1 mailx.1
 
-CONFSDIR=	/etc/mail
 CONFS=		mail.rc
 
 WARNS?=	2
