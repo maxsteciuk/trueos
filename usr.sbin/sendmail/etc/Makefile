@@ -33,6 +33,12 @@ CONFS=		access.sample \
 		freebsd.submit.cf \
 		mailertable.sample \
 		virtusertable.sample
+FILESGROUPS=	M_README M_MAKEFILE
+M_READMEDIR=	/etc/mail
+M_README=	README
+M_MAKEFILEDIR=	/etc/mail
+M_MAKEFILE=	mail.Makefile
+M_MAKEFILENAME=	Makefile
 CLEANFILES=	freebsd.cf freebsd.submit.cf
 
 .if !defined(SENDMAIL_MC) && !defined(SENDMAIL_CF)
