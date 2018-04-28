@@ -77,7 +77,6 @@ stage_as.${file:T}: ${file}
 
 installfiles-${group}: installdirs-${group} _${group}INS_${file:T}
 _${group}INS_${file:T}: ${file}
-	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${${group}DIR_${.ALLSRC:T}}/${${group}NAME_${.ALLSRC:T}}
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN_${.ALLSRC:T}} \
 	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
 	    ${.ALLSRC} \
