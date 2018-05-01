@@ -44,13 +44,6 @@ ${group}TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
 .endif
 
 
-installdirs-${group}:
-	@echo installing dirs ${group}DIRS ${${group}DIRS}
-.for dir in ${${group}DIRS}
-	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
-.endfor
-
-
 _${group}FILES=
 .for file in ${${group}}
 .if defined(${group}OWN_${file:T}) || defined(${group}GRP_${file:T}) || \
@@ -63,7 +56,11 @@ ${group}OWN_${file:T}=	${SHAREOWN}
 ${group}GRP_${file:T}=	${SHAREGRP}
 .endif
 ${group}MODE_${file:T}?=	${${group}MODE}
+.if defined(${group}DIR_${file})
+${group}DIRS+=	${${group}DIR_${file}}
+.else
 ${group}DIR_${file:T}?=	${${group}DIR}
+.endif
 .if defined(${group}NAME)
 ${group}NAME_${file:T}?=	${${group}NAME}
 .else
@@ -85,6 +82,14 @@ _${group}INS_${file:T}: ${file}
 _${group}FILES+= ${file}
 .endif
 .endfor
+
+installdirs-${group}:
+	@echo installing dirs ${group}DIRS ${${group}DIRS}
+.for dir in ${${group}DIRS}
+	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
+.endfor
+
+
 .if !empty(_${group}FILES)
 stage_files.${group}: ${_${group}FILES}
 
