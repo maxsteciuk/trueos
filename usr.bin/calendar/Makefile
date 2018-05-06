@@ -14,7 +14,30 @@ DE_LINKS=       de_DE.ISO8859-15
 FR_LINKS=       fr_FR.ISO8859-15
 
 FILESGROUPS+=	CALS
-CALS!=	ls ${.CURDIR}/calendars/calendar.*
+CAL=	calendar.all \
+	calendar.australia \
+	calendar.birthday \
+	calendar.brazilian \
+	calendar.christian \
+	calendar.computer \
+	calendar.croatian \
+	calendar.dutch \
+	calendar.freebsd \
+	calendar.french \
+	calendar.german \
+	calendar.history \
+	calendar.holiday \
+	calendar.hungarian \
+	calendar.judaic \
+	calendar.lotr \
+	calendar.music \
+	calendar.newzealand \
+	calendar.russian \
+	calendar.southafrica \
+	calendar.ukrainian \
+	calendar.usholiday \
+	calendar.world \
+CALS=	${CAL:S#^#calendars/#}
 CALSDIR=	${SHAREDIR}/calendar
 
 .for lang in ${INTER}
