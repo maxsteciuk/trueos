@@ -42,7 +42,7 @@ CALSDIR=	${SHAREDIR}/calendar
 
 .for lang in ${INTER}
 FILESGROUPS+=	CAL_${lang}
-CAL_${lang}!=	ls ${.CURDIR}/calendars/${lang}/calendar.*
+CAL_${lang}!=	echo ${.CURDIR}/calendars/${lang}/calendar.*
 CAL_${lang}DIR=	${SHAREDIR}/calendar/${lang}
 .endfor
 
