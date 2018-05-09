@@ -24,6 +24,11 @@ YFLAGS+=	-i
 CLEANFILES=	aliases_parse.i
 FILES=	mailer.conf
 FILESDIR=	${SHAREDIR}/examples/dma
+
+DIRS+=	DMA_SPOOL_DIR
+DMA_SPOOL_DIR=	/var/spool/dma
+DMA_SPOOL_DIR_MODE=	770
+
 .if ${MK_SENDMAIL} == no
 CONFGROUPS=	CONFS MAILER
 MAILERDIR=	/etc/mail
