@@ -21,8 +21,13 @@ ${dir}_TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
 .endif
 .endfor
 
-install-dirs:
+.if defined(${DIRS}) && !empty(${DIRS})
+installfiles: installdirs
+
+installdirs:
 .for dir in ${DIRS}
+	@echo installing DIRS ${dir}
 	${INSTALL} ${${group}_TAG_ARGS} -d ${DESTDIR}${${dir}} \
 		-m ${${dir}_MODE} -o ${${dir}_OWN} -g ${${dir}_GRP}
 .endfor
+.endif
