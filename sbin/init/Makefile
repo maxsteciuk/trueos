@@ -28,4 +28,10 @@ NO_SHARED?=	YES
 
 SUBDIR+=	rc.d
 
+DIRS+=	VAR_SPOOL_LOCK
+VAR_SPOOL_LOCK=	/var/spool/lock
+VAR_SPOOL_LOCK_MODE=	775
+VAR_SPOOL_LOCK_OWN=	uucp
+VAR_SPOOL_LOCK_GRP=	dialer
+
 .include <bsd.prog.mk>
