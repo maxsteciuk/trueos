@@ -9,4 +9,13 @@ MAN=	mount.8
 
 LIBADD=	util
 
+DIRS+=	MEDIA
+MEDIA=	/media
+
+DIRS+=	MNT
+MNT=	/mnt
+
+DIRS+=	NET
+NET=	/net
+
 .include <bsd.prog.mk>
