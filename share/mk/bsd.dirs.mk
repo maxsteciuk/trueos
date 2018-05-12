@@ -8,6 +8,7 @@
 DIRS?=
 
 .for dir in ${DIRS}
+.if defined(${dir}) && !empty(${dir})
 # Set default permissions for a directory
 ${dir}_MODE?=	0755
 ${dir}_OWN?=	root
@@ -19,15 +20,12 @@ ${dir}_TAGS+=		package=${${group}PACKAGE:Uruntime}
 .endif
 ${dir}_TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
 .endif
-.endfor
 
-.if defined(${DIRS}) && !empty(${DIRS})
-installfiles: installdirs
+installfiles: installdirs-${dir}
 
-installdirs:
-.for dir in ${DIRS}
+installdirs-${dir}:
 	@echo installing DIRS ${dir}
 	${INSTALL} ${${dir}_TAG_ARGS} -d -m ${${dir}_MODE} -o ${${dir}_OWN} \
 		-g ${${dir}_GRP} ${DESTDIR}${${dir}}
-.endfor
 .endif
+.endfor
