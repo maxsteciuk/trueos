@@ -20,6 +20,17 @@ BINOWN=	root
 BINMODE= 4555
 CLEANFILES+= at.1
 
+DIRS+=	VAR_AT
+VAR_AT=	/var/at
+
+DIRS+=	VAR_AT_JOBS
+VAR_AT_JOBS=	/var/at/jobs
+VAR_AT_JOBS_OWN=	daemon
+
+DIRS+=	VAR_AT_SPOOL
+VAR_AT_SPOOL=	/var/at/spool
+VAR_AT_SPOOL_OWN=	daemon
+
 at.1: at.man
 	@${ECHO} Making ${.TARGET:T} from ${.ALLSRC:T}; \
 	sed -e \
