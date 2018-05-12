@@ -6,4 +6,7 @@ FILES=	periodic.conf
 FILESDIR=/etc/defaults
 SUBDIR=	periodic
 
+DIRS+=	VAR_PRESERVE
+VAR_PRESERVE=	/var/preserve
+
 .include <bsd.prog.mk>
