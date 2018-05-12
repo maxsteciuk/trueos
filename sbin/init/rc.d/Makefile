@@ -238,6 +238,10 @@ _kadmind=	kadmind
 _kdc=		kdc
 _kfd=		kfd
 _kpasswdd=	kpasswdd
+
+DIRS+=	VAR_HEMIDAL
+VAR_HEMIDAL=	/var/heimdal
+VAR_HEMIDAL_MODE=	700
 .endif
 
 .if ${MK_MAIL} != "no"
