@@ -17,6 +17,11 @@ WARNS?=	2
 
 .PATH: ${.CURDIR}/misc
 
+DIRS+=	VAR_MAIL
+VAR_MAIL=	/var/mail
+VAR_MAIL_MODE=	775
+VAR_MAIL_GRP=	mail
+
 etc-mailrc:
 	cd ${.CURDIR}/misc; ${INSTALL} -o root -g wheel \
 	    -m 644 ${EFILES} ${DESTDIR}/etc
