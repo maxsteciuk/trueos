@@ -1,5 +1,8 @@
 # $FreeBSD$
 
+DIRS+= KEYS_PKG_REVOKED
+KEYS_PKG_REVOKED=	${SHAREDIR}/keys/pkg/revoked
+
 SUBDIR=	trusted
 
-.include <bsd.subdir.mk>
+.include <bsd.prog.mk>
