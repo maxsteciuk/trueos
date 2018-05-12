@@ -31,4 +31,19 @@ CLEANFILES=parse.c parse.h parse.output
 # thread safety analysis completely.
 NO_WTHREAD_SAFETY=
 
+DIRS+=	VAR_AUDIT
+VAR_AUDIT=	/var/audit
+VAR_AUDIT_MODE=	750
+
+DIRS+=	VAR_AUDIT_DIST
+VAR_AUDIT_DIST=	/var/audit/dist
+VAR_AUDIT_DIST_MODE=	770
+VAR_AUDIT_DIST_OWN=	auditdistd
+VAR_AUDIT_DIST_GRP=	audit
+
+DIRS+=	VAR_AUDIT_REMOTE
+VAR_AUDIT_REMOTE=	/var/audit/remote
+VAR_AUDIT_REMOTE_MODE=	700
+VAR_AUDIT_REMOTE_OWN=	auditdistd
+
 .include <bsd.prog.mk>
