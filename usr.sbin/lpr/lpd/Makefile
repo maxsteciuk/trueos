@@ -16,4 +16,12 @@ DIRS+=	VAR_SPOOL_LPD
 VAR_SPOOL_LPD=	/var/spool/lpd
 VAR_SPOOL_LPD_GRP=	daemon
 
+DIRS+=	VAR_SPOOL_OUTPUT
+VAR_SPOOL_OUTPUT=	/var/spool/output
+VAR_SPOOL_OUTPUT_GRP=	daemon
+
+DIRS+=	VAR_SPOOL_OUTPUT_LPD
+VAR_SPOOL_OUTPUT_LPD=	/var/spool/output/lpd
+VAR_SPOOL_OUTPUT_LPD_GRP=	daemon
+
 .include <bsd.prog.mk>
