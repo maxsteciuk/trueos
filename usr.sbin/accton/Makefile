@@ -6,4 +6,7 @@ MAN=	accton.8
 
 PACKAGE=acct
 
+DIRS+=	VAR_ACCOUNT
+VAR_ACCOUNT=	/var/account
+
 .include <bsd.prog.mk>
