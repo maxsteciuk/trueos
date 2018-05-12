@@ -15,17 +15,17 @@ ${dir}_OWN?=	root
 ${dir}_GRP?=	wheel
 
 .if defined(NO_ROOT)
-.if !defined(${group}TAGS) || ! ${${group}TAGS:Mpackage=*}
-${dir}_TAGS+=		package=${${group}PACKAGE:Uruntime}
+.if !defined(${dir}TAGS) || ! ${${dir}TAGS:Mpackage=*}
+${dir}TAGS+=		package=${${dir}PACKAGE:Uruntime}
 .endif
-${dir}_TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
+${dir}TAG_ARGS=	-T ${${dir}TAGS:[*]:S/ /,/g}
 .endif
 
 installfiles: installdirs-${dir}
 
 installdirs-${dir}:
 	@echo installing DIRS ${dir}
-	${INSTALL} ${${dir}_TAG_ARGS} -d -m ${${dir}_MODE} -o ${${dir}_OWN} \
+	${INSTALL} ${${dir}TAG_ARGS} -d -m ${${dir}_MODE} -o ${${dir}_OWN} \
 		-g ${${dir}_GRP} ${DESTDIR}${${dir}}
 .endif
 .endfor
