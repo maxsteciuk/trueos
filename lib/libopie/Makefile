@@ -36,4 +36,9 @@ MAN=	${OPIE_DIST}/opie.4 ${OPIE_DIST}/opiekeys.5 ${OPIE_DIST}/opieaccess.5
 
 MLINKS=	opie.4 skey.4
 
+DIRS+=	VAR_SPOOL_OPIELOCKS
+VAR_SPOOL_OPIELOCKS=	/var/spool/opielocks
+VAR_SPOOL_OPIELOCKS_MODE=	700
+VAR_SPOOL_OPIELOCKS_GRP=	daemon
+
 .include <bsd.lib.mk>
