@@ -12,4 +12,8 @@ WARNS?=	1
 
 LIBADD=	lpr
 
+DIRS+=	VAR_SPOOL_LPD
+VAR_SPOOL_LPD=	/var/spool/lpd
+VAR_SPOOL_LPD_GRP=	daemon
+
 .include <bsd.prog.mk>
