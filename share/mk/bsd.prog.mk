@@ -283,8 +283,8 @@ NLSNAME?=	${PROG}
 .include <bsd.nls.mk>
 
 .include <bsd.confs.mk>
-.include <bsd.files.mk>
 .include <bsd.dirs.mk>
+.include <bsd.files.mk>
 .include <bsd.incs.mk>
 .include <bsd.links.mk>
 
