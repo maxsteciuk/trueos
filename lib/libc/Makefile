@@ -176,6 +176,10 @@ libkern.${LIBC_ARCH}:: ${KMSRCS}
 HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
 
+DIRS+=	VAR_TMP
+VAR_TMP=	/var/tmp
+VAR_TMP_MODE=	01777
+
 .include <bsd.lib.mk>
 
 .if !defined(_SKIP_BUILD)
