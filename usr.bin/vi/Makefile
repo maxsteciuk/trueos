@@ -74,4 +74,7 @@ SRCS+=	vs_line.c vs_msg.c vs_refresh.c vs_relative.c vs_smap.c vs_split.c
 # Wide char regex
 SRCS+=	regcomp.c regerror.c regexec.c regfree.c
 
+DIRS+=	VAR_TMP_VIRECOVER
+VAR_TMP_VIRECOVER=	/var/tmp/vi.recover
+
 .include <bsd.prog.mk>
