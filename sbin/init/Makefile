@@ -28,6 +28,9 @@ NO_SHARED?=	YES
 
 SUBDIR+=	rc.d
 
+DIRS+=	VAR_RUN
+VAR_RUN=	/var/run
+
 DIRS+=	VAR_SPOOL_LOCK
 VAR_SPOOL_LOCK=	/var/spool/lock
 VAR_SPOOL_LOCK_MODE=	775
