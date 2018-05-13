@@ -24,6 +24,11 @@ CONFS=	ppp.conf
 CONFSDIR=	${CONFDIR}/ppp
 CONFSMODE=	600
 
+DIRS+=	VAR_RUN_PPP
+VAR_RUN_PPP=	/var/run/ppp
+VAR_RUN_PPP_MODE=	770
+VAR_RUN_PPP_GRP=	network
+
 .if ${MK_NETGRAPH} == "no"
 PPP_NO_NETGRAPH=
 .endif
