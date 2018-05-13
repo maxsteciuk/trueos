@@ -13,6 +13,9 @@ FILES=	rc.d/syslogd
 FILESDIR=	/etc/rc.d
 FILESMODE=	${BINMODE}
 
+DIRS+=	VAR_LOG
+VAR_LOG=	/var/log
+
 LIBADD=	util
 
 WARNS?= 3
