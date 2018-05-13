@@ -5,4 +5,8 @@ PROG=	msgs
 
 LIBADD=	ncursesw
 
+DIRS+=	VAR_MSGS
+VAR_MSGS=	/var/msgs
+VAR_MSGS_OWN=	daemon
+
 .include <bsd.prog.mk>
