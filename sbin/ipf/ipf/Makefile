@@ -34,4 +34,8 @@ ipf_l.h: lexer.h
 LIBADD+=	pcap
 .endif
 
+DIRS+=	VAR_DB_IPF
+VAR_DB_IPF=	/var/db/ipf
+VAR_DB_IPF_MODE=	700
+
 .include <bsd.prog.mk>
