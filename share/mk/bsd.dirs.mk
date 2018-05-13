@@ -6,7 +6,6 @@
 # must be a full path.  If non-default permissions are desired, <DIR>_MODE,
 # <DIR>_OWN, and <DIR>_GRP may be specified.
 DIRS?=
-_FLAGS=
 
 .for dir in ${DIRS}
 .if defined(${dir}) && !empty(${dir})
@@ -15,7 +14,7 @@ ${dir}_MODE?=	0755
 ${dir}_OWN?=	root
 ${dir}_GRP?=	wheel
 .if defined(${dir}_FLAGS) && !empty(${dir}_FLAGS)
-_FLAGS=	-f ${${dir}_FLAGS}
+${dir}_FLAG=	-f ${${dir}_FLAGS}
 .endif
 
 .if defined(NO_ROOT)
@@ -30,6 +29,6 @@ installfiles: installdirs-${dir}
 installdirs-${dir}:
 	@echo installing DIRS ${dir}
 	${INSTALL} ${${dir}TAG_ARGS} -d -m ${${dir}_MODE} -o ${${dir}_OWN} \
-		-g ${${dir}_GRP} ${_FLAGS} ${DESTDIR}${${dir}}
+		-g ${${dir}_GRP} ${${dir}_FLAG} ${DESTDIR}${${dir}}
 .endif
 .endfor
