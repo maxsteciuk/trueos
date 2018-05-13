@@ -543,3 +543,8 @@ MLINKS+=vis.3 nvis.3 \
 	vis.3 svis.3
 
 MLINKS+=wordexp.3 wordfree.3
+
+DIRS+=	VAR_EMPTY
+VAR_EMPTY=	/var/empty
+VAR_EMPTY_MODE=	555
+VAR_EMPTY_FLAGS=schg
