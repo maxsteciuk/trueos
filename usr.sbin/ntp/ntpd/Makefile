@@ -12,9 +12,14 @@ CONFS=	ntp.conf
 FILES=	leap-seconds
 FILESDIR=	/etc/ntp
 FILESMODE=	644
+
 DIRS+=	ETC_DIR
 ETC_DIR=	/etc/ntp
 ETC_DIR_MODE=	700
+
+DIRS+=	VAR_DB_NTP
+VAR_DB_NTP=	/var/db/ntp
+VAR_DB_NTP_MODE=	700
 
 SRCS=	cmd_args.c ntp_config.c ntp_control.c ntp_crypto.c ntp_filegen.c \
 	ntp_io.c ntp_leapsec.c ntp_loopfilter.c ntp_monitor.c ntp_parser.c \
