@@ -10,6 +10,10 @@ SRCS=	newfs.c mkfs.c geom_bsd_enc.c
 WARNS?=	3
 MAN=	newfs.8
 
+DIRS+=	SNAP
+SNAP=	/.snap
+SNAP_GRP=	operator
+
 .include <bsd.prog.mk>
 
 test:	${PROG}
