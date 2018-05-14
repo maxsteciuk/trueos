@@ -39,4 +39,8 @@ opt_compat.h:
 .endif
 .endif
 
+DIRS+=	PROC
+PROC=	/proc
+PROC_MODE=	555
+
 .include <bsd.kmod.mk>
