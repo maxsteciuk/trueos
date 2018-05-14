@@ -17,4 +17,7 @@ CFLAGS+=	-I${SYSDIR}/crypto/skein
 
 CFLAGS+=	-Wformat -Wall
 
+DIRS+=	BOOT_ZFS
+BOOT_ZFS=	/boot/zfs
+
 .include <bsd.lib.mk>
