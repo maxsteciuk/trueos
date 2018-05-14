@@ -13,4 +13,7 @@ FILES=	cli.lua \
 	password.lua \
 	screen.lua
 
+DIRS+=	BOOT_LUA
+BOOT_LUA=	/boot/lua
+
 .include <bsd.prog.mk>
