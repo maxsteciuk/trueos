@@ -41,4 +41,7 @@ SUBDIR+=${_x}32
 .endif
 .endfor
 
+DIRS+=	BOOT_DTB
+BOOT_DTB=	/boot/dtb
+
 .include <bsd.subdir.mk>
