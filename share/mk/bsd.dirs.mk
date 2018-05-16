@@ -2,6 +2,8 @@
 #
 # Directory permissions management.
 
+.if !target(__<bsd.dirs.mk>__)
+__<bsd.dirs.mk>__:
 # List of directory variable names to install.  Each variable name's value
 # must be a full path.  If non-default permissions are desired, <DIR>_MODE,
 # <DIR>_OWN, and <DIR>_GRP may be specified.
@@ -32,3 +34,5 @@ installdirs-${dir}:
 		-g ${${dir}_GRP} ${${dir}_FLAG} ${DESTDIR}${${dir}}
 .endif
 .endfor
+
+.endif
