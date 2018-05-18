@@ -317,7 +317,7 @@ ofwfb_initialize(struct vt_device *vd)
 		}
 		if (i != 16)
 			sc->iso_palette = 1;
-				
+
 		break;
 
 	case 32:
@@ -417,7 +417,7 @@ ofwfb_init(struct vt_device *vd)
 	 * remapped for us when relocation turns on.
 	 */
 	if (OF_getproplen(node, "address") == sizeof(fb_phys)) {
-	 	/* XXX We assume #address-cells is 1 at this point. */
+		/* XXX We assume #address-cells is 1 at this point. */
 		OF_getprop(node, "address", &fb_phys, sizeof(fb_phys));
 
 	#if defined(__powerpc__)
@@ -489,7 +489,7 @@ ofwfb_init(struct vt_device *vd)
 	#if defined(__powerpc__)
 		OF_decode_addr(node, fb_phys, &sc->sc_memt, &sc->fb.fb_vbase,
 		    NULL);
-		sc->fb.fb_pbase = sc->fb.fb_vbase; /* 1:1 mapped */
+		sc->fb.fb_pbase = sc->fb.fb_vbase & ~DMAP_BASE_ADDRESS;
 		#ifdef __powerpc64__
 		/* Real mode under a hypervisor probably doesn't cover FB */
 		if (!(mfmsr() & (PSL_HV | PSL_DR)))

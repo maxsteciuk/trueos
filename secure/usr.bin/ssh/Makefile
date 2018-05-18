@@ -11,7 +11,7 @@ CONFS=		ssh_config
 CONFSDIR=	/etc/ssh
 
 SRCS=	ssh.c readconf.c clientloop.c sshtty.c \
-	sshconnect.c sshconnect1.c sshconnect2.c mux.c
+	sshconnect.c sshconnect2.c mux.c
 
 # gss-genr.c really belongs in libssh; see src/secure/lib/libssh/Makefile
 SRCS+=	gss-genr.c

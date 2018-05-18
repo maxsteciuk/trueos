@@ -18,8 +18,6 @@ VAR_LOG=	/var/log
 
 LIBADD=	util
 
-WARNS?= 3
-
 .if ${MK_INET_SUPPORT} != "no"
 CFLAGS+= -DINET
 .endif

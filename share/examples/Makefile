@@ -372,7 +372,7 @@ SE_LIBUSB20= \
 .endif
 
 
-# Setup the .PATH and FILES_GROUPS for all DIRS variables above
+# Setup the FILES_GROUPS for all DIRS variables above.
 # The variables are prefixed by 'SE_' to prevent variable collision in
 # other parts of the system
 .for d in ${SE_DIRS}

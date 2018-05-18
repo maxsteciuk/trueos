@@ -84,9 +84,14 @@ _${group}FILES+= ${file}
 .endfor
 
 installdirs-${group}:
-	@echo installing dirs ${group}DIRS ${${group}DIRS}
-.for dir in ${${group}DIRS}
+	@echo installing dirs ${group}DIR ${${group}DIR}
+.for dir in ${${group}DIR}
+.if defined(NO_ROOT)
 	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
+.else
+	${INSTALL} ${${group}TAG_ARGS} -d -o ${DIROWN} -g ${DIRGRP} \
+		-m ${DIRMODE} ${DESTDIR}${dir}
+.endif
 .endfor
 
 

@@ -2,7 +2,6 @@
 -- SPDX-License-Identifier: BSD-2-Clause-FreeBSD
 --
 -- Copyright (c) 2018 Kyle Evans <kevans@FreeBSD.org>
--- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
 -- modification, are permitted provided that the following conditions
@@ -77,8 +76,7 @@ function cli_execute(...)
 	local argv = {...}
 	-- Just in case...
 	if #argv == 0 then
-		loader.command(...)
-		return
+		return loader.command(...)
 	end
 
 	local cmd_name = argv[1]
@@ -88,11 +86,15 @@ function cli_execute(...)
 		-- traditional reasons for including it don't necessarily apply,
 		-- it may not be totally redundant if we want to have one global
 		-- handling multiple commands
-		cmd(...)
+		return cmd(...)
 	else
-		loader.command(...)
+		return loader.command(...)
 	end
 
+end
+
+function cli_execute_unparsed(str)
+	return cli_execute(loader.parse(str))
 end
 
 -- Module exports
