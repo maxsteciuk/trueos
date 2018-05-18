@@ -44,4 +44,7 @@ SUBDIR+=${_x}32
 DIRS+=	BOOT_DTB
 BOOT_DTB=	/boot/dtb
 
+DIRS+=	BOOT_LUA
+BOOT_LUA=	/boot/lua
+
 .include <bsd.subdir.mk>
