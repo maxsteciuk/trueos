@@ -19,6 +19,9 @@ ${dir}_GRP?=	wheel
 ${dir}_FLAG=	-f ${${dir}_FLAGS}
 .endif
 
+# Token to shortcut directory creation in bsd.files.mk FILESDIR.
+_DIR_${${dir}}=	true
+
 .if defined(NO_ROOT)
 .if !defined(${dir}TAGS) || ! ${${dir}TAGS:Mpackage=*}
 ${dir}TAGS+=		package=${${dir}PACKAGE:Uruntime}
