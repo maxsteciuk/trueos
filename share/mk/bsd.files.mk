@@ -85,8 +85,7 @@ _${group}FILES+= ${file}
 
 installdirs-${group}:
 .for dir in ${${group}DIR}
-.if ${_DIR_${dir}} != "true"
-#.if !defined(${_DIR_${dir}}) && empty(${_DIR_${dir}})
+.if !defined(${_DIR_${dir}}) && empty(${_DIR_${dir}}) && ${_DIR_${dir}} != "true"
 	@echo installing dirs ${group}DIR ${dir}
 .if defined(NO_ROOT)
 	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
