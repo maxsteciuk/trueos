@@ -83,16 +83,16 @@ _${group}FILES+= ${file}
 .endif
 .endfor
 
-installdirs-${group}:
 .for dir in ${${group}DIR}
-.if !defined(_DIR_${dir}) && empty(_DIR_${dir})
+installdirs-${group}: ${DESTDIR}${dir}
+
+${DESTDIR}${dir}:
 	@echo installing dirs ${group}DIR ${dir}
 .if defined(NO_ROOT)
 	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
 .else
 	${INSTALL} ${${group}TAG_ARGS} -d -o ${DIROWN} -g ${DIRGRP} \
 		-m ${DIRMODE} ${DESTDIR}${dir}
-.endif
 .endif
 .endfor
 
