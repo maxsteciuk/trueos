@@ -84,31 +84,21 @@ _${group}FILES+= ${file}
 .endfor
 
 .for dir in ${${group}DIR}
-installdirs-${group}: ${DESTDIR}${dir}
-
-${DESTDIR}${dir}:
-	@echo installing dirs ${group}DIR ${dir}
-.if defined(NO_ROOT)
-	${INSTALL} ${${group}TAG_ARGS} -d ${DESTDIR}${dir}
-.else
-	${INSTALL} ${${group}TAG_ARGS} -d -o ${DIROWN} -g ${DIRGRP} \
-		-m ${DIRMODE} ${DESTDIR}${dir}
-.endif
+DIRS+=	${group}DIR
 .endfor
-
 
 .if !empty(_${group}FILES)
 stage_files.${group}: ${_${group}FILES}
 
-installfiles-${group}: installdirs-${group} _${group}INS
+installfiles-${group}: installdirs-${${group}DIR} _${group}INS
 _${group}INS: ${_${group}FILES}
 .if defined(${group}NAME)
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \
 	    -m ${${group}MODE} ${.ALLSRC} \
-	    ${DESTDIR}${${group}DIR}/${${group}NAME}
+	    ${DESTDIR}${${${group}DIR}}/${${group}NAME}
 .else
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \
-	    -m ${${group}MODE} ${.ALLSRC} ${DESTDIR}${${group}DIR}/
+	    -m ${${group}MODE} ${.ALLSRC} ${DESTDIR}${${${group}DIR}}/
 .endif
 .endif
 

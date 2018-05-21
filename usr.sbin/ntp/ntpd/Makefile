@@ -10,7 +10,7 @@ MAN=
 PROG=	ntpd
 CONFS=	ntp.conf
 FILES=	leap-seconds
-FILESDIR=	/etc/ntp
+FILESDIR=	ETC_DIR
 FILESMODE=	644
 
 DIRS+=	ETC_DIR

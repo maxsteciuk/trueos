@@ -9,7 +9,7 @@ __<bsd.dirs.mk>__:
 # <DIR>_OWN, and <DIR>_GRP may be specified.
 DIRS?=
 
-.for dir in ${DIRS}
+.for dir in ${DIRS:O:u}
 .if defined(${dir}) && !empty(${dir})
 # Set default permissions for a directory
 ${dir}_MODE?=	0755
@@ -26,7 +26,9 @@ ${dir}TAGS+=		package=${${dir}PACKAGE:Uruntime}
 ${dir}TAG_ARGS=	-T ${${dir}TAGS:[*]:S/ /,/g}
 .endif
 
-installfiles: ${DESTDIR}${${dir}}
+installdirs: installdirs-${dir}
+
+installdirs-${dir}: ${DESTDIR}${${dir}}
 
 ${DESTDIR}${${dir}}:
 	@echo installing DIRS ${dir}
@@ -34,5 +36,7 @@ ${DESTDIR}${${dir}}:
 		-g ${${dir}_GRP} ${${dir}_FLAG} ${DESTDIR}${${dir}}
 .endif
 .endfor
+
+realinstall: installdirs
 
 .endif
