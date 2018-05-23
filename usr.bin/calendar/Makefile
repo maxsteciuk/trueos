@@ -39,17 +39,72 @@ CALS=	calendars/calendar.all \
 	calendars/calendar.world
 CALSDIR=	${SHAREDIR}/calendar
 
+CAL_de_AT.ISO_8859-15=	calendar.feiertag
+
+CAL_de_DE.ISO8859-1=	calendar.all \
+	calendar.feiertag \
+	calendar.geschichte \
+	calendar.kirche \
+	calendar.literatur \
+	calendar.musik \
+	calendar.wissenschaft
+
+CAL_fr_FR.ISO8859-1=	calendar.all \
+	calendar.fetes \
+	calendar.french \
+	calendar.jferies \
+	calendar.proverbes
+
+CAL_hr_HR.ISO8859-2=	calendar.all \
+	calendar.praznici
+
+CAL_hu_HU.ISO8859-2=	calendar.all \
+	calendar.nevnapok \
+	calendar.unnepek
+
+CAL_pt_BR.ISO8859-1=	calendar.all \
+	calendar.commemorative \
+	calendar.holidays \
+	calendar.mcommemorative
+
+CAL_pt_BR.UTF-8=	calendar.all \
+	calendar.commemorative \
+	calendar.holidays \
+	calendar.mcommemorative
+
+CAL_ru_RU.KOI8-R=	calendar.all \
+	calendar.common \
+	calendar.holiday \
+	calendar.military \
+	calendar.orthodox \
+	calendar.pagan
+
+CAL_ru_RU.UTF-8=	calendar.all \
+	calendar.common \
+	calendar.holiday \
+	calendar.military \
+	calendar.orthodox \
+	calendar.pagan
+
+CAL_uk_UA.KOI8-U=	calendar.all \
+	calendar.holiday \
+	calendar.misc \
+	calendar.orthodox
+
 .for lang in ${INTER}
-FILESGROUPS+=	CAL_${lang}
-CAL_${lang}!=	echo ${.CURDIR}/calendars/${lang}/calendar.*
-CAL_${lang}DIR=	${SHAREDIR}/calendar/${lang}
+FILESGROUPS+=	CALS_${lang}
+CALS_${lang}DIR=	${SHAREDIR}/calendar/${lang}
+.for file in ${CAL_${lang}}
+CALS_${lang}+=	${file:S@^@calendars/${lang}/@}
 .endfor
+.endfor
+
 
 .for link in ${DE_LINKS}
 SYMLINKS+=	de_DE.ISO8859-1 ${SHAREDIR}/calendar/${link}
 .endfor
 .for link in ${FR_LINKS}
-SYMLINKS+=	fr_FR.ISO8859=1 ${SHAREDIR}/calendar/${link}
+SYMLINKS+=	fr_FR.ISO8859-1 ${SHAREDIR}/calendar/${link}
 .endfor
 
 HAS_TESTS=
