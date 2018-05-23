@@ -83,9 +83,10 @@ _${group}FILES+= ${file}
 .endif
 .endfor
 
-.for dir in ${${group}DIR}
-DIRS+=	${group}DIR
-.endfor
+.if ${${group}DIR:S/^\///} == ${${group}DIR}
+DIRS+=	${${group}DIR}
+_${group}DIR=	${${${group}DIR}}
+.endif
 
 .if !empty(_${group}FILES)
 stage_files.${group}: ${_${group}FILES}
@@ -95,10 +96,10 @@ _${group}INS: ${_${group}FILES}
 .if defined(${group}NAME)
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \
 	    -m ${${group}MODE} ${.ALLSRC} \
-	    ${DESTDIR}${${${group}DIR}}/${${group}NAME}
+	    ${DESTDIR}${_${group}DIR}/${${group}NAME}
 .else
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \
-	    -m ${${group}MODE} ${.ALLSRC} ${DESTDIR}${${${group}DIR}}/
+	    -m ${${group}MODE} ${.ALLSRC} ${DESTDIR}${_${group}DIR}/
 .endif
 .endif
 
