@@ -37,6 +37,8 @@ ${DESTDIR}${${dir}}:
 .endif
 .endfor
 
+.if defined(dir)
 realinstall: installdirs
+.endif
 
 .endif
