@@ -72,7 +72,7 @@ STAGE_AS_${file:T}= ${${group}NAME_${file:T}}
 STAGE_DIR.${file:T}= ${STAGE_OBJTOP}${${group}DIR_${file:T}}
 stage_as.${file:T}: ${file}
 
-installfiles-${group}: installdirs-${group} _${group}INS_${file:T}
+installfiles-${group}: installdirs-${group}DIR _${group}INS_${file:T}
 _${group}INS_${file:T}: ${file}
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN_${.ALLSRC:T}} \
 	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
@@ -94,7 +94,7 @@ _${group}DIR=	${${group}DIR}
 .if !empty(_${group}FILES)
 stage_files.${group}: ${_${group}FILES}
 
-installfiles-${group}: installdirs-${DESTDIR}${${group}DIR} _${group}INS
+installfiles-${group}: installdirs-${group}DIR _${group}INS
 _${group}INS: ${_${group}FILES}
 .if defined(${group}NAME)
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \
