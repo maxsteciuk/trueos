@@ -86,12 +86,15 @@ _${group}FILES+= ${file}
 .if ${${group}DIR:S/^\///} == ${${group}DIR}
 DIRS+=	${${group}DIR}
 _${group}DIR=	${${${group}DIR}}
+.else
+DIRS+=	${group}DIR
+_${group}DIR=	${${group}DIR}
 .endif
 
 .if !empty(_${group}FILES)
 stage_files.${group}: ${_${group}FILES}
 
-installfiles-${group}: installdirs-${${group}DIR} _${group}INS
+installfiles-${group}: installdirs-${DESTDIR}${${group}DIR} _${group}INS
 _${group}INS: ${_${group}FILES}
 .if defined(${group}NAME)
 	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN} -g ${${group}GRP} \

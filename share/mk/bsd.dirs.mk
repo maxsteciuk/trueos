@@ -26,9 +26,9 @@ ${dir}TAGS+=		package=${${dir}PACKAGE:Uruntime}
 ${dir}TAG_ARGS=	-T ${${dir}TAGS:[*]:S/ /,/g}
 .endif
 
-installdirs: installdirs-${dir}
+installdirs: installdirs-${DESTDIR}${${dir}}
 
-installdirs-${dir}: ${DESTDIR}${${dir}}
+installdirs-${DESTDIR}${${dir}}: ${DESTDIR}${${dir}}
 
 ${DESTDIR}${${dir}}:
 	@echo installing DIRS ${dir}
