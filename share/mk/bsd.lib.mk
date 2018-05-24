@@ -434,8 +434,8 @@ _libinstall:
 
 .if !defined(LIBRARIES_ONLY)
 .include <bsd.nls.mk>
-.include <bsd.dirs.mk>
 .include <bsd.files.mk>
+.include <bsd.dirs.mk>
 .include <bsd.incs.mk>
 .include <bsd.confs.mk>
 .endif
