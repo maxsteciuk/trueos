@@ -69,7 +69,9 @@ ${group}MODE_${file:T}?=	${${group}MODE}
 .info brd: ${group}DIR_${file}
 .if defined(${group}DIR_${file})
 .info brd yes -- currently: ${${group}DIR}
+.if defined(${group}DIR) && ${${group}DIR} != ${${group}DIR_${file}}
 ${group}DIR+= ${${group}DIR_${file}}
+.endif
 .else
 .info brd no -- setting to ${${group}DIR}
 ${group}DIR_${file:T}?=	${${group}DIR}
