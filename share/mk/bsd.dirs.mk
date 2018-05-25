@@ -31,7 +31,7 @@ installdirs: installdirs-${dir}
 installdirs-${dir}: ${DESTDIR}${${dir}}
 
 ${DESTDIR}${${dir}}:
-	@echo installing DIRS ${dir}
+	@${ECHO} installing DIRS ${dir}
 	${INSTALL} ${${dir}TAG_ARGS} -d -m ${${dir}_MODE} -o ${${dir}_OWN} \
 		-g ${${dir}_GRP} ${${dir}_FLAG} ${DESTDIR}${${dir}}
 .    endif
