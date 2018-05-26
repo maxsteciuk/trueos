@@ -57,7 +57,6 @@ CLEANFILES+=	${NLS}
 FILESGROUPS?=	FILES
 FILESGROUPS+=	NLS
 NLSDIR?=	${SHAREDIR}/nls
-NLSDIRS+=	${NLSDIR}
 
 #
 # installation rules
