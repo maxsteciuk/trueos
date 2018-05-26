@@ -72,7 +72,9 @@ SYMLINKS+= ${NLSSYMLINKS}
 .endif
 .for file in ${NLS}
 NLSNAME_${file:T}= ${file:T:R}/${NLSNAME}.cat
+.if ${NLSDIR} != ${NLSDIR}/${file:R}
 NLSDIRS+=	${NLSDIR}/${file:R}
+.endif
 .if defined(NLSLINKS_${file:R}) && !empty(NLSLINKS_${file:R})
 .if !empty(NLSLINKS_${file:R}:M${file:R})
 .error NLSLINKS_${file:R} contains itself: ${file:R}
