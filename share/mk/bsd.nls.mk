@@ -83,5 +83,6 @@ NLSDIRS+=	${NLSDIR}/${file:R}
 NLSSYMLINKS+= ../${file:R}/${NLSNAME}.cat ${NLSDIR}/${dst}/${NLSNAME}.cat
 .endfor
 .endfor
+DIRS+=	NLSDIRS
 
 .endif # defined(NLS) && !empty(NLS) && ${MK_NLS} != "no"
