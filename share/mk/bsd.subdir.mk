@@ -202,6 +202,5 @@ ${__target}:
 .endif
 .endfor
 
-.include <bsd.dirs.mk>
 .include <bsd.files.mk>
 .endif

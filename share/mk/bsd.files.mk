@@ -5,6 +5,10 @@
 .endif
 
 .if !target(__<bsd.files.mk>__)
+.if target(__<bsd.dirs.mk>__)
+.error bsd.dirs.mk must be included after bsd.files.mk.
+.endif
+
 __<bsd.files.mk>__:
 
 FILESGROUPS?=	FILES
@@ -31,7 +35,7 @@ ${group}OWN=	${SHAREOWN}
 ${group}GRP=	${SHAREGRP}
 .endif
 ${group}MODE?=	${SHAREMODE}
-${group}DIR?=	${BINDIR}
+${group}DIR?=	BINDIR
 STAGE_SETS+=	${group:C,[/*],_,g}
 STAGE_DIR.${group:C,[/*],_,g}= ${STAGE_OBJTOP}${${group}DIR}
 
@@ -44,56 +48,60 @@ ${group}TAG_ARGS=	-T ${${group}TAGS:[*]:S/ /,/g}
 
 
 .if ${${group}DIR:S/^\///} == ${${group}DIR}
-.info brd: ${${group}DIR:S/^\///} == ${${group}DIR}
-.info and: ${${group}DIR}
+# ${group}DIR specifies a variable that specifies a path
 DIRS+=	${${group}DIR}
 _${group}DIR=	${${group}DIR}
 .else
-.info brd: ${${group}DIR:S/^\///} != ${${group}DIR}
-.info and: ${${group}DIR}
+# ${group}DIR specifies a path
 DIRS+=	${group}DIR
 _${group}DIR=	${group}DIR
 .endif
 
 
 .for file in ${${group}}
-${group}OWN_${file:T}?=	${${group}OWN}
-${group}GRP_${file:T}?=	${${group}GRP}
+${group}OWN_${file}?=	${${group}OWN}
+${group}GRP_${file}?=	${${group}GRP}
 .if ${MK_INSTALL_AS_USER} == "yes"
-${group}OWN_${file:T}=	${SHAREOWN}
-${group}GRP_${file:T}=	${SHAREGRP}
+${group}OWN_${file}=	${SHAREOWN}
+${group}GRP_${file}=	${SHAREGRP}
 .endif # ${MK_INSTALL_AS_USER} == "yes"
-${group}MODE_${file:T}?=	${${group}MODE}
+${group}MODE_${file}?=	${${group}MODE}
 
-.info ${file} -- ${group}
-.info brd: ${group}DIR_${file}
-.if defined(${group}DIR_${file})
-.info brd yes -- currently: ${${group}DIR}
-.if defined(${group}DIR) && ${${group}DIR} != ${${group}DIR_${file}}
-${group}DIR+= ${${group}DIR_${file}}
-.endif
+# Determine the directory for the current file.  Default to the parent group
+# DIR, then check to see how to pass that variable on below.
+${group}DIR_${file}?=	${${group}DIR}
+.if ${${group}DIR_${file}:S/^\///} == ${${group}DIR_${file}}
+# DIR specifies a variable that specifies a path
+_${group}DIR_${file}=	${${group}DIR_${file}}
 .else
-.info brd no -- setting to ${${group}DIR}
-${group}DIR_${file:T}?=	${${group}DIR}
-.endif # defined(${group}DIR_${file})
+# DIR directly specifies a path
+_${group}DIR_${file}=	${group}DIR_${file}
+.endif
+${group}PREFIX_${file}=	${DESTDIR}${${_${group}DIR_${file}}}
+
+# Append DIR to DIRS if not already in place -- DIRS is already filtered, so
+# this is primarily to ease inspection.
+.if ${DIRS:M${_${group}DIR_${file}}} == ""
+DIRS+=	${_${group}DIR_${file}}
+.endif
 
 .if defined(${group}NAME)
-${group}NAME_${file:T}?=	${${group}NAME}
+${group}NAME_${file}?=	${${group}NAME}
 .else
-${group}NAME_${file:T}?=	${file:T}
+${group}NAME_${file}?=	${file:T}
 .endif # defined(${group}NAME)
-STAGE_AS_SETS+=	${file:T}
-STAGE_AS_${file:T}= ${${group}NAME_${file:T}}
+STAGE_AS_SETS+=	${file}
+STAGE_AS_${file}= ${${group}NAME_${file}}
 # XXX {group}OWN,GRP,MODE
-STAGE_DIR.${file:T}= ${STAGE_OBJTOP}${${group}DIR_${file:T}}
-stage_as.${file:T}: ${file}
+STAGE_DIR.${file}= ${STAGE_OBJTOP}${${group}DIR_${file}}
+stage_as.${file}: ${file}
 
-installfiles-${group}: installdirs-${_${group}DIR} _${group}INS_${file:T}
-_${group}INS_${file:T}: ${file}
-	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN_${.ALLSRC:T}} \
-	    -g ${${group}GRP_${.ALLSRC:T}} -m ${${group}MODE_${.ALLSRC:T}} \
-	    ${.ALLSRC} \
-	    ${DESTDIR}${${group}DIR_${.ALLSRC:T}}/${${group}NAME_${.ALLSRC:T}}
+installfiles-${group}: _${group}INS1_${file}
+_${group}INS1_${file}: installdirs-${_${group}DIR_${file}} _${group}INS_${file}
+_${group}INS_${file}: ${file}
+	${INSTALL} ${${group}TAG_ARGS} -o ${${group}OWN_${file}} \
+	    -g ${${group}GRP_${file}} -m ${${group}MODE_${file}} \
+	    ${.ALLSRC} ${${group}PREFIX_${file}}/${${group}NAME_${file}}
 .endfor # file in ${${group}}
 
 .endif # defined(${group}) && !empty(${group})
@@ -110,5 +118,7 @@ buildfiles: stage_as
 .endif
 .endif
 .endif
+
+.include <bsd.dirs.mk>
 
 .endif # !target(__<bsd.files.mk>__)
