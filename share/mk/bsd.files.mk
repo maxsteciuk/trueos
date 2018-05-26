@@ -87,6 +87,8 @@ _DIRS+=	${${d}}
 .if ${DIRS:M${_${group}DIR_${file}}} == ""
 .if ${_DIRS:M${${_${group}DIR_${file}}}} == ""
 DIRS+=	${_${group}DIR_${file}}
+.else
+_${group}DIR_${file}=	${group}DIR
 .endif
 .endif
 
