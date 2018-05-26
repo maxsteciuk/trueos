@@ -81,8 +81,13 @@ ${group}PREFIX_${file}=	${DESTDIR}${${_${group}DIR_${file}}}
 
 # Append DIR to DIRS if not already in place -- DIRS is already filtered, so
 # this is primarily to ease inspection.
+.for d in ${DIRS}
+_DIRS+=	${${d}}
+.endfor
 .if ${DIRS:M${_${group}DIR_${file}}} == ""
+.if ${_DIRS:M${${_${group}DIR_${file}}}} == ""
 DIRS+=	${_${group}DIR_${file}}
+.endif
 .endif
 
 .if defined(${group}NAME)
