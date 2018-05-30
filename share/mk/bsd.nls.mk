@@ -71,10 +71,8 @@ STAGE_SYMLINKS_DIR.NLS= ${STAGE_OBJTOP}
 SYMLINKS+= ${NLSSYMLINKS}
 .endif
 .for file in ${NLS}
-NLSNAME_${file:T}= ${file:T:R}/${NLSNAME}.cat
-.if ${NLSDIR} != ${NLSDIR}/${file:R}
-NLSDIRS+=	${NLSDIR}/${file:R}
-.endif
+NLSDIR_${file:T}=	${NLSDIR}/${file:T:R}
+NLSNAME_${file:T}=	${NLSNAME}.cat
 .if defined(NLSLINKS_${file:R}) && !empty(NLSLINKS_${file:R})
 .if !empty(NLSLINKS_${file:R}:M${file:R})
 .error NLSLINKS_${file:R} contains itself: ${file:R}
@@ -84,6 +82,5 @@ NLSDIRS+=	${NLSDIR}/${file:R}
 NLSSYMLINKS+= ../${file:R}/${NLSNAME}.cat ${NLSDIR}/${dst}/${NLSNAME}.cat
 .endfor
 .endfor
-DIRS+=	NLSDIRS
 
 .endif # defined(NLS) && !empty(NLS) && ${MK_NLS} != "no"
