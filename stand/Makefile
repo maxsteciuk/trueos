@@ -45,7 +45,7 @@ DIRS+=	BOOT_DTB
 BOOT_DTB=	/boot/dtb
 
 DIRS+=	BOOT_DTB_OVERLAYS
-BOOT_DTB=	/boot/dtb/overlays
+BOOT_DTB_OVERLAYS=	/boot/dtb/overlays
 
 DIRS+=	BOOT_LUA
 BOOT_LUA=	/boot/lua
