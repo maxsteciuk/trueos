@@ -39,10 +39,8 @@ ${DESTDIR}${${dir}}:
 	${INSTALL} ${${dir}TAG_ARGS} -d -m ${${dir}_MODE} -o ${${dir}_OWN} \
 		-g ${${dir}_GRP} ${${dir}_FLAG} ${_dir}
 .    endif
-.  endfor
 
-.  if defined(dir)
-realinstall: installdirs
-.  endif
+realinstall: installdirs-${dir}
+.  endfor
 
 .endif
