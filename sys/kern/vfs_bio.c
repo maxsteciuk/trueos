@@ -1851,10 +1851,8 @@ bq_init(struct bufqueue *bq, int qindex, int subqueue, const char *lockname)
 static void
 bd_init(struct bufdomain *bd)
 {
-	int domain;
 	int i;
 
-	domain = bd - bdomain;
 	bd->bd_cleanq = &bd->bd_subq[mp_maxid + 1];
 	bq_init(bd->bd_cleanq, QUEUE_CLEAN, mp_maxid + 1, "bufq clean lock");
 	bq_init(&bd->bd_dirtyq, QUEUE_DIRTY, -1, "bufq dirty lock");
@@ -2843,7 +2841,7 @@ vfs_vmio_iodone(struct buf *bp)
 	vm_ooffset_t foff;
 	vm_page_t m;
 	vm_object_t obj;
-	struct vnode *vp;
+	struct vnode *vp __unused;
 	int i, iosize, resid;
 	bool bogus;
 
@@ -4312,6 +4310,8 @@ allocbuf(struct buf *bp, int size)
 
 extern int inflight_transient_maps;
 
+static struct bio_queue nondump_bios;
+
 void
 biodone(struct bio *bp)
 {
@@ -4320,6 +4320,17 @@ biodone(struct bio *bp)
 	vm_offset_t start, end;
 
 	biotrack(bp, __func__);
+
+	/*
+	 * Avoid completing I/O when dumping after a panic since that may
+	 * result in a deadlock in the filesystem or pager code.  Note that
+	 * this doesn't affect dumps that were started manually since we aim
+	 * to keep the system usable after it has been resumed.
+	 */
+	if (__predict_false(dumping && SCHEDULER_STOPPED())) {
+		TAILQ_INSERT_HEAD(&nondump_bios, bp, bio_queue);
+		return;
+	}
 	if ((bp->bio_flags & BIO_TRANSIENT_MAPPING) != 0) {
 		bp->bio_flags &= ~BIO_TRANSIENT_MAPPING;
 		bp->bio_flags |= BIO_UNMAPPED;
@@ -5014,7 +5025,7 @@ bufsync(struct bufobj *bo, int waitfor)
 void
 bufstrategy(struct bufobj *bo, struct buf *bp)
 {
-	int i = 0;
+	int i __unused;
 	struct vnode *vp;
 
 	vp = bp->b_vp;

@@ -733,7 +733,7 @@ static int iflib_tx_credits_update(if_ctx_t ctx, iflib_txq_t txq);
 static int iflib_rxd_avail(if_ctx_t ctx, iflib_rxq_t rxq, qidx_t cidx, qidx_t budget);
 static int iflib_qset_structures_setup(if_ctx_t ctx);
 static int iflib_msix_init(if_ctx_t ctx);
-static int iflib_legacy_setup(if_ctx_t ctx, driver_filter_t filter, void *filterarg, int *rid, char *str);
+static int iflib_legacy_setup(if_ctx_t ctx, driver_filter_t filter, void *filterarg, int *rid, const char *str);
 static void iflib_txq_check_drain(iflib_txq_t txq, int budget);
 static uint32_t iflib_txq_can_drain(struct ifmp_ring *);
 static int iflib_register(if_ctx_t);
@@ -1270,7 +1270,6 @@ static void
 iflib_gen_mac(if_ctx_t ctx)
 {
 	struct thread *td;
-	struct ifnet *ifp;
 	MD5_CTX mdctx;
 	char uuid[HOSTUUIDLEN+1];
 	char buf[HOSTUUIDLEN+16];
@@ -1278,7 +1277,6 @@ iflib_gen_mac(if_ctx_t ctx)
 	unsigned char digest[16];
 
 	td = curthread;
-	ifp = ctx->ifc_ifp;
 	mac = ctx->ifc_mac;
 	uuid[HOSTUUIDLEN] = 0;
 	bcopy(td->td_ucred->cr_prison->pr_hostuuid, uuid, HOSTUUIDLEN);
@@ -1525,8 +1523,8 @@ iflib_fast_intr_ctx(void *arg)
 
 static int
 _iflib_irq_alloc(if_ctx_t ctx, if_irq_t irq, int rid,
-	driver_filter_t filter, driver_intr_t handler, void *arg,
-				 char *name)
+		 driver_filter_t filter, driver_intr_t handler, void *arg,
+		 const char *name)
 {
 	int rc, flags;
 	struct resource *res;
@@ -2601,8 +2599,7 @@ iflib_rxeof(iflib_rxq_t rxq, qidx_t budget)
 	iflib_fl_t fl;
 	struct ifnet *ifp;
 	int lro_enabled;
-	bool lro_possible = false;
-	bool v4_forwarding, v6_forwarding;
+	bool v4_forwarding, v6_forwarding, lro_possible;
 
 	/*
 	 * XXX early demux data packets so that if_input processing only handles
@@ -2610,6 +2607,7 @@ iflib_rxeof(iflib_rxq_t rxq, qidx_t budget)
 	 */
 	struct mbuf *m, *mh, *mt, *mf;
 
+	lro_possible = v4_forwarding = v6_forwarding = false;
 	ifp = ctx->ifc_ifp;
 	mh = mt = NULL;
 	MPASS(budget > 0);
@@ -3809,7 +3807,8 @@ _task_fn_admin(void *context)
 	ctx->ifc_flags &= ~(IFC_DO_RESET|IFC_DO_WATCHDOG);
 	STATE_UNLOCK(ctx);
 
-	if (!running & !oactive)
+	if ((!running & !oactive) &&
+	    !(ctx->ifc_sctx->isc_flags & IFLIB_ADMIN_ALWAYS_RUN))
 		return;
 
 	CTX_LOCK(ctx);
@@ -4281,10 +4280,7 @@ iflib_reset_qvalues(if_ctx_t ctx)
 	if_softc_ctx_t scctx = &ctx->ifc_softc_ctx;
 	if_shared_ctx_t sctx = ctx->ifc_sctx;
 	device_t dev = ctx->ifc_dev;
-	int i, main_txq, main_rxq;
-
-	main_txq = (sctx->isc_flags & IFLIB_HAS_TXCQ) ? 1 : 0;
-	main_rxq = (sctx->isc_flags & IFLIB_HAS_RXCQ) ? 1 : 0;
+	int i;
 
 	scctx->isc_txrx_budget_bytes_max = IFLIB_MAX_TX_BYTES;
 	scctx->isc_tx_qdepth = IFLIB_DEFAULT_TX_QDEPTH;
@@ -4819,8 +4815,6 @@ iflib_device_deregister(if_ctx_t ctx)
 
 	iflib_netmap_detach(ifp);
 	ether_ifdetach(ifp);
-	/* ether_ifdetach calls if_qflush - lock must be destroy afterwards*/
-	CTX_LOCK_DESTROY(ctx);
 	if (ctx->ifc_led_dev != NULL)
 		led_destroy(ctx->ifc_led_dev);
 	/* XXX drain any dependent tasks */
@@ -4843,8 +4837,12 @@ iflib_device_deregister(if_ctx_t ctx)
 		taskqgroup_detach(tqg, &ctx->ifc_admin_task);
 	if (ctx->ifc_vflr_task.gt_uniq != NULL)
 		taskqgroup_detach(tqg, &ctx->ifc_vflr_task);
-
+	CTX_LOCK(ctx);
 	IFDI_DETACH(ctx);
+	CTX_UNLOCK(ctx);
+
+	/* ether_ifdetach calls if_qflush - lock must be destroy afterwards*/
+	CTX_LOCK_DESTROY(ctx);
 	device_set_softc(ctx->ifc_dev, NULL);
 	if (ctx->ifc_softc_ctx.isc_intr != IFLIB_INTR_LEGACY) {
 		pci_release_msi(dev);
@@ -5397,7 +5395,7 @@ iflib_qset_structures_setup(if_ctx_t ctx)
 
 int
 iflib_irq_alloc(if_ctx_t ctx, if_irq_t irq, int rid,
-				driver_filter_t filter, void *filter_arg, driver_intr_t handler, void *arg, char *name)
+		driver_filter_t filter, void *filter_arg, driver_intr_t handler, void *arg, const char *name)
 {
 
 	return (_iflib_irq_alloc(ctx, irq, rid, filter, handler, arg, name));
@@ -5528,7 +5526,7 @@ get_core_offset(if_ctx_t ctx, iflib_intr_type_t type, int qid)
 /* Just to avoid copy/paste */
 static inline int
 iflib_irq_set_affinity(if_ctx_t ctx, int irq, iflib_intr_type_t type, int qid,
-    struct grouptask *gtask, struct taskqgroup *tqg, void *uniq, char *name)
+    struct grouptask *gtask, struct taskqgroup *tqg, void *uniq, const char *name)
 {
 	int cpuid;
 	int err, tid;
@@ -5551,8 +5549,8 @@ iflib_irq_set_affinity(if_ctx_t ctx, int irq, iflib_intr_type_t type, int qid,
 
 int
 iflib_irq_alloc_generic(if_ctx_t ctx, if_irq_t irq, int rid,
-						iflib_intr_type_t type, driver_filter_t *filter,
-						void *filter_arg, int qid, char *name)
+			iflib_intr_type_t type, driver_filter_t *filter,
+			void *filter_arg, int qid, const char *name)
 {
 	struct grouptask *gtask;
 	struct taskqgroup *tqg;
@@ -5633,7 +5631,7 @@ iflib_irq_alloc_generic(if_ctx_t ctx, if_irq_t irq, int rid,
 }
 
 void
-iflib_softirq_alloc_generic(if_ctx_t ctx, if_irq_t irq, iflib_intr_type_t type,  void *arg, int qid, char *name)
+iflib_softirq_alloc_generic(if_ctx_t ctx, if_irq_t irq, iflib_intr_type_t type,  void *arg, int qid, const char *name)
 {
 	struct grouptask *gtask;
 	struct taskqgroup *tqg;
@@ -5690,7 +5688,7 @@ iflib_irq_free(if_ctx_t ctx, if_irq_t irq)
 }
 
 static int
-iflib_legacy_setup(if_ctx_t ctx, driver_filter_t filter, void *filter_arg, int *rid, char *name)
+iflib_legacy_setup(if_ctx_t ctx, driver_filter_t filter, void *filter_arg, int *rid, const char *name)
 {
 	iflib_txq_t txq = ctx->ifc_txqs;
 	iflib_rxq_t rxq = ctx->ifc_rxqs;

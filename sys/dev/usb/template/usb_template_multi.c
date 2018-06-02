@@ -89,15 +89,23 @@ enum {
 	MULTI_MAX_INDEX,
 };
 
-#define	MULTI_DEFAULT_MODEM		"Virtual serial console"
+#define	MULTI_DEFAULT_VENDOR_ID		USB_TEMPLATE_VENDOR
+#define	MULTI_DEFAULT_PRODUCT_ID	0x05dc
+#define	MULTI_DEFAULT_MODEM		"Virtual serial port"
 #define	MULTI_DEFAULT_ETH_MAC		"2A02030405060789AB"
 #define	MULTI_DEFAULT_ETH_CONTROL	"Ethernet Comm Interface"
 #define	MULTI_DEFAULT_ETH_DATA		"Ethernet Data Interface"
 #define	MULTI_DEFAULT_STORAGE		"Mass Storage Interface"
 #define	MULTI_DEFAULT_CONFIGURATION	"Default configuration"
-#define	MULTI_DEFAULT_MANUFACTURER	"The FreeBSD Project"
-#define MULTI_DEFAULT_PRODUCT		"Multifunction Device"
-#define MULTI_DEFAULT_SERIAL_NUMBER	"May 2018"
+#define	MULTI_DEFAULT_MANUFACTURER	USB_TEMPLATE_MANUFACTURER
+#define	MULTI_DEFAULT_PRODUCT		"Multifunction Device"
+/*
+ * The reason for this being called like this is that OSX
+ * derives the device node name from it, resulting in a somewhat
+ * user-friendly "/dev/cu.usbmodemFreeBSD1".  And yes, the "1"
+ * needs to be there, otherwise OSX will mangle it.
+ */
+#define MULTI_DEFAULT_SERIAL_NUMBER	"FreeBSD1"
 
 static struct usb_string_descriptor	multi_modem;
 static struct usb_string_descriptor	multi_eth_mac;
@@ -299,7 +307,7 @@ static const struct usb_temp_interface_desc modem_iface_0 = {
 	.ppEndpoints = modem_iface_0_ep,
 	.bInterfaceClass = UICLASS_CDC,
 	.bInterfaceSubClass = UISUBCLASS_ABSTRACT_CONTROL_MODEL,
-	.bInterfaceProtocol = UIPROTO_CDC_AT,
+	.bInterfaceProtocol = UIPROTO_CDC_NONE,
 	.iInterface = MULTI_MODEM_INDEX,
 };
 
@@ -362,8 +370,8 @@ static const struct usb_temp_interface_desc *multi_interfaces[] = {
 
 static const struct usb_temp_config_desc multi_config_desc = {
 	.ppIfaceDesc = multi_interfaces,
-	.bmAttributes = UC_BUS_POWERED,
-	.bMaxPower = 25,		/* 50 mA */
+	.bmAttributes = 0,
+	.bMaxPower = 0,
 	.iConfiguration = MULTI_CONFIGURATION_INDEX,
 };
 static const struct usb_temp_config_desc *multi_configs[] = {
@@ -374,8 +382,8 @@ static const struct usb_temp_config_desc *multi_configs[] = {
 struct usb_temp_device_desc usb_template_multi = {
 	.getStringDesc = &multi_get_string_desc,
 	.ppConfigDesc = multi_configs,
-	.idVendor = USB_TEMPLATE_VENDOR,
-	.idProduct = 0x0001,
+	.idVendor = MULTI_DEFAULT_VENDOR_ID,
+	.idProduct = MULTI_DEFAULT_PRODUCT_ID,
 	.bcdDevice = 0x0100,
 	.bDeviceClass = UDCLASS_IN_INTERFACE,
 	.bDeviceSubClass = 0,

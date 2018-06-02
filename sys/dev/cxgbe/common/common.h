@@ -358,7 +358,7 @@ struct adapter_params {
 	u_int ftid_min;
 	u_int ftid_max;
 	u_int etid_min;
-	u_int netids;
+	u_int etid_max;
 
 	unsigned int cim_la_size;
 
@@ -418,12 +418,12 @@ struct link_config {
 	unsigned char  requested_aneg;   /* link aneg user has requested */
 	unsigned char  requested_fc;     /* flow control user has requested */
 	unsigned char  requested_fec;    /* FEC user has requested */
-	unsigned int   requested_speed;  /* speed user has requested */
+	unsigned int   requested_speed;  /* speed user has requested (Mbps) */
 
 	unsigned short supported;        /* link capabilities */
 	unsigned short advertising;      /* advertised capabilities */
 	unsigned short lp_advertising;   /* peer advertised capabilities */
-	unsigned int   speed;            /* actual link speed */
+	unsigned int   speed;            /* actual link speed (Mbps) */
 	unsigned char  fc;               /* actual link flow control */
 	unsigned char  fec;              /* actual FEC */
 	unsigned char  link_ok;          /* link up? */
@@ -448,7 +448,8 @@ static inline int is_ftid(const struct adapter *sc, u_int tid)
 static inline int is_etid(const struct adapter *sc, u_int tid)
 {
 
-	return (tid >= sc->params.etid_min);
+	return (sc->params.etid_min > 0 && tid >= sc->params.etid_min &&
+	    tid <= sc->params.etid_max);
 }
 
 static inline int is_offload(const struct adapter *adap)

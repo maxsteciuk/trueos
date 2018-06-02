@@ -175,7 +175,7 @@ static LIST_HEAD(pmc_ownerhash, pmc_owner)	*pmc_ownerhash;
  * List of PMC owners with system-wide sampling PMCs.
  */
 
-static LIST_HEAD(, pmc_owner)			pmc_ss_owners;
+static CK_LIST_HEAD(, pmc_owner)			pmc_ss_owners;
 
 /*
  * List of free thread entries. This is protected by the spin
@@ -1657,7 +1657,7 @@ pmc_process_csw_out(struct thread *td)
 				mtx_pool_unlock_spin(pmc_mtxpool, pm);
 
 				if (pm->pm_flags & PMC_F_LOG_PROCCSW)
-					pmclog_process_proccsw(pm, pp, tmp);
+					pmclog_process_proccsw(pm, pp, tmp, td);
 			}
 		}
 
@@ -1717,12 +1717,12 @@ pmc_process_mmap(struct thread *td, struct pmckern_map_in *pkm)
 	const struct pmc_process *pp;
 
 	freepath = fullpath = NULL;
-	epoch_exit(global_epoch);
+	MPASS(!in_epoch());
 	pmc_getfilename((struct vnode *) pkm->pm_file, &fullpath, &freepath);
 
 	pid = td->td_proc->p_pid;
 
-	epoch_enter(global_epoch);
+	epoch_enter_preempt(global_epoch_preempt);
 	/* Inform owners of all system-wide sampling PMCs. */
 	CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 	    if (po->po_flags & PMC_PO_OWNS_LOGFILE)
@@ -1743,6 +1743,7 @@ pmc_process_mmap(struct thread *td, struct pmckern_map_in *pkm)
   done:
 	if (freepath)
 		free(freepath, M_TEMP);
+	epoch_exit_preempt(global_epoch_preempt);
 }
 
 
@@ -1761,12 +1762,12 @@ pmc_process_munmap(struct thread *td, struct pmckern_map_out *pkm)
 
 	pid = td->td_proc->p_pid;
 
-	epoch_enter(global_epoch);
+	epoch_enter_preempt(global_epoch_preempt);
 	CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 	    if (po->po_flags & PMC_PO_OWNS_LOGFILE)
 		pmclog_process_map_out(po, pid, pkm->pm_address,
 		    pkm->pm_address + pkm->pm_size);
-	epoch_exit(global_epoch);
+	epoch_exit_preempt(global_epoch_preempt);
 
 	if ((pp = pmc_find_process_descriptor(td->td_proc, 0)) == NULL)
 		return;
@@ -2065,13 +2066,13 @@ pmc_hook_handler(struct thread *td, int function, void *arg)
 
 		pk = (struct pmckern_procexec *) arg;
 
-		epoch_enter(global_epoch);
+		epoch_enter_preempt(global_epoch_preempt);
 		/* Inform owners of SS mode PMCs of the exec event. */
 		CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 		    if (po->po_flags & PMC_PO_OWNS_LOGFILE)
 			    pmclog_process_procexec(po, PMC_ID_INVALID,
 				p->p_pid, pk->pm_entryaddr, fullpath);
-		epoch_exit(global_epoch);
+		epoch_exit_preempt(global_epoch_preempt);
 
 		PROC_LOCK(p);
 		is_using_hwpmcs = p->p_flag & P_HWPMC;
@@ -2196,7 +2197,6 @@ pmc_hook_handler(struct thread *td, int function, void *arg)
 		break;
 
 	case PMC_FN_MMAP:
-		MPASS(in_epoch() || sx_xlocked(&pmc_sx));
 		pmc_process_mmap(td, (struct pmckern_map_in *) arg);
 		break;
 
@@ -2351,9 +2351,9 @@ pmc_thread_descriptor_pool_free_task(void *arg __unused)
 	/* Determine what changes, if any, we need to make. */
 	mtx_lock_spin(&pmc_threadfreelist_mtx);
 	delta = pmc_threadfreelist_entries - pmc_threadfreelist_max;
-	while (delta > 0) {
-		pt = LIST_FIRST(&pmc_threadfreelist);
-		MPASS(pt);
+	while (delta > 0 &&
+		   (pt = LIST_FIRST(&pmc_threadfreelist)) != NULL) {
+		delta--;
 		LIST_REMOVE(pt, pt_next);
 		LIST_INSERT_HEAD(&tmplist, pt, pt_next);
 	}
@@ -2361,7 +2361,7 @@ pmc_thread_descriptor_pool_free_task(void *arg __unused)
 
 	/* If there are entries to free, free them. */
 	while (!LIST_EMPTY(&tmplist)) {
-		pt = LIST_FIRST(&pmc_threadfreelist);
+		pt = LIST_FIRST(&tmplist);
 		LIST_REMOVE(pt, pt_next);
 		free(pt, M_PMC);
 	}
@@ -2406,8 +2406,10 @@ pmc_find_thread_descriptor(struct pmc_process *pp, struct thread *td,
 	 */
 	if (mode & PMC_FLAG_ALLOCATE) {
 		if ((ptnew = pmc_thread_descriptor_pool_alloc()) == NULL) {
-			wait_flag = (mode & PMC_FLAG_NOWAIT) ? M_NOWAIT :
-			    M_WAITOK;
+			wait_flag = M_WAITOK;
+			if ((mode & PMC_FLAG_NOWAIT) || in_epoch())
+				wait_flag = M_NOWAIT;
+
 			ptnew = malloc(THREADENTRY_SIZE, M_PMC,
 			    wait_flag|M_ZERO);
 		}
@@ -2749,7 +2751,7 @@ pmc_release_pmc_descriptor(struct pmc *pm)
 			if (po->po_sscount == 0) {
 				atomic_subtract_rel_int(&pmc_ss_count, 1);
 				CK_LIST_REMOVE(po, po_ssnext);
-				epoch_wait(global_epoch);
+				epoch_wait_preempt(global_epoch_preempt);
 			}
 		}
 
@@ -3243,7 +3245,7 @@ pmc_stop(struct pmc *pm)
 		if (po->po_sscount == 0) {
 			atomic_subtract_rel_int(&pmc_ss_count, 1);
 			CK_LIST_REMOVE(po, po_ssnext);
-			epoch_wait(global_epoch);
+			epoch_wait_preempt(global_epoch_preempt);
 			PMCDBG1(PMC,OPS,2,"po=%p removed from global list", po);
 		}
 	}
@@ -3251,6 +3253,16 @@ pmc_stop(struct pmc *pm)
 	return (error);
 }
 
+static struct pmc_classdep *
+pmc_class_to_classdep(enum pmc_class class)
+{
+	int n;
+
+	for (n = 0; n < md->pmd_nclass; n++)
+		if (md->pmd_classdep[n].pcd_class == class)
+			return (&md->pmd_classdep[n]);
+	return (NULL);
+}
 
 #ifdef	HWPMC_DEBUG
 static const char *pmc_op_to_name[] = {
@@ -3814,16 +3826,14 @@ pmc_syscall_handler(struct thread *td, void *syscall_args)
 			caps |= PMC_CAP_INTERRUPT;
 
 		/* A valid class specifier should have been passed in. */
-		for (n = 0; n < md->pmd_nclass; n++)
-			if (md->pmd_classdep[n].pcd_class == pa.pm_class)
-				break;
-		if (n == md->pmd_nclass) {
+		pcd = pmc_class_to_classdep(pa.pm_class);
+		if (pcd == NULL) {
 			error = EINVAL;
 			break;
 		}
 
 		/* The requested PMC capabilities should be feasible. */
-		if ((md->pmd_classdep[n].pcd_caps & caps) != caps) {
+		if ((pcd->pcd_caps & caps) != caps) {
 			error = EOPNOTSUPP;
 			break;
 		}
@@ -3850,7 +3860,7 @@ pmc_syscall_handler(struct thread *td, void *syscall_args)
 
 		if (PMC_IS_SYSTEM_MODE(mode)) {
 			pmc_select_cpu(cpu);
-			for (n = 0; n < (int) md->pmd_npmc; n++) {
+			for (n = pcd->pcd_ri; n < (int) md->pmd_npmc; n++) {
 				pcd = pmc_ri_to_classdep(md, n, &adjri);
 				if (pmc_can_allocate_row(n, mode) == 0 &&
 				    pmc_can_allocate_rowindex(
@@ -3863,7 +3873,7 @@ pmc_syscall_handler(struct thread *td, void *syscall_args)
 			}
 		} else {
 			/* Process virtual mode */
-			for (n = 0; n < (int) md->pmd_npmc; n++) {
+			for (n = pcd->pcd_ri; n < (int) md->pmd_npmc; n++) {
 				pcd = pmc_ri_to_classdep(md, n, &adjri);
 				if (pmc_can_allocate_row(n, mode) == 0 &&
 				    pmc_can_allocate_rowindex(
@@ -3927,6 +3937,7 @@ pmc_syscall_handler(struct thread *td, void *syscall_args)
 		}
 
 		pmc->pm_state    = PMC_STATE_ALLOCATED;
+		pmc->pm_class	= pa.pm_class;
 
 		/*
 		 * mark row disposition
@@ -4576,10 +4587,13 @@ pmc_process_interrupt(int cpu, int ring, struct pmc *pm, struct trapframe *tf,
 	counter_u64_add(pm->pm_runcount, 1);	/* hold onto PMC */
 
 	ps->ps_pmc = pm;
-	if ((td = curthread) && td->td_proc)
-		ps->ps_pid = td->td_proc->p_pid;
-	else
-		ps->ps_pid = -1;
+	ps->ps_pid = -1;
+	ps->ps_tid = -1;
+	if ((td = curthread) != NULL) {
+		ps->ps_tid = td->td_tid;
+		if (td->td_proc)
+			ps->ps_pid = td->td_proc->p_pid;
+	}
 	ps->ps_cpu = cpu;
 	ps->ps_td = td;
 	ps->ps_flags = inuserspace ? PMC_CC_F_USERSPACE : 0;
@@ -4873,11 +4887,11 @@ pmc_process_exit(void *arg __unused, struct proc *p)
 	/*
 	 * Log a sysexit event to all SS PMC owners.
 	 */
-	epoch_enter(global_epoch);
+	epoch_enter_preempt(global_epoch_preempt);
 	CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 	    if (po->po_flags & PMC_PO_OWNS_LOGFILE)
 		    pmclog_process_sysexit(po, p->p_pid);
-	epoch_exit(global_epoch);
+	epoch_exit_preempt(global_epoch_preempt);
 
 	if (!is_using_hwpmcs)
 		return;
@@ -5058,11 +5072,11 @@ pmc_process_fork(void *arg __unused, struct proc *p1, struct proc *newproc,
 	 * If there are system-wide sampling PMCs active, we need to
 	 * log all fork events to their owner's logs.
 	 */
-	epoch_enter(global_epoch);
+	epoch_enter_preempt(global_epoch_preempt);
 	CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 	    if (po->po_flags & PMC_PO_OWNS_LOGFILE)
 		    pmclog_process_procfork(po, p1->p_pid, newproc->p_pid);
-	epoch_exit(global_epoch);
+	epoch_exit_preempt(global_epoch_preempt);
 
 	if (!is_using_hwpmcs)
 		return;
@@ -5131,12 +5145,12 @@ pmc_kld_load(void *arg __unused, linker_file_t lf)
 	/*
 	 * Notify owners of system sampling PMCs about KLD operations.
 	 */
-	epoch_enter(global_epoch);
+	epoch_enter_preempt(global_epoch_preempt);
 	CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 		if (po->po_flags & PMC_PO_OWNS_LOGFILE)
 			pmclog_process_map_in(po, (pid_t) -1,
 			    (uintfptr_t) lf->address, lf->filename);
-	epoch_exit(global_epoch);
+	epoch_exit_preempt(global_epoch_preempt);
 
 	/*
 	 * TODO: Notify owners of (all) process-sampling PMCs too.
@@ -5149,12 +5163,12 @@ pmc_kld_unload(void *arg __unused, const char *filename __unused,
 {
 	struct pmc_owner *po;
 
-	epoch_enter(global_epoch);
+	epoch_enter_preempt(global_epoch_preempt);
 	CK_LIST_FOREACH(po, &pmc_ss_owners, po_ssnext)
 		if (po->po_flags & PMC_PO_OWNS_LOGFILE)
 			pmclog_process_map_out(po, (pid_t) -1,
 			    (uintfptr_t) address, (uintfptr_t) address + size);
-	epoch_exit(global_epoch);
+	epoch_exit_preempt(global_epoch_preempt);
 
 	/*
 	 * TODO: Notify owners of process-sampling PMCs.
@@ -5432,7 +5446,7 @@ pmc_initialize(void)
 	mtx_init(&pmc_processhash_mtx, "pmc-process-hash", "pmc-leaf",
 	    MTX_SPIN);
 
-	LIST_INIT(&pmc_ss_owners);
+	CK_LIST_INIT(&pmc_ss_owners);
 	pmc_ss_count = 0;
 
 	/* allocate a pool of spin mutexes */
@@ -5557,6 +5571,7 @@ pmc_cleanup(void)
 		mtx_pool_destroy(&pmc_mtxpool);
 
 	mtx_destroy(&pmc_processhash_mtx);
+	taskqgroup_config_gtask_deinit(&free_gtask);
 	if (pmc_processhash) {
 #ifdef	HWPMC_DEBUG
 		struct pmc_process *pp;
@@ -5579,7 +5594,7 @@ pmc_cleanup(void)
 		pmc_ownerhash = NULL;
 	}
 
-	KASSERT(LIST_EMPTY(&pmc_ss_owners),
+	KASSERT(CK_LIST_EMPTY(&pmc_ss_owners),
 	    ("[pmc,%d] Global SS owner list not empty", __LINE__));
 	KASSERT(pmc_ss_count == 0,
 	    ("[pmc,%d] Global SS count not empty", __LINE__));

@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  *
  * Copyright (c) 1982, 1986, 1989, 1991, 1993
- *	The Regents of the University of California.
- * Copyright (c) 2004-2009 Robert N. M. Watson
- * All rights reserved.
+ *	The Regents of the University of California. All Rights Reserved.
+ * Copyright (c) 2004-2009 Robert N. M. Watson All Rights Reserved.
+ * Copyright (c) 2018 Matthew Macy
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -282,7 +282,7 @@ static struct mtx	unp_defers_lock;
 #define UNP_REF_LIST_UNLOCK()		UNP_DEFERRED_UNLOCK();
 
 #define UNP_PCB_LOCK_INIT(unp)		mtx_init(&(unp)->unp_mtx,	\
-					    "unp_mtx", "unp_mtx",	\
+					    "unp", "unp",	\
 					    MTX_DUPOK|MTX_DEF)
 #define	UNP_PCB_LOCK_DESTROY(unp)	mtx_destroy(&(unp)->unp_mtx)
 #define	UNP_PCB_LOCK(unp)		mtx_lock(&(unp)->unp_mtx)
@@ -344,6 +344,7 @@ unp_pcb_rele(struct unpcb *unp)
 static void
 unp_pcb_lock2(struct unpcb *unp, struct unpcb *unp2)
 {
+	MPASS(unp != unp2);
 	UNP_PCB_UNLOCK_ASSERT(unp);
 	UNP_PCB_UNLOCK_ASSERT(unp2);
 	if ((uintptr_t)unp2 > (uintptr_t)unp) {
@@ -375,6 +376,7 @@ unp_pcb_owned_lock2_slowpath(struct unpcb *unp, struct unpcb **unp2p, int *freed
 		freed = 0;													\
 		UNP_PCB_LOCK_ASSERT((unp));									\
 		UNP_PCB_UNLOCK_ASSERT((unp2));								\
+		MPASS(unp != unp2);											\
 		if (__predict_true(UNP_PCB_TRYLOCK((unp2))))				\
 			break;													\
 		else if ((uintptr_t)(unp2) > (uintptr_t)(unp))				\
@@ -720,7 +722,9 @@ uipc_close(struct socket *so)
 	}
 	unp2 = unp->unp_conn;
 	unp_pcb_hold(unp);
-	if (unp2 != NULL) {
+	if (__predict_false(unp == unp2)) {
+		unp_disconnect(unp, unp2);
+	} else if (unp2 != NULL) {
 		unp_pcb_hold(unp2);
 		unp_pcb_owned_lock2(unp, unp2, freed);
 		unp_disconnect(unp, unp2);
@@ -745,9 +749,13 @@ uipc_connect2(struct socket *so1, struct socket *so2)
 	KASSERT(unp != NULL, ("uipc_connect2: unp == NULL"));
 	unp2 = so2->so_pcb;
 	KASSERT(unp2 != NULL, ("uipc_connect2: unp2 == NULL"));
-	unp_pcb_lock2(unp, unp2);
+	if (unp != unp2)
+		unp_pcb_lock2(unp, unp2);
+	else
+		UNP_PCB_LOCK(unp);
 	error = unp_connect2(so1, so2, PRU_CONNECT2);
-	UNP_PCB_UNLOCK(unp2);
+	if (unp != unp2)
+		UNP_PCB_UNLOCK(unp2);
 	UNP_PCB_UNLOCK(unp);
 	return (error);
 }
@@ -765,6 +773,7 @@ uipc_detach(struct socket *so)
 	KASSERT(unp != NULL, ("uipc_detach: unp == NULL"));
 
 	vp = NULL;
+	vplock = NULL;
 	local_unp_rights = 0;
 
 	UNP_LINK_WLOCK();
@@ -780,27 +789,29 @@ uipc_detach(struct socket *so)
 		mtx_lock(vplock);
 	}
 	UNP_PCB_LOCK(unp);
-	if ((unp2 = unp->unp_conn) != NULL) {
-		unp_pcb_owned_lock2(unp, unp2, freeunp);
-		if (freeunp)
-			unp2 = NULL;
-	}
 	if (unp->unp_vnode != vp &&
 		unp->unp_vnode != NULL) {
-		mtx_unlock(vplock);
+		if (vplock)
+			mtx_unlock(vplock);
 		UNP_PCB_UNLOCK(unp);
-		if (unp2)
-			UNP_PCB_UNLOCK(unp2);
 		goto restart;
 	}
 	if ((unp->unp_flags & UNP_NASCENT) != 0) {
-		if (unp2)
-			UNP_PCB_UNLOCK(unp2);
 		goto teardown;
 	}
 	if ((vp = unp->unp_vnode) != NULL) {
 		VOP_UNP_DETACH(vp);
 		unp->unp_vnode = NULL;
+	}
+	if (__predict_false(unp == unp->unp_conn)) {
+		unp_disconnect(unp, unp);
+		unp2 = NULL;
+		goto connect_self;
+	}
+	if ((unp2 = unp->unp_conn) != NULL) {
+		unp_pcb_owned_lock2(unp, unp2, freeunp);
+		if (freeunp)
+			unp2 = NULL;
 	}
 	unp_pcb_hold(unp);
 	if (unp2 != NULL) {
@@ -809,6 +820,7 @@ uipc_detach(struct socket *so)
 		if (unp_pcb_rele(unp2) == 0)
 			UNP_PCB_UNLOCK(unp2);
 	}
+ connect_self:
 	UNP_PCB_UNLOCK(unp);
 	UNP_REF_LIST_LOCK();
 	while (!LIST_EMPTY(&unp->unp_refs)) {
@@ -859,6 +871,10 @@ uipc_disconnect(struct socket *so)
 	if ((unp2 = unp->unp_conn) == NULL) {
 		UNP_PCB_UNLOCK(unp);
 		return (0);
+	}
+	if (unp == unp2) {
+		if (unp_pcb_rele(unp) == 0)
+			UNP_PCB_UNLOCK(unp);
 	}
 	unp_pcb_owned_lock2(unp, unp2, freed);
 	if (__predict_false(freed)) {
@@ -1065,6 +1081,13 @@ uipc_send(struct socket *so, int flags, struct mbuf *m, struct sockaddr *nam,
 				break;
 			}
 		}
+		if (__predict_false(unp == unp2)) {
+			if (unp->unp_socket == NULL) {
+				error = ENOTCONN;
+				break;
+			}
+			goto connect_self;
+		}
 		unp_pcb_owned_lock2(unp, unp2, freed);
 		if (__predict_false(freed)) {
 			UNP_PCB_UNLOCK(unp);
@@ -1084,6 +1107,7 @@ uipc_send(struct socket *so, int flags, struct mbuf *m, struct sockaddr *nam,
 			error = ENOTCONN;
 			break;
 		}
+	connect_self:
 		if (unp2->unp_flags & UNP_WANTCRED)
 			control = unp_addsockcred(td, control);
 		if (unp->unp_addr != NULL)
@@ -1103,7 +1127,8 @@ uipc_send(struct socket *so, int flags, struct mbuf *m, struct sockaddr *nam,
 		}
 		if (nam != NULL)
 			unp_disconnect(unp, unp2);
-		UNP_PCB_UNLOCK(unp2);
+		if (__predict_true(unp != unp2))
+			UNP_PCB_UNLOCK(unp2);
 		UNP_PCB_UNLOCK(unp);
 		break;
 	}
@@ -1557,7 +1582,6 @@ unp_connectat(int fd, struct socket *so, struct sockaddr *nam,
 		error = EPROTOTYPE;
 		goto bad2;
 	}
-	unp_pcb_lock2(unp, unp2);
 	if (so->so_proto->pr_flags & PR_CONNREQUIRED) {
 		if (so2->so_options & SO_ACCEPTCONN) {
 			CURVNET_SET(so2->so_vnet);
@@ -1567,12 +1591,10 @@ unp_connectat(int fd, struct socket *so, struct sockaddr *nam,
 			so2 = NULL;
 		if (so2 == NULL) {
 			error = ECONNREFUSED;
-			goto bad3;
+			goto bad2;
 		}
 		unp3 = sotounpcb(so2);
-		UNP_PCB_UNLOCK(unp);
-		unp_pcb_owned_lock2(unp2, unp3, freed);
-		MPASS(!freed);
+		unp_pcb_lock2(unp2, unp3);
 		if (unp2->unp_addr != NULL) {
 			bcopy(unp2->unp_addr, sa, unp2->unp_addr->sun_len);
 			unp3->unp_addr = (struct sockaddr_un *) sa;
@@ -1600,19 +1622,27 @@ unp_connectat(int fd, struct socket *so, struct sockaddr *nam,
 		UNP_PCB_UNLOCK(unp2);
 		unp2 = unp3;
 		unp_pcb_owned_lock2(unp2, unp, freed);
-		MPASS(!freed);
+		if (__predict_false(freed)) {
+			UNP_PCB_UNLOCK(unp2);
+			error = ECONNREFUSED;
+			goto bad2;
+		}
 #ifdef MAC
 		mac_socketpeer_set_from_socket(so, so2);
 		mac_socketpeer_set_from_socket(so2, so);
 #endif
+	} else {
+		if (unp == unp2)
+			UNP_PCB_LOCK(unp);
+		else
+			unp_pcb_lock2(unp, unp2);
 	}
-
 	KASSERT(unp2 != NULL && so2 != NULL && unp2->unp_socket == so2 &&
 	    sotounpcb(so2) == unp2,
 	    ("%s: unp2 %p so2 %p", __func__, unp2, so2));
 	error = unp_connect2(so, so2, PRU_CONNECT);
-bad3:
-	UNP_PCB_UNLOCK(unp2);
+	if (unp != unp2)
+		UNP_PCB_UNLOCK(unp2);
 	UNP_PCB_UNLOCK(unp);
 bad2:
 	mtx_unlock(vplock);
@@ -1676,7 +1706,7 @@ static void
 unp_disconnect(struct unpcb *unp, struct unpcb *unp2)
 {
 	struct socket *so, *so2;
-	int rele, freed;
+	int freed __unused;
 
 	KASSERT(unp2 != NULL, ("unp_disconnect: unp2 == NULL"));
 
@@ -1688,7 +1718,6 @@ unp_disconnect(struct unpcb *unp, struct unpcb *unp2)
 
 	MPASS(unp->unp_conn == unp2);
 	unp->unp_conn = NULL;
-	rele = 0;
 	so = unp->unp_socket;
 	so2 = unp2->unp_socket;
 	switch (unp->unp_socket->so_type) {
@@ -1908,7 +1937,9 @@ unp_drop(struct unpcb *unp)
 	if (so)
 		so->so_error = ECONNRESET;
 	unp2 = unp->unp_conn;
-	if (unp2 != NULL) {
+	if (unp2 == unp) {
+		unp_disconnect(unp, unp2);
+	} else if (unp2 != NULL) {
 		unp_pcb_hold(unp2);
 		unp_pcb_owned_lock2(unp, unp2, freed);
 		unp_disconnect(unp, unp2);

@@ -72,49 +72,54 @@ SYSCTL_NODE(_kern_epoch, OID_AUTO, stats, CTLFLAG_RW, 0, "epoch stats");
 
 /* Stats. */
 static counter_u64_t block_count;
-SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, nblocked, CTLFLAG_RW,
-				   &block_count, "# of times a thread was in an epoch when epoch_wait was called");
-static counter_u64_t migrate_count;
-SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, migrations, CTLFLAG_RW,
-				   &migrate_count, "# of times thread was migrated to another CPU in epoch_wait");
-static counter_u64_t turnstile_count;
-SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, ncontended, CTLFLAG_RW,
-				   &turnstile_count, "# of times a thread was blocked on a lock in an epoch during an epoch_wait");
-static counter_u64_t switch_count;
-SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, switches, CTLFLAG_RW,
-				   &switch_count, "# of times a thread voluntarily context switched in epoch_wait");
-static counter_u64_t epoch_call_count;
-SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, epoch_calls, CTLFLAG_RW,
-				   &epoch_call_count, "# of times a callback was deferred");
-static counter_u64_t epoch_call_task_count;
-SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, epoch_call_tasks, CTLFLAG_RW,
-				   &epoch_call_task_count, "# of times a callback task was run");
 
-TAILQ_HEAD(threadlist, thread);
+SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, nblocked, CTLFLAG_RW,
+    &block_count, "# of times a thread was in an epoch when epoch_wait was called");
+static counter_u64_t migrate_count;
+
+SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, migrations, CTLFLAG_RW,
+    &migrate_count, "# of times thread was migrated to another CPU in epoch_wait");
+static counter_u64_t turnstile_count;
+
+SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, ncontended, CTLFLAG_RW,
+    &turnstile_count, "# of times a thread was blocked on a lock in an epoch during an epoch_wait");
+static counter_u64_t switch_count;
+
+SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, switches, CTLFLAG_RW,
+    &switch_count, "# of times a thread voluntarily context switched in epoch_wait");
+static counter_u64_t epoch_call_count;
+
+SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, epoch_calls, CTLFLAG_RW,
+    &epoch_call_count, "# of times a callback was deferred");
+static counter_u64_t epoch_call_task_count;
+
+SYSCTL_COUNTER_U64(_kern_epoch_stats, OID_AUTO, epoch_call_tasks, CTLFLAG_RW,
+    &epoch_call_task_count, "# of times a callback task was run");
+
+TAILQ_HEAD (threadlist, thread);
 
 CK_STACK_CONTAINER(struct ck_epoch_entry, stack_entry,
     ck_epoch_entry_container)
-
 typedef struct epoch_record {
 	ck_epoch_record_t er_record;
 	volatile struct threadlist er_tdlist;
 	volatile uint32_t er_gen;
 	uint32_t er_cpuid;
-} *epoch_record_t;
+}      *epoch_record_t;
 
 struct epoch_pcpu_state {
 	struct epoch_record eps_record;
-} __aligned(EPOCH_ALIGN);
+}	__aligned(EPOCH_ALIGN);
 
 struct epoch {
 	struct ck_epoch e_epoch __aligned(EPOCH_ALIGN);
 	struct epoch_pcpu_state *e_pcpu_dom[MAXMEMDOM] __aligned(EPOCH_ALIGN);
-	int e_idx;
-	int e_flags;
+	int	e_idx;
+	int	e_flags;
 	struct epoch_pcpu_state *e_pcpu[0];
 };
 
-epoch_t allepochs[MAX_EPOCHS];
+epoch_t	allepochs[MAX_EPOCHS];
 
 DPCPU_DEFINE(struct grouptask, epoch_cb_task);
 DPCPU_DEFINE(int, epoch_cb_count);
@@ -124,7 +129,7 @@ static __read_mostly int domoffsets[MAXMEMDOM];
 static __read_mostly int inited;
 static __read_mostly int epoch_count;
 __read_mostly epoch_t global_epoch;
-__read_mostly epoch_t global_epoch_critical;
+__read_mostly epoch_t global_epoch_preempt;
 
 static void epoch_call_task(void *context __unused);
 
@@ -136,7 +141,7 @@ static bool usedomains = true;
 static void
 epoch_init(void *arg __unused)
 {
-	int domain, count, cpu;
+	int domain, cpu;
 
 	block_count = counter_u64_alloc(M_WAITOK);
 	migrate_count = counter_u64_alloc(M_WAITOK);
@@ -146,7 +151,7 @@ epoch_init(void *arg __unused)
 	epoch_call_task_count = counter_u64_alloc(M_WAITOK);
 	if (usedomains == false)
 		goto done;
-	count = domain = 0;
+	domain = 0;
 	domoffsets[0] = 0;
 	for (domain = 0; domain < vm_ndomains; domain++) {
 		domcount[domain] = CPU_COUNT(&cpuset_domain[domain]);
@@ -154,7 +159,7 @@ epoch_init(void *arg __unused)
 			printf("domcount[%d] %d\n", domain, domcount[domain]);
 	}
 	for (domain = 1; domain < vm_ndomains; domain++)
-		domoffsets[domain] = domoffsets[domain-1] + domcount[domain-1];
+		domoffsets[domain] = domoffsets[domain - 1] + domcount[domain - 1];
 
 	for (domain = 0; domain < vm_ndomains; domain++) {
 		if (domcount[domain] == 0) {
@@ -162,15 +167,16 @@ epoch_init(void *arg __unused)
 			break;
 		}
 	}
- done:
+done:
 	CPU_FOREACH(cpu) {
 		GROUPTASK_INIT(DPCPU_ID_PTR(cpu, epoch_cb_task), 0, epoch_call_task, NULL);
 		taskqgroup_attach_cpu(qgroup_softirq, DPCPU_ID_PTR(cpu, epoch_cb_task), NULL, cpu, -1, "epoch call task");
 	}
 	inited = 1;
 	global_epoch = epoch_alloc(0);
-	global_epoch_critical = epoch_alloc(EPOCH_CRITICAL);
+	global_epoch_preempt = epoch_alloc(EPOCH_PREEMPT);
 }
+
 SYSINIT(epoch, SI_SUB_TASKQ + 1, SI_ORDER_FIRST, epoch_init, NULL);
 
 static void
@@ -181,8 +187,8 @@ epoch_init_numa(epoch_t epoch)
 	epoch_record_t er;
 
 	for (domain = 0; domain < vm_ndomains; domain++) {
-		eps = malloc_domain(sizeof(*eps)*domcount[domain], M_EPOCH,
-							domain, M_ZERO|M_WAITOK);
+		eps = malloc_domain(sizeof(*eps) * domcount[domain], M_EPOCH,
+		    domain, M_ZERO | M_WAITOK);
 		epoch->e_pcpu_dom[domain] = eps;
 		cpu_offset = domoffsets[domain];
 		for (int i = 0; i < domcount[domain]; i++, eps++) {
@@ -201,7 +207,7 @@ epoch_init_legacy(epoch_t epoch)
 	struct epoch_pcpu_state *eps;
 	epoch_record_t er;
 
-	eps = malloc(sizeof(*eps)*mp_ncpus, M_EPOCH, M_ZERO|M_WAITOK);
+	eps = malloc(sizeof(*eps) * mp_ncpus, M_EPOCH, M_ZERO | M_WAITOK);
 	epoch->e_pcpu_dom[0] = eps;
 	for (int i = 0; i < mp_ncpus; i++, eps++) {
 		epoch->e_pcpu[i] = eps;
@@ -219,14 +225,14 @@ epoch_alloc(int flags)
 
 	if (__predict_false(!inited))
 		panic("%s called too early in boot", __func__);
-	epoch = malloc(sizeof(struct epoch) + mp_ncpus*sizeof(void*),
-				   M_EPOCH, M_ZERO|M_WAITOK);
+	epoch = malloc(sizeof(struct epoch) + mp_ncpus * sizeof(void *),
+	    M_EPOCH, M_ZERO | M_WAITOK);
 	ck_epoch_init(&epoch->e_epoch);
 	if (usedomains)
 		epoch_init_numa(epoch);
 	else
 		epoch_init_legacy(epoch);
-	MPASS(epoch_count < MAX_EPOCHS-2);
+	MPASS(epoch_count < MAX_EPOCHS - 2);
 	epoch->e_flags = flags;
 	epoch->e_idx = epoch_count;
 	allepochs[epoch_count++] = epoch;
@@ -247,7 +253,7 @@ epoch_free(epoch_t epoch)
 	}
 #endif
 	allepochs[epoch->e_idx] = NULL;
-	epoch_wait_critical(global_epoch_critical);
+	epoch_wait(global_epoch);
 	if (usedomains)
 		for (domain = 0; domain < vm_ndomains; domain++)
 			free_domain(epoch->e_pcpu_dom[domain], M_EPOCH);
@@ -263,11 +269,13 @@ epoch_free(epoch_t epoch)
 	} while (0)
 
 void
-epoch_enter_internal(epoch_t epoch, struct thread *td)
+epoch_enter_preempt_internal(epoch_t epoch, struct thread *td)
 {
 	struct epoch_pcpu_state *eps;
 
+	MPASS(cold || epoch != NULL);
 	INIT_CHECK(epoch);
+	MPASS(epoch->e_flags & EPOCH_PREEMPT);
 	critical_enter();
 	td->td_pre_epoch_prio = td->td_priority;
 	eps = epoch->e_pcpu[curcpu];
@@ -278,8 +286,8 @@ epoch_enter_internal(epoch_t epoch, struct thread *td)
 		int found = 0;
 
 		TAILQ_FOREACH(curtd, &eps->eps_record.er_tdlist, td_epochq)
-			if (curtd == td)
-				found = 1;
+		    if (curtd == td)
+			found = 1;
 		KASSERT(found, ("recursing on a second epoch"));
 		critical_exit();
 		return;
@@ -287,30 +295,28 @@ epoch_enter_internal(epoch_t epoch, struct thread *td)
 #endif
 	TAILQ_INSERT_TAIL(&eps->eps_record.er_tdlist, td, td_epochq);
 	sched_pin();
-	ck_epoch_begin(&eps->eps_record.er_record, (ck_epoch_section_t*)&td->td_epoch_section);
+	ck_epoch_begin(&eps->eps_record.er_record, (ck_epoch_section_t *)&td->td_epoch_section);
 	critical_exit();
 }
 
 
 void
-epoch_enter_critical(epoch_t epoch)
+epoch_enter(epoch_t epoch)
 {
 	ck_epoch_record_t *record;
-	ck_epoch_section_t *section;
 	struct thread *td;
 
-	section = NULL;
+	MPASS(cold || epoch != NULL);
 	td = curthread;
-	critical_enter();
-	if (__predict_true(td->td_epochnest++ == 0))
-		section = (ck_epoch_section_t*)&td->td_epoch_section;
 
+	critical_enter();
+	td->td_epochnest++;
 	record = &epoch->e_pcpu[curcpu]->eps_record.er_record;
-	ck_epoch_begin(record, section);
+	ck_epoch_begin(record, NULL);
 }
 
 void
-epoch_exit_internal(epoch_t epoch, struct thread *td)
+epoch_exit_preempt_internal(epoch_t epoch, struct thread *td)
 {
 	struct epoch_pcpu_state *eps;
 
@@ -319,7 +325,8 @@ epoch_exit_internal(epoch_t epoch, struct thread *td)
 	critical_enter();
 	eps = epoch->e_pcpu[curcpu];
 
-	ck_epoch_end(&eps->eps_record.er_record, (ck_epoch_section_t*)&td->td_epoch_section);
+	MPASS(epoch->e_flags & EPOCH_PREEMPT);
+	ck_epoch_end(&eps->eps_record.er_record, (ck_epoch_section_t *)&td->td_epoch_section);
 	TAILQ_REMOVE(&eps->eps_record.er_tdlist, td, td_epochq);
 	eps->eps_record.er_gen++;
 	sched_unpin();
@@ -332,38 +339,32 @@ epoch_exit_internal(epoch_t epoch, struct thread *td)
 }
 
 void
-epoch_exit_critical(epoch_t epoch)
+epoch_exit(epoch_t epoch)
 {
 	ck_epoch_record_t *record;
-	ck_epoch_section_t *section;
 	struct thread *td;
 
-	section = NULL;
 	td = curthread;
-	MPASS(td->td_critnest);
-	if (__predict_true(td->td_epochnest-- == 1))
-		section = (ck_epoch_section_t*)&td->td_epoch_section;
+	td->td_epochnest--;
 	record = &epoch->e_pcpu[curcpu]->eps_record.er_record;
-	ck_epoch_end(record, section);
+	ck_epoch_end(record, NULL);
 	critical_exit();
 }
 
 /*
- * epoch_block_handler is a callback from the ck code when another thread is
+ * epoch_block_handler_preempt is a callback from the ck code when another thread is
  * currently in an epoch section.
  */
 static void
-epoch_block_handler(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
-					void *arg __unused)
+epoch_block_handler_preempt(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
+    void *arg __unused)
 {
 	epoch_record_t record;
-	struct epoch_pcpu_state *eps;
 	struct thread *td, *tdwait, *owner;
 	struct turnstile *ts;
 	struct lock_object *lock;
 	int spincount, gen;
 
-	eps = arg;
 	record = __containerof(cr, struct epoch_record, er_record);
 	td = curthread;
 	spincount = 0;
@@ -375,18 +376,17 @@ epoch_block_handler(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
 		 * overhead of a migration
 		 */
 		if ((tdwait = TAILQ_FIRST(&record->er_tdlist)) != NULL &&
-			TD_IS_RUNNING(tdwait)) {
+		    TD_IS_RUNNING(tdwait)) {
 			gen = record->er_gen;
 			thread_unlock(td);
 			do {
 				cpu_spinwait();
 			} while (tdwait == TAILQ_FIRST(&record->er_tdlist) &&
-					 gen == record->er_gen && TD_IS_RUNNING(tdwait) &&
-					 spincount++ < MAX_ADAPTIVE_SPIN);
+			    gen == record->er_gen && TD_IS_RUNNING(tdwait) &&
+			    spincount++ < MAX_ADAPTIVE_SPIN);
 			thread_lock(td);
 			return;
 		}
-
 		/*
 		 * Being on the same CPU as that of the record on which
 		 * we need to wait allows us access to the thread
@@ -408,7 +408,7 @@ epoch_block_handler(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
 		return;
 	}
 	/*
-	 * Try to find a thread in an epoch section on this CPU 
+	 * Try to find a thread in an epoch section on this CPU
 	 * waiting on a turnstile. Otherwise find the lowest
 	 * priority thread (highest prio value) and drop our priority
 	 * to match to allow it to run.
@@ -429,7 +429,7 @@ epoch_block_handler(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
 			critical_exit();
 		}
 		if (TD_IS_INHIBITED(tdwait) && TD_ON_LOCK(tdwait) &&
-			((ts = tdwait->td_blocked) != NULL)) {
+		    ((ts = tdwait->td_blocked) != NULL)) {
 			/*
 			 * We unlock td to allow turnstile_wait to reacquire the
 			 * the thread lock. Before unlocking it we enter a critical
@@ -460,7 +460,7 @@ epoch_block_handler(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
 			thread_lock(td);
 			critical_exit();
 			KASSERT(td->td_locks == 0,
-					("%d locks held", td->td_locks));
+			    ("%d locks held", td->td_locks));
 		}
 	}
 	/*
@@ -481,7 +481,7 @@ epoch_block_handler(struct ck_epoch *global __unused, ck_epoch_record_t *cr,
 }
 
 void
-epoch_wait(epoch_t epoch)
+epoch_wait_preempt(epoch_t epoch)
 {
 	struct thread *td;
 	int was_bound;
@@ -493,8 +493,11 @@ epoch_wait(epoch_t epoch)
 
 	locks = curthread->td_locks;
 #endif
+
+	MPASS(cold || epoch != NULL);
 	INIT_CHECK(epoch);
 
+	MPASS(epoch->e_flags & EPOCH_PREEMPT);
 	WITNESS_WARN(WARN_GIANTOK | WARN_SLEEPOK, NULL,
 	    "epoch_wait() can sleep");
 
@@ -512,7 +515,7 @@ epoch_wait(epoch_t epoch)
 	td->td_pinned = 0;
 	sched_bind(td, old_cpu);
 
-	ck_epoch_synchronize_wait(&epoch->e_epoch, epoch_block_handler, NULL);
+	ck_epoch_synchronize_wait(&epoch->e_epoch, epoch_block_handler_preempt, NULL);
 
 	/* restore CPU binding, if any */
 	if (was_bound != 0) {
@@ -531,23 +534,25 @@ epoch_wait(epoch_t epoch)
 	thread_unlock(td);
 	PICKUP_GIANT();
 	KASSERT(td->td_locks == locks,
-			("%d residual locks held", td->td_locks - locks));
+	    ("%d residual locks held", td->td_locks - locks));
 }
 
 static void
-epoch_block_handler_critical(struct ck_epoch *g __unused, ck_epoch_record_t *c __unused,
-					void *arg __unused)
+epoch_block_handler(struct ck_epoch *g __unused, ck_epoch_record_t *c __unused,
+    void *arg __unused)
 {
 	cpu_spinwait();
 }
 
 void
-epoch_wait_critical(epoch_t epoch)
+epoch_wait(epoch_t epoch)
 {
 
-	MPASS(epoch->e_flags & EPOCH_CRITICAL);
+	MPASS(cold || epoch != NULL);
+	INIT_CHECK(epoch);
+	MPASS(epoch->e_flags == 0);
 	critical_enter();
-	ck_epoch_synchronize_wait(&epoch->e_epoch, epoch_block_handler_critical, NULL);
+	ck_epoch_synchronize_wait(&epoch->e_epoch, epoch_block_handler, NULL);
 	critical_exit();
 }
 
@@ -567,10 +572,10 @@ epoch_call(epoch_t epoch, epoch_context_t ctx, void (*callback) (epoch_context_t
 	critical_enter();
 	*DPCPU_PTR(epoch_cb_count) += 1;
 	eps = epoch->e_pcpu[curcpu];
-	ck_epoch_call(&eps->eps_record.er_record, cb, (ck_epoch_cb_t*)callback);
+	ck_epoch_call(&eps->eps_record.er_record, cb, (ck_epoch_cb_t *)callback);
 	critical_exit();
 	return;
- boottime:
+boottime:
 	callback(ctx);
 }
 
@@ -585,7 +590,7 @@ epoch_call_task(void *arg __unused)
 
 	ck_stack_init(&cb_stack);
 	critical_enter();
-	epoch_enter_critical(global_epoch_critical);
+	epoch_enter(global_epoch);
 	for (total = i = 0; i < epoch_count; i++) {
 		if (__predict_false((epoch = allepochs[i]) == NULL))
 			continue;
@@ -595,7 +600,7 @@ epoch_call_task(void *arg __unused)
 		ck_epoch_poll_deferred(record, &cb_stack);
 		total += npending - record->n_pending;
 	}
-	epoch_exit_critical(global_epoch_critical);
+	epoch_exit(global_epoch);
 	*DPCPU_PTR(epoch_cb_count) -= total;
 	critical_exit();
 
@@ -605,7 +610,8 @@ epoch_call_task(void *arg __unused)
 	head = ck_stack_batch_pop_npsc(&cb_stack);
 	for (cursor = head; cursor != NULL; cursor = next) {
 		struct ck_epoch_entry *entry =
-		    ck_epoch_entry_container(cursor);
+		ck_epoch_entry_container(cursor);
+
 		next = CK_STACK_NEXT(cursor);
 		entry->function(entry);
 	}
