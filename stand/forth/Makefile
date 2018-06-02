@@ -45,7 +45,7 @@ FILES+= ${f}
 
 .if exists(${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints)
 FILES+=	${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints
-FILESNAME_GENERIC.hints=	device.hints
+FILESNAME_${SRCTOP}/sys/${MACHINE}/conf/GENERIC.hints=	device.hints
 .endif
 
 .include <bsd.prog.mk>
