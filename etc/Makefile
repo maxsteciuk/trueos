@@ -12,9 +12,6 @@ BIN1=
 
 # NB: keep these sorted by MK_* knobs
 
-# Special top level files for FreeBSD
-FREEBSD=COPYRIGHT
-
 # Sanitize DESTDIR
 DESTDIR:=	${DESTDIR:C://*:/:g}
 
