@@ -28,6 +28,9 @@ NO_SHARED?=	YES
 
 SUBDIR+=	rc.d
 
+DIRS+=	ETC_RCCONFD
+ETC_RCCONFD=	/etc/rc.conf.d
+
 DIRS+=	VAR_RUN
 VAR_RUN=	/var/run
 
