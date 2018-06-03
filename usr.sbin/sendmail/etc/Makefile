@@ -27,18 +27,21 @@ M4FILES!=	find ${SENDMAIL_CF_DIR} -type f -name '*.m4' -print
 DEST_CF=	${DESTDIR}/etc/mail/sendmail.cf
 DEST_SUBMIT_CF=	${DESTDIR}/etc/mail/submit.cf
 
-CONFSDIR=	/etc/mail
+ETC_MAIL=	/etc/mail
+CONFSDIR=	ETC_MAIL
 CONFS=		access.sample \
 		freebsd.cf \
 		freebsd.submit.cf \
 		mailertable.sample \
 		virtusertable.sample
 FILESGROUPS=	M_README M_MAKEFILE
-M_READMEDIR=	/etc/mail
+M_READMEDIR=	ETC_MAIL
 M_README=	README
-M_MAKEFILEDIR=	/etc/mail
+M_READMEMODE=	644
+M_MAKEFILEDIR=	ETC_MAIL
 M_MAKEFILE=	mail.Makefile
 M_MAKEFILENAME=	Makefile
+M_MAKEFILEMODE=	644
 CLEANFILES=	freebsd.cf freebsd.submit.cf
 
 .if !defined(SENDMAIL_MC) && !defined(SENDMAIL_CF)
