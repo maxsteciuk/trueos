@@ -50,4 +50,7 @@ BOOT_DTB_OVERLAYS=	/boot/dtb/overlays
 DIRS+=	BOOT_LUA
 BOOT_LUA=	/boot/lua
 
+DIRS+=	BOOT_MODULES
+BOOT_MODULES=	/boot/modules
+
 .include <bsd.subdir.mk>
