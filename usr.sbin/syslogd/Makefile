@@ -13,9 +13,6 @@ FILES=	rc.d/syslogd
 FILESDIR=	/etc/rc.d
 FILESMODE=	${BINMODE}
 
-DIRS+=	VAR_LOG
-VAR_LOG=	/var/log
-
 LIBADD=	util
 
 .if ${MK_INET_SUPPORT} != "no"
@@ -29,5 +26,8 @@ CFLAGS+= -I${SRCTOP}/usr.bin/wall
 
 DIRS+=	ETC_SYSLOGD
 ETC_SYSLOGD=	/etc/syslog.d
+
+DIRS+=	VAR_LOG
+VAR_LOG=	/var/log
 
 .include <bsd.prog.mk>
