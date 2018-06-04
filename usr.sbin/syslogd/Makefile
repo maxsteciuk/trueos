@@ -27,7 +27,7 @@ CFLAGS+= -DINET6
 
 CFLAGS+= -I${SRCTOP}/usr.bin/wall
 
-DIRS=	ETC_SYSLOGD
+DIRS+=	ETC_SYSLOGD
 ETC_SYSLOGD=	/etc/syslog.d
 
 .include <bsd.prog.mk>
