@@ -2332,11 +2332,6 @@ native-xtools-install: .PHONY
 	    -DNO_ROOT \
 	    install
 
-#
-# hierarchy - ensure that all the needed directories are present
-#
-hierarchy hier: .MAKE .PHONY
-	${_+_}cd ${.CURDIR}/etc; ${HMAKE} distrib-dirs
 
 #
 # libraries - build all libraries, and install them under ${DESTDIR}.
