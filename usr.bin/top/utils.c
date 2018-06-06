@@ -15,14 +15,21 @@
 #include "top.h"
 #include "utils.h"
 
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
+#include <paths.h>
+#include <kvm.h>
 
 int
 atoiwi(const char *str)
 {
-    int len;
+    size_t len;
 
     len = strlen(str);
     if (len != 0)
@@ -87,7 +94,7 @@ char *itoa(unsigned int val)
  *	a front end to a more general routine for efficiency.
  */
 
-char *itoa7(unsigned int val)
+char *itoa7(int val)
 {
     char *ptr;
     static char buffer[16];	/* result is built here */
@@ -131,23 +138,11 @@ int digits(int val)
 }
 
 /*
- *  strecpy(to, from) - copy string "from" into "to" and return a pointer
- *	to the END of the string "to".
- */
-
-char *
-strecpy(char *to, const char *from)
-{
-    while ((*to++ = *from++) != '\0');
-    return(--to);
-}
-
-/*
  * string_index(string, array) - find string in array and return index
  */
 
 int
-string_index(const char *string, char *array[])
+string_index(const char *string, const char * const *array)
 {
     size_t i = 0;
 
@@ -170,77 +165,24 @@ string_index(const char *string, char *array[])
  *	squat about quotes.
  */
 
-char **
+const char * const *
 argparse(char *line, int *cntp)
 {
-    const char *from;
-    char *to;
-    int cnt;
-    int ch;
-    int length;
-    int lastch;
-    char **argv;
-    char **argarray;
-    char *args;
+    const char **ap;
+    static const char *argv[1024] = {0};
 
-    /* unfortunately, the only real way to do this is to go thru the
-       input string twice. */
-
-    /* step thru the string counting the white space sections */
-    from = line;
-    lastch = cnt = length = 0;
-    while ((ch = *from++) != '\0')
-    {
-	length++;
-	if (ch == ' ' && lastch != ' ')
-	{
-	    cnt++;
-	}
-	lastch = ch;
+    *cntp = 1;
+    ap = &argv[1];
+    while ((*ap = strsep(&line, " ")) != NULL) {
+        if (**ap != '\0') {
+            (*cntp)++;
+            if (*cntp >= (int)nitems(argv)) {
+                break;
+            }
+	    ap++;
+        }
     }
-
-    /* add three to the count:  one for the initial "dummy" argument,
-       one for the last argument and one for NULL */
-    cnt += 3;
-
-    /* allocate a char * array to hold the pointers */
-    argarray = malloc(cnt * sizeof(char *));
-
-    /* allocate another array to hold the strings themselves */
-    args = malloc(length+2);
-
-    /* initialization for main loop */
-    from = line;
-    to = args;
-    argv = argarray;
-    lastch = '\0';
-
-    /* create a dummy argument to keep getopt happy */
-    *argv++ = to;
-    *to++ = '\0';
-    cnt = 2;
-
-    /* now build argv while copying characters */
-    *argv++ = to;
-    while ((ch = *from++) != '\0')
-    {
-	if (ch != ' ')
-	{
-	    if (lastch == ' ')
-	    {
-		*to++ = '\0';
-		*argv++ = to;
-		cnt++;
-	    }
-	    *to++ = ch;
-	}
-	lastch = ch;
-    }
-    *to++ = '\0';
-
-    /* set cntp and return the allocated array */
-    *cntp = cnt;
-    return(argarray);
+    return argv;
 }
 
 /*
@@ -393,7 +335,7 @@ char *format_k(int amt)
 	}
     }
 
-    p = strecpy(p, itoa(amt));
+    p = stpcpy(p, itoa(amt));
     *p++ = tag;
     *p = '\0';
 
@@ -423,9 +365,37 @@ format_k2(unsigned long long amt)
 	}
     }
 
-    p = strecpy(p, itoa((int)amt));
+    p = stpcpy(p, itoa((int)amt));
     *p++ = tag;
     *p = '\0';
 
     return(ret);
+}
+
+int
+find_pid(pid_t pid)
+{
+	kvm_t *kd = NULL;
+	struct kinfo_proc *pbase = NULL;
+	int nproc;
+	int ret = 0;
+
+	kd = kvm_open(NULL, _PATH_DEVNULL, NULL, O_RDONLY, NULL);
+	if (kd == NULL) {
+		fprintf(stderr, "top: kvm_open() failed.\n");
+		quit(TOP_EX_SYS_ERROR);
+	}
+
+	pbase = kvm_getprocs(kd, KERN_PROC_PID, pid, &nproc);
+	if (pbase == NULL) {
+		goto done;
+	}
+
+	if ((nproc == 1) && (pbase->ki_pid == pid)) {
+		ret = 1;
+	}
+
+done:
+	kvm_close(kd);	
+	return ret;
 }

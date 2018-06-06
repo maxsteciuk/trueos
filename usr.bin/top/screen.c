@@ -270,7 +270,7 @@ get_screensize(void)
 }
 
 void
-top_standout(char *msg)
+top_standout(const char *msg)
 {
     if (smart_terminal)
     {
@@ -322,12 +322,4 @@ go_home(void)
     {
 	putcap(home);
     }
-}
-
-/* This has to be defined as a subroutine for tputs (instead of a macro) */
-
-int
-putstdout(int ch)
-{
-    return putchar(ch);
 }

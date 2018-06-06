@@ -61,9 +61,6 @@ distribution:
 		${DESTDIR}/etc/nsswitch.conf
 .endif
 
-distrib-dirs: .PHONY
-	${INSTALL_SYMLINK} usr/src/sys ${DESTDIR}/sys
-
 .include <bsd.prog.mk>
 
 .if ${MK_INSTALL_AS_USER} == "yes" && ${_uid} != 0

@@ -28,16 +28,17 @@
  *        *_process, u_endscreen.
  */
 
+#include <sys/cdefs.h>
+#include <sys/resource.h>
 #include <sys/time.h>
 
 #include <assert.h>
-#include <curses.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-#include <strings.h>
 #include <termcap.h>
 #include <time.h>
 #include <unistd.h>
@@ -66,12 +67,12 @@ static int display_width = MAX_COLS;
 /* buffer of proc information lines for display updating */
 static char *screenbuf = NULL;
 
-static char **procstate_names;
-static char **cpustate_names;
-static char **memory_names;
-static char **arc_names;
-static char **carc_names;
-static char **swap_names;
+static const char * const *procstate_names;
+static const char * const *cpustate_names;
+static const char * const *memory_names;
+static const char * const *arc_names;
+static const char * const *carc_names;
+static const char * const *swap_names;
 
 static int num_procstates;
 static int num_cpustates;
@@ -90,8 +91,7 @@ static int cpustates_column;
 
 static enum { OFF, ON, ERASE } header_status = ON;
 
-static int string_count(char **);
-static void summary_format(char *, int *, char **);
+static void summary_format(char *, int *, const char * const *);
 static void line_update(char *, char *, int, int);
 
 int  x_lastpid =	10;
@@ -148,8 +148,8 @@ display_resize(void)
     }
 
     /* now, allocate space for the screen buffer */
-    screenbuf = malloc(lines * display_width);
-    if (screenbuf == (char *)NULL)
+    screenbuf = calloc(lines, display_width);
+    if (screenbuf == NULL)
     {
 	/* oops! */
 	return(-1);
@@ -203,25 +203,25 @@ int display_init(struct statics * statics)
     {
 	/* save pointers and allocate space for names */
 	procstate_names = statics->procstate_names;
-	num_procstates = string_count(procstate_names);
+	num_procstates = 8;
 	assert(num_procstates > 0);
-	lprocstates = malloc(num_procstates * sizeof(int));
+	lprocstates = calloc(num_procstates, sizeof(int));
 
 	cpustate_names = statics->cpustate_names;
 
 	swap_names = statics->swap_names;
-	num_swap = string_count(swap_names);
+	num_swap = 7;
 	assert(num_swap > 0);
-	lswap = malloc(num_swap * sizeof(int));
-	num_cpustates = string_count(cpustate_names);
+	lswap = calloc(num_swap, sizeof(int));
+	num_cpustates = CPUSTATES;
 	assert(num_cpustates > 0);
-	lcpustates = malloc(num_cpustates * sizeof(int) * statics->ncpus);
-	cpustate_columns = malloc(num_cpustates * sizeof(int));
+	lcpustates = calloc(num_cpustates * sizeof(int), statics->ncpus);
+	cpustate_columns = calloc(num_cpustates, sizeof(int));
 
 	memory_names = statics->memory_names;
-	num_memory = string_count(memory_names);
+	num_memory = 7;
 	assert(num_memory > 0);
-	lmemory = malloc(num_memory * sizeof(int));
+	lmemory = calloc(num_memory, sizeof(int));
 
 	arc_names = statics->arc_names;
 	carc_names = statics->carc_names;
@@ -422,8 +422,8 @@ i_cpustates(int *states)
 {
     int i = 0;
     int value;
-    char **names;
-    char *thisname;
+    const char * const *names;
+    const char *thisname;
     int cpu;
 
 for (cpu = 0; cpu < num_cpus; cpu++) {
@@ -735,8 +735,8 @@ static int header_length;
  * allocated area with the trimmed header.
  */
 
-char *
-trim_header(char *text)
+const char *
+trim_header(const char *text)
 {
 	char *s;
 	int width;
@@ -745,11 +745,9 @@ trim_header(char *text)
 	width = display_width;
 	header_length = strlen(text);
 	if (header_length >= width) {
-		s = malloc((width + 1) * sizeof(char));
+		s = strndup(text, width);
 		if (s == NULL)
 			return (NULL);
-		strncpy(s, text, width);
-		s[width] = '\0';
 	}
 	return (s);
 }
@@ -761,7 +759,7 @@ trim_header(char *text)
  */
 
 void
-i_header(char *text)
+i_header(const char *text)
 {
     char *s;
 
@@ -783,7 +781,7 @@ i_header(char *text)
 }
 
 void
-u_header(char *text __unused)
+u_header(const char *text __unused)
 {
 
     if (header_status == ERASE)
@@ -822,10 +820,10 @@ i_process(int line, char *thisline)
 
     /* copy it in to our buffer */
     base = smart_terminal ? screenbuf + lineindex(line) : screenbuf;
-    p = strecpy(base, thisline);
+    p = stpcpy(base, thisline);
 
     /* zero fill the rest of it */
-    bzero(p, display_width - (p - base));
+    memset(p, 0, display_width - (p - base));
 }
 
 void
@@ -861,10 +859,10 @@ u_process(int line, char *newline)
 	fputs(newline, stdout);
 
 	/* copy it in to the buffer */
-	optr = strecpy(bufferline, newline);
+	optr = stpcpy(bufferline, newline);
 
 	/* zero fill the rest of it */
-	bzero(optr, display_width - (optr - bufferline));
+	memset(optr, 0, display_width - (optr - bufferline));
     }
     else
     {
@@ -945,7 +943,7 @@ display_header(int t)
 }
 
 void
-new_message(int type, char *msgfmt, ...)
+new_message(int type, const char *msgfmt, ...)
 {
     va_list args;
     size_t i;
@@ -1077,23 +1075,11 @@ readline(char *buffer, int size, int numeric)
 
 /* internal support routines */
 
-static int string_count(char **pp)
-{
-    int cnt;
-
-    cnt = 0;
-    while (*pp++ != NULL)
-    {
-	cnt++;
-    }
-    return(cnt);
-}
-
-static void summary_format(char *str, int *numbers, char **names)
+static void summary_format(char *str, int *numbers, const char * const *names)
 {
     char *p;
     int num;
-    char *thisname;
+    const char *thisname;
     char rbuf[6];
 
     /* format each number followed by its string */
@@ -1110,30 +1096,30 @@ static void summary_format(char *str, int *numbers, char **names)
 	    if (thisname[0] == 'K')
 	    {
 		/* yes: format it as a memory value */
-		p = strecpy(p, format_k(num));
+		p = stpcpy(p, format_k(num));
 
 		/* skip over the K, since it was included by format_k */
-		p = strecpy(p, thisname+1);
+		p = stpcpy(p, thisname+1);
 	    }
 	    /* is this number a ratio? */
 	    else if (thisname[0] == ':')
 	    {
 		(void) snprintf(rbuf, sizeof(rbuf), "%.2f", 
 		    (float)*(numbers - 2) / (float)num);
-		p = strecpy(p, rbuf);
-		p = strecpy(p, thisname);
+		p = stpcpy(p, rbuf);
+		p = stpcpy(p, thisname);
 	    }
 	    else
 	    {
-		p = strecpy(p, itoa(num));
-		p = strecpy(p, thisname);
+		p = stpcpy(p, itoa(num));
+		p = stpcpy(p, thisname);
 	    }
 	}
 
 	/* ignore negative numbers, but display corresponding string */
 	else if (num < 0)
 	{
-	    p = strecpy(p, thisname);
+	    p = stpcpy(p, thisname);
 	}
     }
 
@@ -1250,7 +1236,7 @@ line_update(char *old, char *new, int start, int line)
     diff = display_width - newcol;
     if (diff > 0)
     {
-	bzero(old, diff);
+	memset(old, 0, diff);
     }
 
     /* remember where the current line is */
