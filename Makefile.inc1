@@ -1302,11 +1302,6 @@ packageworld: .PHONY
 # most recent server build.
 #
 restage reinstall: .MAKE .PHONY
-	@echo "--------------------------------------------------------------"
-	@echo ">>> Making hierarchy"
-	@echo "--------------------------------------------------------------"
-	${_+_}cd ${.CURDIR}; ${MAKE} -f Makefile.inc1 \
-	    LOCAL_MTREE=${LOCAL_MTREE:Q} hierarchy
 .if make(restage)
 	@echo "--------------------------------------------------------------"
 	@echo ">>> Making distribution"
