@@ -172,18 +172,6 @@ build${libcompat}: .PHONY
 .endif	# !defined(NO_CLEAN)
 
 	mkdir -p ${LIBCOMPATTMP}/usr/include
-	mtree -deU -f ${.CURDIR}/usr.sbin/nmtree/etc/BSD.usr.dist \
-	    -p ${LIBCOMPATTMP}/usr >/dev/null
-	mtree -deU -f ${.CURDIR}/usr.sbin/nmtree/etc/BSD.include.dist \
-	    -p ${LIBCOMPATTMP}/usr/include >/dev/null
-	mtree -deU -f ${.CURDIR}/usr.sbin/nmtree/etc/BSD.lib${libcompat}.dist \
-	    -p ${LIBCOMPATTMP}/usr >/dev/null
-.if ${MK_DEBUG_FILES} != "no"
-	mtree -deU -f ${.CURDIR}/usr.sbin/nmtree/etc/BSD.debug.dist \
-	    -p ${LIBCOMPATTMP}/usr/lib >/dev/null
-	mtree -deU -f ${.CURDIR}/usr.sbin/nmtree/etc/BSD.lib${libcompat}.dist \
-	    -p ${LIBCOMPATTMP}/usr/lib/debug/usr >/dev/null
-.endif
 	mkdir -p ${WORLDTMP}
 	ln -sf ${.CURDIR}/sys ${WORLDTMP}
 .for _t in ${_obj} includes
