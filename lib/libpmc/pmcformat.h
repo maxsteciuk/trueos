@@ -1,15 +1,16 @@
 /*-
- * Copyright (c) 2017 Mark Johnston <markj@FreeBSD.org>
+ * SPDX-License-Identifier: BSD-2-Clause-FreeBSD
+ *
+ * Copyright (c) 2018, Matthew Macy
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
+ * modification, are permitted provided that the following conditions
+ * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -24,14 +25,9 @@
  * SUCH DAMAGE.
  *
  * $FreeBSD$
+ *
  */
-
-#ifndef _ASM_MSR_H_
-#define	_ASM_MSR_H_
-
-#include <machine/cpufunc.h>
-
-#define	rdmsrl(msr, val)	((val) = rdmsr(msr))
-#define	rdmsrl_safe(msr, val)	rdmsr_safe(msr, val)
-
-#endif /* _ASM_MSR_H_ */
+#ifndef __PMCFORMAT_H_
+#define __PMCFORMAT_H_
+std::string event_to_json(struct pmclog_ev *ev);
+#endif
