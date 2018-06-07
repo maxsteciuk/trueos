@@ -302,6 +302,7 @@ SUBDIR+=	${_DIR}
 SUBDIR+=.WAIT
 .endif
 SUBDIR+=etc
+SUBDIR+=hier
 
 .endif	# !empty(SUBDIR_OVERRIDE)
 
