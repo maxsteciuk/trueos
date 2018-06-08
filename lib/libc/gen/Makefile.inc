@@ -551,3 +551,8 @@ DIRS+=	VAR_EMPTY
 VAR_EMPTY=	/var/empty
 VAR_EMPTY_MODE=	555
 VAR_EMPTY_FLAGS=schg
+
+distribution: installconfig
+.if ${MK_TCSH} != "no"
+	sed -i "" -e 's;/bin/sh;/bin/csh;' ${DESTDIR}/etc/master.passwd
+.endif
