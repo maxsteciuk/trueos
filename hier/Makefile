@@ -5,7 +5,6 @@
 
 DIRS+=	TMP
 TMP=	/tmp
-TMP_FLAGS=	schg
-TMP_MODE=	777
+TMP_MODE=	1777
 
 .include <bsd.prog.mk>
