@@ -31,7 +31,6 @@ distribution:
 	@echo "set DESTDIR before running \"make ${.TARGET}\""
 	@false
 .endif
-	cd ${.CURDIR}; \
 .if ${MK_TCSH} == "no"
 	sed -i "" -e 's;/bin/csh;/bin/sh;' ${DESTDIR}/etc/master.passwd
 .endif
