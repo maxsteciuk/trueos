@@ -23,4 +23,14 @@ BINMODE=4555
 PRECIOUSPROG=
 .endif
 
+.include <bsd.endian.mk>
+.if ${TARGET_ENDIANNESS} == "1234"
+CAP_MKDB_ENDIAN?= -l
+.elif ${TARGET_ENDIANNESS} == "4321"
+CAP_MKDB_ENDIAN?= -b
+.endif
+
+distribution: installconfig
+	cap_mkdb ${CAP_MKDB_ENDIAN} ${DESTDIR}/etc/login.conf
+
 .include <bsd.prog.mk>

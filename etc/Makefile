@@ -22,15 +22,6 @@ distribute:
 	    DESTDIR=${DISTDIR}/${DISTRIBUTION}
 	${_+_}cd ${.CURDIR} ; ${MAKE} distribution DESTDIR=${DISTDIR}/${DISTRIBUTION}
 
-.include <bsd.endian.mk>
-.if ${TARGET_ENDIANNESS} == "1234"
-CAP_MKDB_ENDIAN?= -l
-.elif ${TARGET_ENDIANNESS} == "4321"
-CAP_MKDB_ENDIAN?= -b
-.else
-CAP_MKDB_ENDIAN?=
-.endif
-
 .if defined(NO_ROOT)
 METALOG.add?=	cat -l >> ${METALOG}
 .endif
@@ -41,9 +32,6 @@ distribution:
 	@false
 .endif
 	cd ${.CURDIR}; \
-	    cap_mkdb ${CAP_MKDB_ENDIAN} ${DESTDIR}/etc/login.conf; \
-	    services_mkdb ${CAP_MKDB_ENDIAN} -q -o ${DESTDIR}/var/db/services.db \
-		${DESTDIR}/etc/services
 .if ${MK_TCSH} == "no"
 	sed -i "" -e 's;/bin/csh;/bin/sh;' ${DESTDIR}/etc/master.passwd
 .endif
