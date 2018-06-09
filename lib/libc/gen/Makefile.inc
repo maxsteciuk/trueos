@@ -170,10 +170,9 @@ METALOG.add?=	cat -l >> ${METALOG}
 afterinstallconfig: afterinstallconfig-passwd
 afterinstallconfig-passwd:
 .if defined(NO_ROOT)
-	( \
-		echo "./etc/passwd type=file mode=0644 uname=root gname=wheel"; \
-	) | ${METALOG.add}
+	echo "./etc/passwd type=file mode=0644 uname=root gname=wheel" | ${METALOG.add}
 .endif
+	pwd_mkdb -i -p -d ${DESTDIR}/etc ${DESTDIR}/etc/master.passwd
 
 .PATH: ${SRCTOP}/contrib/libc-pwcache
 SRCS+=	pwcache.c pwcache.h
