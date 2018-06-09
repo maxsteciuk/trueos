@@ -22,20 +22,10 @@ distribute:
 	    DESTDIR=${DISTDIR}/${DISTRIBUTION}
 	${_+_}cd ${.CURDIR} ; ${MAKE} distribution DESTDIR=${DISTDIR}/${DISTRIBUTION}
 
-.if defined(NO_ROOT)
-METALOG.add?=	cat -l >> ${METALOG}
-.endif
-
 distribution:
 .if !defined(DESTDIR)
 	@echo "set DESTDIR before running \"make ${.TARGET}\""
 	@false
-.endif
-.if defined(NO_ROOT)
-	( \
-		echo "./etc/pwd.db type=file mode=0644 uname=root gname=wheel"; \
-		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
-	) | ${METALOG.add}
 .endif
 .if ${MK_NIS} == "no"
 	sed -i "" -e 's/.*_compat:/# &/' -e 's/compat$$/files/' \
