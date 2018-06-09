@@ -301,7 +301,6 @@ SUBDIR+=	${_DIR}
 .if make(installworld) || make(install)
 SUBDIR+=.WAIT
 .endif
-SUBDIR+=etc
 SUBDIR+=hier
 
 .endif	# !empty(SUBDIR_OVERRIDE)
