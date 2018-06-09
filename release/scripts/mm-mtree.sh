@@ -115,8 +115,6 @@ echo ''
     ;;
   esac
   ${MM_MAKE} DESTDIR=${TEMPROOT} distrib-dirs &&
-  ${MM_MAKE} _obj SUBDIR_OVERRIDE=etc &&
-  ${MM_MAKE} everything SUBDIR_OVERRIDE=etc &&
   ${MM_MAKE} DESTDIR=${TEMPROOT} distribution;} ||
   { echo '';
     echo "  *** FATAL ERROR: Cannot 'cd' to ${SOURCEDIR} and install files to";
