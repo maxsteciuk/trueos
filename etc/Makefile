@@ -27,10 +27,6 @@ distribution:
 	@echo "set DESTDIR before running \"make ${.TARGET}\""
 	@false
 .endif
-.if ${MK_NIS} == "no"
-	sed -i "" -e 's/.*_compat:/# &/' -e 's/compat$$/files/' \
-		${DESTDIR}/etc/nsswitch.conf
-.endif
 
 .include <bsd.prog.mk>
 

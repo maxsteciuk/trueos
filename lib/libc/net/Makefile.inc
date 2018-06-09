@@ -124,3 +124,9 @@ MAN+=	hesiod.3
 .endif
 
 CONFS+=	net/hosts net/hosts.equiv net/networks nsswitch.conf protocols
+
+distribution:
+.if ${MK_NIS} == "no"
+	sed -i "" -e 's/.*_compat:/# &/' -e 's/compat$$/files/' \
+		${DESTDIR}/etc/nsswitch.conf
+.endif
