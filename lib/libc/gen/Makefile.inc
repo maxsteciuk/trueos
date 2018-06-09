@@ -163,14 +163,10 @@ SRCS+=	devname-compat11.c \
 	unvis-compat.c
 .endif
 
-.if defined(NO_ROOT)
-METALOG.add?=	cat -l >> ${METALOG}
-.endif
-
 afterinstallconfig: afterinstallconfig-passwd
 afterinstallconfig-passwd:
 .if defined(NO_ROOT)
-	echo "./etc/passwd type=file mode=0644 uname=root gname=wheel" | ${METALOG.add}
+	echo "./etc/passwd type=file mode=0644 uname=root gname=wheel" | cat -l >> ${METALOG}
 .endif
 	pwd_mkdb -i -p -d ${DESTDIR}/etc ${DESTDIR}/etc/master.passwd
 
