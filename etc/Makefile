@@ -33,7 +33,6 @@ distribution:
 .endif
 .if defined(NO_ROOT)
 	( \
-		echo "./etc/login.conf.db type=file mode=0644 uname=root gname=wheel"; \
 		echo "./etc/pwd.db type=file mode=0644 uname=root gname=wheel"; \
 		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
 	) | ${METALOG.add}
