@@ -18,7 +18,7 @@ CFLAGS+=-I${LIBPKGSRC}/external/include -I${LIBPKGSRC}/external/picosat
 CFLAGS+=-DHAVE_CONFIG_H
 
 WARNS?= 0
-FILES=	FreeBSD.conf
+FILES=	TrueOS.conf.pubkey.dist TrueOS.conf.fingerprints.dist
 FILESDIR=	/etc/pkg
 FILESMODE=	644
 PROG=	pkg

@@ -1,6 +1,7 @@
 # $FreeBSD$
 
-CONFS=		include_ldap include_nis include_nis_nullfs special_hosts special_media special_noauto special_null
+CONFS=		include_ldap include_nis include_nis_nullfs special_automount \
+		special_hosts special_media special_noauto special_null
 CONFDIR=	/etc/autofs
 CONFMODE=	755
 
