@@ -77,6 +77,7 @@ vm_create_base() {
 	mddev=$(mdconfig -f ${VMBASE})
 	newfs -L rootfs /dev/${mddev}
 	mount /dev/${mddev} ${DESTDIR}
+	chmod -R 755 ${DESTDIR}
 
 	return 0
 }
@@ -111,9 +112,7 @@ vm_copy_base() {
 	mv ${VMBASE}.tmp ${VMBASE}
 }
 
-vm_install_base() {
-	# Installs the FreeBSD userland/kernel to the virtual machine disk.
-
+vm_install_base_src() {
 	cd ${WORLDDIR} && \
 		make DESTDIR=${DESTDIR} \
 		installworld installkernel distribution || \
@@ -127,6 +126,41 @@ vm_install_base() {
 	sh ${WORLDDIR}/release/scripts/mm-mtree.sh -m ${WORLDDIR} \
 		-F "TARGET=${TARGET} TARGET_ARCH=${TARGET_ARCH}" \
 		-D ${DESTDIR}
+}
+
+vm_install_base_pkg() {
+	repodir=$(make -C ${WORLDDIR} -f Makefile.inc1 -V REPODIR
+		TARGET=${TARGET} TARGET_ARCH=${TARGET_ARCH})
+	# Consult the object directory's /bin/sh file.
+	abifile=$(make -C ${WORLDDIR}/bin/sh -V .OBJDIR)/sh
+	repoabi=$(pkg -o ABI_FILE=${abifile} config ABI)
+	repopath=${repodir}/${repoabi}/latest
+	# Generate the necessary repo config, then kick it off.
+	cat > ${repodir}/repo.conf <<EOF
+FreeBSD-base: {
+	url: "file://${repodir}/${repoabi}/latest",
+	mirror_type: "none",
+	enabled: yes
+}
+EOF
+	pkg -R ${repodir} -r ${DESTDIR} update -r FreeBSD-base
+	pkg -R ${repodir} -r ${DESTDIR} install -y -g 'FreeBSD-*'
+
+	# Cleanup unnecessary config file cruft.
+	find ${DESTDIR} -name '*.pkgnew' -delete
+}
+
+vm_install_base() {
+	# Installs the FreeBSD userland/kernel to the virtual machine disk.
+
+	# Required for pkg, and in any case required/handled below.
+	mkdir -p ${DESTDIR}/dev
+	mount -t devfs devfs ${DESTDIR}/dev
+
+	case "$VMBASETYPE" in
+	packages|pkg)	vm_install_base_pkg ;;
+	*)		vm_install_base_src ;;
+	esac
 
 	echo '# Custom /etc/fstab for FreeBSD VM images' \
 		> ${DESTDIR}/etc/fstab
@@ -141,8 +175,6 @@ vm_install_base() {
 	hostname="$(echo $(uname -o) | tr '[:upper:]' '[:lower:]')"
 	echo "hostname=\"${hostname}\"" >> ${DESTDIR}/etc/rc.conf
 
-	mkdir -p ${DESTDIR}/dev
-	mount -t devfs devfs ${DESTDIR}/dev
 	chroot ${DESTDIR} /usr/bin/newaliases
 	chroot ${DESTDIR} /etc/rc.d/ldconfig forcestart
 	umount_loop ${DESTDIR}/dev

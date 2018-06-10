@@ -144,4 +144,7 @@ SRCS+=	eap_sake.c \
 
 .include "../Makefile.crypto"
 
+DIRS+=	VAR_RUN_WPASUPPLICANT
+VAR_RUN_WPASUPPLICANT=	/var/run/wpa_supplicant
+
 .include <bsd.prog.mk>

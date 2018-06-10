@@ -9,6 +9,8 @@
 .include <src.opts.mk>
 
 PACKAGE=runtime
+CONFS=	.cshrc .login
+CONFDIR=	/root
 TCSHDIR= ${SRCTOP}/contrib/tcsh
 .PATH: ${TCSHDIR}
 
@@ -49,8 +51,9 @@ LINKS=	${BINDIR}/csh ${BINDIR}/tcsh
 CLEANFILES= ${GENHDRS} gethost csh.1
 
 .if ${MK_EXAMPLES} != "no"
-FILESDIR= ${SHAREDIR}/examples/tcsh
-FILES= complete.tcsh csh-mode.el
+FILESGROUPS+=	EXAMPLES
+EXAMPLESDIR=	${SHAREDIR}/examples/tcsh
+EXAMPLES= complete.tcsh csh-mode.el
 .endif
 
 CATALOGS=	et:et_EE.UTF-8 \
@@ -105,6 +108,8 @@ NLS+=		${catalog:C/.*://}
 NLSSRCDIR_${catalog:C/.*://}= ${TCSHDIR}/nls/${catalog:C/:.*//}
 NLSSRCFILES_${catalog:C/.*://}!= cd ${NLSSRCDIR_${catalog:C/.*://}}; echo charset set[0-9]*
 .endfor
+
+SUBDIR+=	etc
 
 csh.1: tcsh.man
 	cat ${.ALLSRC} > ${.TARGET}

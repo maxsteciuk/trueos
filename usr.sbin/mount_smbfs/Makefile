@@ -3,6 +3,8 @@
 PROG=	mount_smbfs
 SRCS=	mount_smbfs.c getmntopts.c
 MAN=	mount_smbfs.8
+CONFS=	nsmb.conf
+CONFMODE=	600
 
 MOUNTDIR=	${SRCTOP}/sbin/mount
 CONTRIBDIR=	${SRCTOP}/contrib/smbfs

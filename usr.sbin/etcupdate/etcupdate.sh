@@ -202,8 +202,6 @@ build_tree()
 		done
 	elif ! [ -n "$nobuild" ]; then
 		(cd $SRCDIR; $make DESTDIR=$destdir distrib-dirs &&
-    MAKEOBJDIRPREFIX=$destdir/usr/obj $make _obj SUBDIR_OVERRIDE=etc &&
-    MAKEOBJDIRPREFIX=$destdir/usr/obj $make everything SUBDIR_OVERRIDE=etc &&
     MAKEOBJDIRPREFIX=$destdir/usr/obj $make DESTDIR=$destdir distribution) \
 		    >&3 2>&1 || return 1
 	else

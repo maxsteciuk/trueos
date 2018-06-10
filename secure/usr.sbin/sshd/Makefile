@@ -18,6 +18,8 @@ SRCS=	sshd.c auth-rhosts.c auth-passwd.c \
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c \
 	sandbox-solaris.c
 PACKAGE=	ssh
+CONFS=		moduli sshd_config
+CONFSDIR=	/etc/ssh
 
 # gss-genr.c really belongs in libssh; see src/secure/lib/libssh/Makefile
 SRCS+=	gss-genr.c

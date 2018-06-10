@@ -19,6 +19,10 @@ SYMLINKS=	../sbin/mailwrapper /usr/bin/mailq \
 .if ${MK_MAILWRAPPER} == "no" && ${MK_SENDMAIL} != "no"
 SYMLINKS+=	../libexec/sendmail/sendmail ${BINDIR}/mailwrapper
 .endif
+
+CONFSDIR=	/etc/mail
+CONFS=		aliases
+SYMLINKS+=	mail/aliases /etc/aliases
 .endif
 
 .if ${MK_MAILWRAPPER} != "no" && ${MK_SENDMAIL} == "no"
@@ -26,11 +30,7 @@ SYMLINKS+=	..${BINDIR}/mailwrapper /bin/rmail
 .endif
 
 .if ${MK_MAILWRAPPER} != "no"
-.if !exists(${DESTDIR}/etc/mail/mailer.conf)
-FILES=		${SRCTOP}/etc/mail/mailer.conf
-FILESDIR=	/etc/mail
-FILESMODE=	644
-.endif
+CONFS+=		mailer.conf
 .endif
 
 .include <bsd.prog.mk>

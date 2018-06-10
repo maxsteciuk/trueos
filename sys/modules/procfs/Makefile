@@ -26,4 +26,8 @@ EXPORT_SYMS+=	procfs_doprocfile
 EXPORT_SYMS+=	procfs_doprocmem
 EXPORT_SYMS+=	procfs_notsystem
 
+DIRS+=	PROC
+PROC=	/proc
+PROC_MODE=	555
+
 .include <bsd.kmod.mk>

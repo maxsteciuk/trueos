@@ -144,7 +144,7 @@ compat:
 	fi
 .endfor
 	mtree -deU ${MTREE_FOLLOWS_SYMLINKS} \
-	    -f ${SRCTOP}/etc/mtree/BSD.include.dist \
+	    -f ${SRCTOP}/usr.sbin/nmtree/etc/BSD.include.dist \
 	    -p ${SDESTDIR}${INCLUDEDIR} > /dev/null
 
 copies: .PHONY .META

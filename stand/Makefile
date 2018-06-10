@@ -41,4 +41,16 @@ SUBDIR+=${_x}32
 .endif
 .endfor
 
+DIRS+=	BOOT_DTB
+BOOT_DTB=	/boot/dtb
+
+DIRS+=	BOOT_DTB_OVERLAYS
+BOOT_DTB_OVERLAYS=	/boot/dtb/overlays
+
+DIRS+=	BOOT_LUA
+BOOT_LUA=	/boot/lua
+
+DIRS+=	BOOT_MODULES
+BOOT_MODULES=	/boot/modules
+
 .include <bsd.subdir.mk>

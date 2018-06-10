@@ -1,0 +1,19 @@
+# $FreeBSD$
+
+SUBDIR=	mail.local \
+	smrsh
+
+FILES=	rc.sendmail
+FILESDIR=	/etc
+
+DIRS+=	VAR_SPOOL_CLIENTMQUEUE
+VAR_SPOOL_CLIENTMQUEUE=	/var/spool/clientmqueue
+VAR_SPOOL_CLIENTMQUEUE_MODE=	770
+VAR_SPOOL_CLIENTMQUEUE_OWN=	smmsp
+VAR_SPOOL_CLIENTMQUEUE_GRP=	smmsp
+
+DIRS+=	VAR_SPOOL_MQUEUE
+VAR_SPOOL_MQUEUE=	/var/spool/mqueue
+VAR_SPOOL_MQUEUE_GRP=	daemon
+
+.include <bsd.prog.mk>

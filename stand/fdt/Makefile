@@ -17,4 +17,7 @@ CFLAGS+=	-I${SYSDIR}/contrib/libfdt/ -I${LDRSRC}
 
 CFLAGS+=	-Wformat -Wall
 
+DIRS+=	BOOT_FIRMWARE
+BOOT_FIRMWARE=	/boot/firmware
+
 .include <bsd.lib.mk>

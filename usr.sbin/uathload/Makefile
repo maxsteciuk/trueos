@@ -1,5 +1,8 @@
 # $FreeBSD$
 
+CONFS=	uath.conf
+CONFDIR=/etc/devd
+
 PROG=	uathload
 MAN=	uathload.8
 

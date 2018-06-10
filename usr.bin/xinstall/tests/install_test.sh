@@ -377,6 +377,14 @@ mkdir_simple_body() {
 	atf_check install -d dir1/dir2/dir3
 }
 
+atf_test_case mkdir_p_auto
+mkdir_p_auto_body() {
+	atf_check touch foo
+	atf_check install -P foo dir1
+	[ -d dir1 ] || atf_fail "dir1 missing"
+	[ -f dir1/foo ] || atf_fail "dir1/foo missing"
+}
+
 atf_init_test_cases() {
 	atf_add_test_case copy_to_nonexistent
 	atf_add_test_case copy_to_nonexistent_safe
@@ -416,4 +424,5 @@ atf_init_test_cases() {
 	atf_add_test_case symbolic_link_relative_absolute_source_and_dest1_double_slash
 	atf_add_test_case symbolic_link_relative_absolute_source_and_dest2
 	atf_add_test_case mkdir_simple
+	atf_add_test_case mkdir_p_auto
 }

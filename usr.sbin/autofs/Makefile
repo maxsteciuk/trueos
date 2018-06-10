@@ -1,5 +1,6 @@
 # $FreeBSD$
 
+CONFS=	auto_master
 PACKAGE=autofs
 PROG=	automountd
 SRCS=	automount.c
@@ -11,6 +12,8 @@ SRCS+=	getmntopts.c
 SRCS+=	log.c
 SRCS+=	popen.c
 SRCS+=	token.l
+
+SUBDIR+=	autofs
 
 CFLAGS+=-I${.CURDIR}
 CFLAGS+=-I${SRCTOP}/sys/fs/autofs

@@ -110,7 +110,7 @@ extern char **environ;
 static gid_t gid;
 static uid_t uid;
 static int dobackup, docompare, dodir, dolink, dopreserve, dostrip, dounpriv,
-    safecopy, verbose;
+    mkdir_p, safecopy, verbose;
 static int haveopt_f, haveopt_g, haveopt_m, haveopt_o;
 static mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 static FILE *metafp;
@@ -150,11 +150,12 @@ main(int argc, char *argv[])
 	u_int iflags;
 	char *p;
 	const char *to_name;
+	char buf[MAXPATHLEN];
 
 	fset = 0;
 	iflags = 0;
 	group = owner = NULL;
-	while ((ch = getopt(argc, argv, "B:bCcD:df:g:h:l:M:m:N:o:pSsT:Uv")) !=
+	while ((ch = getopt(argc, argv, "B:bCcD:df:g:h:l:M:m:N:o:pPSsT:Uv")) !=
 	     -1)
 		switch((char)ch) {
 		case 'B':
@@ -233,6 +234,9 @@ main(int argc, char *argv[])
 		case 'o':
 			haveopt_o = 1;
 			owner = optarg;
+			break;
+		case 'P':
+			mkdir_p = 1;
 			break;
 		case 'p':
 			docompare = dopreserve = 1;
@@ -339,6 +343,14 @@ main(int argc, char *argv[])
 
 	to_name = argv[argc - 1];
 	no_target = stat(to_name, &to_sb);
+	if (mkdir_p) {
+		if (no_target) {
+			strncpy(buf, to_name, sizeof(buf) - 1);
+			buf[sizeof(buf) - 1] = '\0';
+			install_dir(buf);
+			no_target = stat(buf, &to_sb);
+		}
+	}
 	if (!no_target && S_ISDIR(to_sb.st_mode)) {
 		if (dolink & LN_SYMBOLIC) {
 			if (lstat(to_name, &to_sb) != 0)
@@ -1445,7 +1457,7 @@ usage(void)
 "               [-M log] [-D dest] [-h hash] [-T tags]\n"
 "               [-B suffix] [-l linkflags] [-N dbdir]\n"
 "               file1 file2\n"
-"       install [-bCcpSsUv] [-f flags] [-g group] [-m mode] [-o owner]\n"
+"       install [-bCcpPSsUv] [-f flags] [-g group] [-m mode] [-o owner]\n"
 "               [-M log] [-D dest] [-h hash] [-T tags]\n"
 "               [-B suffix] [-l linkflags] [-N dbdir]\n"
 "               file1 ... fileN directory\n"

@@ -9,6 +9,7 @@ PACKAGE=	clibs
 MK_SSP=		no
 
 PROG?=		ld-elf.so.1
+CONFS=		libmap.conf
 .if (${PROG:M*ld-elf32*} != "")
 TAGS+=		lib32
 .endif

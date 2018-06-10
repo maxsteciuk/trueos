@@ -4,6 +4,7 @@
 # machine-independent gen sources
 .PATH: ${LIBC_SRCTOP}/${LIBC_ARCH}/gen ${LIBC_SRCTOP}/gen
 
+CONFS=	group master.passwd
 SRCS+=	__getosreldate.c \
 	__pthread_mutex_init_calloc_cb_stub.c \
 	__xuname.c \
@@ -160,6 +161,17 @@ SRCS+=	devname-compat11.c \
 	readdir-compat11.c \
 	scandir-compat11.c \
 	unvis-compat.c
+.endif
+
+afterinstallconfig: afterinstallconfig-passwd
+afterinstallconfig-passwd:
+	pwd_mkdb -i -p -d ${DESTDIR}/etc ${DESTDIR}/etc/master.passwd
+.if defined(NO_ROOT)
+	( \
+		echo "./etc/pwd.db type=file mode=0644 uname=root gname=wheel"; \
+		echo "./etc/spwd.db type=file mode=0600 uname=root gname=wheel"; \
+		echo "./etc/passwd type=file mode=0644 uname=root gname=wheel"; \
+	) | cat -l >> ${METALOG}
 .endif
 
 .PATH: ${SRCTOP}/contrib/libc-pwcache
@@ -533,3 +545,13 @@ MLINKS+=vis.3 nvis.3 \
 	vis.3 svis.3
 
 MLINKS+=wordexp.3 wordfree.3
+
+DIRS+=	VAR_EMPTY
+VAR_EMPTY=	/var/empty
+VAR_EMPTY_MODE=	555
+VAR_EMPTY_FLAGS=schg
+
+distribution: installconfig
+.if ${MK_TCSH} != "no"
+	sed -i "" -e 's;/bin/sh;/bin/csh;' ${DESTDIR}/etc/master.passwd
+.endif

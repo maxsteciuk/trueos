@@ -10,6 +10,7 @@ VMFORMATS?=	vhd vmdk qcow2 raw
 VMSIZE?=	30G
 SWAPSIZE?=	1G
 VMBASE?=	vm
+VMBASETYPE?=	src
 
 VHD_DESC=	Azure, VirtualPC, Hyper-V, Xen disk image
 VMDK_DESC=	VMWare, VirtualBox disk image
@@ -93,7 +94,8 @@ vm-image:
 		${.CURDIR}/scripts/mk-vmimage.sh \
 		-C ${.CURDIR}/tools/vmimage.subr -d ${.OBJDIR}/${.TARGET} \
 		-i ${.OBJDIR}/${FORMAT}.img -s ${VMSIZE} -f ${FORMAT} \
-		-S ${WORLDDIR} -o ${.OBJDIR}/${VMBASE}.${FORMAT}
+		-S ${WORLDDIR} -o ${.OBJDIR}/${VMBASE}.${FORMAT} \
+		-b ${VMBASETYPE}
 . endfor
 .endif
 	touch ${.TARGET}

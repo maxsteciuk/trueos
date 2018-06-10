@@ -124,3 +124,4 @@ MLINKS+=acl_create_entry.3 acl_create_entry_np.3\
 	mac_text.3 mac_to_text.3
 
 CLEANFILES+=	subr_acl_nfs4.c
+CONFS+=		mac.conf

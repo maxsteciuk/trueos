@@ -9,6 +9,8 @@ SUBDIR_PARALLEL=
 
 MAKEWHATIS?=	makewhatis
 
+afterinstall: makedb
+
 makedb:
 .if ${MK_MAN_UTILS} != "no"
 	${MAKEWHATIS} ${DESTDIR}${BINDIR}/man

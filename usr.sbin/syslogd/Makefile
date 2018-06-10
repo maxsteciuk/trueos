@@ -5,9 +5,13 @@
 
 .PATH: ${SRCTOP}/usr.bin/wall
 
+CONFS=	syslog.conf
 PROG=	syslogd
 MAN=	syslog.conf.5 syslogd.8
 SRCS=	syslogd.c ttymsg.c
+FILES=	rc.d/syslogd
+FILESDIR=	/etc/rc.d
+FILESMODE=	${BINMODE}
 
 LIBADD=	util
 
@@ -19,5 +23,11 @@ CFLAGS+= -DINET6
 .endif
 
 CFLAGS+= -I${SRCTOP}/usr.bin/wall
+
+DIRS+=	ETC_SYSLOGD
+ETC_SYSLOGD=	/etc/syslog.d
+
+DIRS+=	VAR_LOG
+VAR_LOG=	/var/log
 
 .include <bsd.prog.mk>

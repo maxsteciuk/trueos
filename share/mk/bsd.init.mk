@@ -28,22 +28,16 @@ __<bsd.init.mk>__:
 # Some makefiles may want T as well to avoid nested objdirs.
 OBJS_SRCS_FILTER+= R
 
+INSTALLFLAGS?=
+
 # Handle INSTALL_AS_USER here to maximize the chance that
 # it has final authority over fooOWN and fooGRP.
 .if ${MK_INSTALL_AS_USER} != "no"
 .if !defined(_uid)
 _uid!=	id -u
-.export _uid
 .endif
 .if ${_uid} != 0
-.if !defined(_gid)
-_gid!=	id -g
-.export _gid
-.endif
-.for x in BIN CONF DOC DTB INFO KMOD LIB MAN NLS SHARE
-$xOWN=	${_uid}
-$xGRP=	${_gid}
-.endfor
+INSTALL+=	-U
 .endif
 .endif
 

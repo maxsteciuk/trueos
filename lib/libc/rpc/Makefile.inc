@@ -177,3 +177,5 @@ MLINKS+=	bindresvport.3 bindresvport_sa.3 \
 		rpc_soc.3 svcunix_create.3 \
 		rpc_soc.3 xdr_pmap.3 \
 		rpc_soc.3 xdr_pmaplist.3
+
+CONFS+=	rpc/netconfig rpc/rpc

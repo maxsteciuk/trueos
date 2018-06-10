@@ -1,5 +1,6 @@
 # $FreeBSD$
 
+CONFS=	rc.bsdextended
 PROG=	ugidfw
 MAN=	ugidfw.8
 

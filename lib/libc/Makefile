@@ -177,6 +177,10 @@ libkern.${LIBC_ARCH}:: ${KMSRCS}
 HAS_TESTS=
 SUBDIR.${MK_TESTS}+= tests
 
+DIRS+=	VAR_TMP
+VAR_TMP=	/var/tmp
+VAR_TMP_MODE=	01777
+
 .include <bsd.lib.mk>
 
 .if !defined(_SKIP_BUILD)
@@ -203,3 +207,14 @@ CWARNFLAGS:=	${.IMPSRC:Ngdtoa_*.c:C/^.+$/${CWARNFLAGS}/:C/^$/-w/}
 SSP_CFLAGS:=	${.IMPSRC:N*/stack_protector.c:C/^.+$/${SSP_CFLAGS}/}
 # Generate stack unwinding tables for cancellation points
 CANCELPOINTS_CFLAGS:=	${.IMPSRC:Mcancelpoints_*:C/^.+$/${CANCELPOINTS_CFLAGS}/:C/^$//}
+
+.if ${MK_NLS} != "no"
+install: install-nls
+
+install-nls:
+	set - `grep "^[a-zA-Z]" ${.CURDIR}/nls.alias`; \
+	while [ $$# -gt 0 ] ; do \
+		${INSTALL_SYMLINK} ${TAG_ARGS} "$$2" "${DESTDIR}${SHAREDIR}/nls/$$1"; \
+		shift; shift; \
+	done
+.endif

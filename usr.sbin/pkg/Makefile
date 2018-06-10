@@ -1,7 +1,5 @@
 # $FreeBSD$
 
-PROG?=	pkg
-
 LIBPKGSRC=	${SRCTOP}/contrib/pkg
 .PATH:	${LIBPKGSRC}/src
 
@@ -20,6 +18,10 @@ CFLAGS+=-I${LIBPKGSRC}/external/include -I${LIBPKGSRC}/external/picosat
 CFLAGS+=-DHAVE_CONFIG_H
 
 WARNS?= 0
+FILES=	FreeBSD.conf
+FILESDIR=	/etc/pkg
+FILESMODE=	644
+PROG=	pkg
 
 CFLAGS+=-I${SRCTOP}/contrib/libucl/include
 #.PATH:	${SRCTOP}/contrib/libucl/include
@@ -61,5 +63,8 @@ MAN+=	${LIBPKGSRC}/docs/pkg-upgrade.8
 MAN+=	${LIBPKGSRC}/docs/pkg-version.8
 MAN+=	${LIBPKGSRC}/docs/pkg-which.8
 MAN+=	${LIBPKGSRC}/docs/pkg.conf.5
+
+DIRS+=	VAR_DB_PKG
+VAR_DB_PKG=	/var/db/pkg
 
 .include <bsd.prog.mk>

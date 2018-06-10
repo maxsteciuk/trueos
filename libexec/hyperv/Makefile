@@ -7,4 +7,8 @@ BINDIR=		${LIBEXECDIR}/hyperv
 SCRIPTS=	hv_set_ifconfig hv_get_dns_info hv_get_dhcp_info
 SCRIPTS+=	hyperv_vfattach hyperv_vfup
 
+DIRS+=	VAR_DB_HYPERV
+VAR_DB_HYPERV=	/var/db/hyperv
+VAR_DB_HYPERV_MODE=	700
+
 .include <bsd.prog.mk>

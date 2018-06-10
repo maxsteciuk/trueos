@@ -11,9 +11,16 @@ EFILES=	mail.rc
 LINKS=	${BINDIR}/mail ${BINDIR}/Mail ${BINDIR}/mail ${BINDIR}/mailx
 MLINKS=	mail.1 Mail.1 mail.1 mailx.1
 
+CONFS=		mail.rc
+
 WARNS?=	2
 
 .PATH: ${.CURDIR}/misc
+
+DIRS+=	VAR_MAIL
+VAR_MAIL=	/var/mail
+VAR_MAIL_MODE=	775
+VAR_MAIL_GRP=	mail
 
 etc-mailrc:
 	cd ${.CURDIR}/misc; ${INSTALL} -o root -g wheel \

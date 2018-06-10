@@ -176,6 +176,7 @@ CLEANFILES+=	${INFO:S/$/.info.*.html/} ${INFO:S/$/.info/}
 
 .if defined(INFO)
 install: ${INSTALLINFODIRS}
+	${INSTALL} -d ${DESTDIR}${INFODIR}
 .if !empty(IFILES:N*.html)
 	${INSTALL} -o ${INFOOWN} -g ${INFOGRP} -m ${INFOMODE} \
 		${IFILES:N*.html} ${DESTDIR}${INFODIR}/

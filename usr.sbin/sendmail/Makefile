@@ -3,6 +3,8 @@
 
 .include <src.opts.mk>
 
+SUBDIR+=	etc
+
 PACKAGE=sendmail
 SENDMAIL_DIR=${SRCTOP}/contrib/sendmail
 SMDIR=	${SENDMAIL_DIR}/src

@@ -11,7 +11,6 @@ SUBDIR=	${_atf} \
 	dhcpcd-hooks \
 	dhcpcd-run-hooks \
 	getty \
-	${_mail.local} \
 	${_makewhatis.local} \
 	${_mknetid} \
 	${_pppoed} \
@@ -26,7 +25,7 @@ SUBDIR=	${_atf} \
 	${_rshd} \
 	${_rtld-elf} \
 	save-entropy \
-	${_smrsh} \
+	${_sendmail} \
 	${_telnetd} \
 	${_tests} \
 	${_tftp-proxy} \
@@ -87,8 +86,7 @@ SUBDIR+=	rbootd
 .endif
 
 .if ${MK_SENDMAIL} != "no"
-_mail.local=	mail.local
-_smrsh=		smrsh
+_sendmail=	sendmail
 .endif
 
 .if ${MK_MAN_UTILS} != "no"

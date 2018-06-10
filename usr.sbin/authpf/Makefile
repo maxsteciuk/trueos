@@ -20,4 +20,9 @@ WARNS?=	3
 LINKS=	${BINDIR}/authpf ${BINDIR}/authpf-noip
 MLINKS=	authpf.8 authpf-noip.8
 
+DIRS+=	VAR_AUTHPF
+VAR_AUTHPF=	/var/authpf
+VAR_AUTHPF_MODE=	770
+VAR_AUTHPF_GRP=	authpf
+
 .include <bsd.prog.mk>

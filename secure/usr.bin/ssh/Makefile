@@ -7,6 +7,8 @@ LINKS=	${BINDIR}/ssh ${BINDIR}/slogin
 MAN=	ssh.1 ssh_config.5
 MLINKS=	ssh.1 slogin.1
 PACKAGE=	ssh
+CONFS=		ssh_config
+CONFSDIR=	/etc/ssh
 
 SRCS=	ssh.c readconf.c clientloop.c sshtty.c \
 	sshconnect.c sshconnect2.c mux.c
