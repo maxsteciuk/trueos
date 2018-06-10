@@ -4,10 +4,10 @@ PACKAGE=runtime
 
 .include <src.opts.mk>
 
-BINDIR=		/etc/init.d
-FILESGROUP=	FILES
+CONFSDIR=	/etc/init.d
+CONFSGROUPS=	CONFS
 
-FILES=          abi accounting adjkerntz amd apm apmd archdep auditd auditdistd automount \
+CONFS=          abi accounting adjkerntz amd apm apmd archdep auditd auditdistd automount \
 		automountd autounmountd \
 		bgfsck blacklistd bluetooth bootmisc bootparams bridge bsnmpd bthidd \
 		ccd cfumass cleanvar cleartmp cron ctld \
@@ -26,14 +26,13 @@ FILES=          abi accounting adjkerntz amd apm apmd archdep auditd auditdistd 
 		var watchdogd wpa_supplicant \
 		ypbind ypldap yppasswdd ypserv ypset ypupdated ypxfrd \
 		zfs zfsd zvol
-FILESMODE=	755
 
-.for fg in ${FILESGROUPS}
+.for fg in ${CONFSGROUPS}
 ${fg}MODE?=	${BINMODE}
 .endfor
 
 .if ${MK_POUDRIERE} != "no"
-FILES+= poudriered
+CONFS+= poudriered
 .endif
 
 .include <bsd.prog.mk>
