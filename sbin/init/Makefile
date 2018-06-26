@@ -26,6 +26,7 @@ CFLAGS+=-I${MOUNT}
 
 NO_SHARED?=	YES
 
+SUBDIR+=	init.d
 SUBDIR+=	rc.d
 
 DIRS+=	ETC_RCCONFD
