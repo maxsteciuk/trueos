@@ -557,7 +557,7 @@ VERSION=	FreeBSD ${_REVISION}-${_BRANCH:C/-p[0-9]+$//} ${TARGET_ARCH} ${SRCRELDA
 .endif
 
 .if !defined(PKG_VERSION)
-PKG_VERSION=	${VERSION}
+PKG_VERSION=	${SRCRELDATE}
 .endif
 .endif	# !defined(_MKSHOWCONFIG)
 
