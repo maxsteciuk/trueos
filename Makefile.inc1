@@ -557,14 +557,7 @@ VERSION=	FreeBSD ${_REVISION}-${_BRANCH:C/-p[0-9]+$//} ${TARGET_ARCH} ${SRCRELDA
 .endif
 
 .if !defined(PKG_VERSION)
-.if ${_BRANCH:MSTABLE*} || ${_BRANCH:MCURRENT*} || ${_BRANCH:MALPHA*}
-TIMENOW=	%Y%m%d%H%M%S
-EXTRA_REVISION=	.s${TIMENOW:gmtime}
-.endif
-.if ${_BRANCH:M*-p*}
-EXTRA_REVISION=	_${_BRANCH:C/.*-p([0-9]+$)/\1/}
-.endif
-PKG_VERSION=	${_REVISION}${EXTRA_REVISION}
+PKG_VERSION=	${VERSION}
 .endif
 .endif	# !defined(_MKSHOWCONFIG)
 
