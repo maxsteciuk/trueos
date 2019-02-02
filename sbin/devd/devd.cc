@@ -1050,6 +1050,7 @@ event_loop(void)
 			// No events -> we've processed all pending events
 			if (rv == 0) {
 				devdlog(LOG_DEBUG, "Calling daemon\n");
+
 				cfg.remove_pidfile();
 				cfg.open_pidfile();
 				daemon(0, 0);

@@ -104,9 +104,10 @@ static void	usb_suspend_resume_sub(struct usb_device *, device_t,
 static usb_proc_callback_t usbd_clear_stall_proc;
 static usb_error_t usb_config_parse(struct usb_device *, uint8_t, uint8_t);
 static void	usbd_set_device_strings(struct usb_device *);
-#if USB_HAVE_DEVCTL
+//TODO:
+//#if USB_HAVE_DEVCTL
 static void	usb_notify_addq(const char *type, struct usb_device *);
-#endif
+//#endif
 #if USB_HAVE_UGEN
 static void	usb_fifo_free_wrap(struct usb_device *, uint8_t, uint8_t);
 static void	usb_cdev_create(struct usb_device *);
@@ -2074,10 +2075,10 @@ config_done:
 	    usb_get_manufacturer(udev), usb_get_product(udev),
 	    device_get_nameunit(udev->bus->bdev));
 #endif
-
-#if USB_HAVE_DEVCTL
+//TODO:
+//#if USB_HAVE_DEVCTL
 	usb_notify_addq("ATTACH", udev);
-#endif
+//#endif
 done:
 	if (err) {
 		/*
@@ -2274,9 +2275,10 @@ usb_free_device(struct usb_device *udev, uint8_t flag)
 	/* set DETACHED state to prevent any further references */
 	usb_set_device_state(udev, USB_STATE_DETACHED);
 
-#if USB_HAVE_DEVCTL
+//TODO:
+//#if USB_HAVE_DEVCTL
 	usb_notify_addq("DETACH", udev);
-#endif
+//#endif
 
 #if USB_HAVE_UGEN
 	if (!rebooting) {
@@ -2659,7 +2661,8 @@ usbd_get_device_index(struct usb_device *udev)
 	return (udev->device_index);
 }
 
-#if USB_HAVE_DEVCTL
+//TODO
+//#if USB_HAVE_DEVCTL
 static void
 usb_notify_addq(const char *type, struct usb_device *udev)
 {
@@ -2705,6 +2708,7 @@ usb_notify_addq(const char *type, struct usb_device *udev)
 #endif
 	    );
 	sbuf_finish(sb);
+//TODO:
 	devctl_notify("USB", "DEVICE", type, sbuf_data(sb));
 	sbuf_delete(sb);
 
@@ -2755,7 +2759,8 @@ usb_notify_addq(const char *type, struct usb_device *udev)
 		sbuf_delete(sb);
 	}
 }
-#endif
+//TODO
+//#endif
 
 #if USB_HAVE_UGEN
 /*------------------------------------------------------------------------*

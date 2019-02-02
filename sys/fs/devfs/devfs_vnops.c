@@ -1299,6 +1299,8 @@ devfs_read_f(struct file *fp, struct uio *uio, struct ucred *cred,
 	struct cdevsw *dsw;
 	struct file *fpop;
 
+//printf("+++ devfs_read_f(): PID %d, comm %s\n", td->td_proc->p_pid, td->td_proc->p_comm);
+
 	if (uio->uio_resid > DEVFS_IOSIZE_MAX)
 		return (EINVAL);
 	fpop = td->td_fpop;

@@ -485,6 +485,8 @@ devread(struct cdev *dev, struct uio *uio, int ioflag)
 	struct dev_event_info *n1;
 	int rv;
 
+//printf("+++ 1 devread(): si_name %s PID %d, comm %s\n", dev->si_name, uio->uio_td->td_proc->p_pid, uio->uio_td->td_proc->p_comm);
+
 	mtx_lock(&devsoftc.mtx);
 	while (TAILQ_EMPTY(&devsoftc.devq)) {
 		if (devsoftc.nonblock) {
@@ -504,6 +506,7 @@ devread(struct cdev *dev, struct uio *uio, int ioflag)
 	TAILQ_REMOVE(&devsoftc.devq, n1, dei_link);
 	devsoftc.queued--;
 	mtx_unlock(&devsoftc.mtx);
+//printf("+++ 2 devread(): PID %d, comm %s\n", uio->uio_td->td_proc->p_pid, uio->uio_td->td_proc->p_comm);
 	rv = uiomove(n1->dei_data, strlen(n1->dei_data), uio);
 	free(n1->dei_data, M_BUS);
 	free(n1, M_BUS);
@@ -609,6 +612,8 @@ devctl_queue_data_f(char *data, int flags)
 {
 	struct dev_event_info *n1 = NULL, *n2 = NULL;
 
+//printf("+++ 1 devctl_queue_data_f() data [%s] flags %d, devctl_queue_length %d\n", data, flags, devctl_queue_length);
+
 	if (strlen(data) == 0)
 		goto out;
 	if (devctl_queue_length == 0)
@@ -624,6 +629,7 @@ devctl_queue_data_f(char *data, int flags)
 		free(n1, M_BUS);
 		return;
 	}
+//printf("+++ 2 devctl_queue_data_f() data [%s] flags %d, devctl_queue_length %d, devsoftc.queued %d\n", data, flags, devctl_queue_length, devsoftc.queued);
 	/* Leave at least one spot in the queue... */
 	while (devsoftc.queued > devctl_queue_length - 1) {
 		n2 = TAILQ_FIRST(&devsoftc.devq);
@@ -653,7 +659,8 @@ out:
 void
 devctl_queue_data(char *data)
 {
-
+//TODO:
+//printf( "++++ devctl_queue_data() data [%s]\n", data);
 	devctl_queue_data_f(data, M_NOWAIT);
 }
 
@@ -666,6 +673,9 @@ devctl_notify_f(const char *system, const char *subsystem, const char *type,
 {
 	int len = 0;
 	char *msg;
+
+//TODO:
+//printf("+++ devctl_notify_f() system %s, subsystem %s, type %s, data [%s], flags %d",system, subsystem, type, data, flags);
 
 	if (system == NULL)
 		return;		/* BOGUS!  Must specify system. */
