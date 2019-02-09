@@ -1034,7 +1034,10 @@ event_loop(void)
 
 	fd = open(PATH_DEVCTL, O_RDONLY | O_CLOEXEC);
 	if (fd == -1)
+{
 		err(1, "Can't open devctl device %s", PATH_DEVCTL);
+printf("++++ ERROR: failed to open devctl device %s\n", PATH_DEVCTL);
+}
 	stream_fd = create_socket(STREAMPIPE, SOCK_STREAM);
 	seqpacket_fd = create_socket(SEQPACKETPIPE, SOCK_SEQPACKET);
 	accepting = 1;
@@ -1095,7 +1098,10 @@ event_loop(void)
 		}
 		if (rv == -1) {
 			if (errno == EINTR)
+{
+				printf("++++ got EINTR in select() \n");
 				continue;
+}
 			err(1, "select");
 		} else if (rv == 0)
 			check_clients();
@@ -1108,6 +1114,8 @@ event_loop(void)
 					    "available event data exceeded "
 					    "buffer space\n");
 				}
+
+printf("+++++ devd read() event buffer of size %d: %s\n", rv, buffer);
 				notify_clients(buffer, rv);
 				buffer[rv] = '\0';
 				while (buffer[--rv] == '\n')
@@ -1118,10 +1126,16 @@ event_loop(void)
 				catch (const std::length_error& e) {
 					devdlog(LOG_ERR, "Dropping event %s "
 					    "due to low memory", buffer);
+
+					printf("++++ Dropping event %s due to low memory\n", buffer);
 				}
 			} else if (rv < 0) {
 				if (errno != EINTR)
+{
+					printf("+++ got error code when reading event %d\n", errno);
+
 					break;
+}
 			} else {
 				/* EOF */
 				break;

@@ -51,6 +51,6 @@ CXXFLAGS.gcc = -Wno-redundant-decls
 CLEANFILES= y.output y.tab.i
 
 HAS_TESTS=
-SUBDIR.${MK_TESTS}+= tests
+#SUBDIR.${MK_TESTS}+= tests
 
 .include <bsd.prog.mk>
